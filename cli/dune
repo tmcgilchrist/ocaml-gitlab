@@ -1,0 +1,6 @@
+(executables
+   (libraries cohttp-lwt-unix gitlab_unix cmdliner)
+   (package gitlab-unix)
+   (public_names lab)
+   (names lab))
+

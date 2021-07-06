@@ -7,4 +7,6 @@ Also see https://hackage.haskell.org/package/gitlab-haskell for the Haskell vers
 
 TODO
 
-   * [ ] Make 
+   * [ ] Make basic skeleton for library with ATD and a simple endpoint
+   * [ ] Add ocaml-ci support
+   * [ ] Add basic cli cram test

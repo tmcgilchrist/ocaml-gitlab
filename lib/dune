@@ -1,0 +1,26 @@
+(rule
+ (targets gitlab_t.ml gitlab_t.mli)
+  (deps gitlab.atd)
+  (action  (run atdgen -t %{deps})))
+
+(rule
+ (targets gitlab_j.ml gitlab_j.mli)
+ (deps gitlab.atd)
+ (action  (run atdgen -j -j-std %{deps})))
+
+(rule
+ (targets gitlab_s.ml)
+ (deps   gitlab_s.mli)
+ (action (copy %{deps} %{targets})))
+
+(library
+ (name gitlab)
+ (public_name gitlab)
+ (wrapped false)
+ ; ; #| 27 and 32 should be enabled once
+ ; ; https://github.com/janestreet/jbuilder/issues/61 is done
+ ; ;|#
+ ; (flags (:standard -principal -strict-sequence -g -safe-string
+ ;          -w "A-E-41-42-44-48" -w "-27-32"))
+ (modules gitlab_s gitlab_core gitlab_j gitlab_t)
+ (libraries cohttp cohttp-lwt-unix uri yojson atdgen))

@@ -1,0 +1,52 @@
+type error = {
+  resource: string;
+  ?field: string option;
+  code: string;
+  ?message: string option;
+} <ocaml field_prefix="error_">
+
+type message = {
+  message: string;
+  ~errors <ocaml default="[]">: error list;
+} <ocaml field_prefix="message_">
+
+type error_detail = {
+  message: string;
+  detail: string option
+}
+
+type user = {
+  id: int;
+  username: string;
+  name: string;
+  state: string;
+  avatar_url: string;
+  web_url: string;
+  created_at: string;
+  ?bio: string option;
+  ?bio_html: string option;
+  ?location: string option;
+  ?public_email: string option;
+  ?skype: string option;
+  ?linkedin: string option;
+  ?twitter: string option;
+  ?website_url: string option;
+  ?organization: string option;
+  ?job_title: string option;
+  ?pronouns: string option;
+  bot: bool;
+  work_information: string nullable;
+  followers: int;
+  following: int;
+}
+
+type user_short = {
+  id: int;
+  username: string;
+  name: string;
+  state: string;
+  avatar_url: string;
+  web_url: string;
+}
+
+type users = user_short list
