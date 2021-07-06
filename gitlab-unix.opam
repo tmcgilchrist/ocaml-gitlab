@@ -22,8 +22,8 @@ depends: [
   "ocaml" {>= "4.04.0"}
   "dune" {>= "1.10"}
   "gitlab" {= version}
-  "httpaf" {>= "0.7"}
-  "httpaf-lwt-unix" {>= "0.7"}
+  "cohttp" {>= "4.0"}
+  "cohttp-lwt-unix" {>= "4.0"}
   "lwt" {>= "2.4.4"}
   "stringext"
   "cmdliner" {>= "0.9.8"}
