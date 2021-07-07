@@ -9,7 +9,7 @@ module Make(Time: Gitlab_s.Time)(CL : Cohttp_lwt.S.Client)
     Printf.ksprintf (fun s ->
         match !log_active with
         | false -> ()
-        | true  -> prerr_endline (">>> GitHub: " ^ s)) fmt
+        | true  -> prerr_endline (">>> GitLab: " ^ s)) fmt
 
   type rate = Core 
 
@@ -101,7 +101,7 @@ module Make(Time: Gitlab_s.Time)(CL : Cohttp_lwt.S.Client)
              (String.concat "" (C.Header.to_lines (C.Response.headers res)))
              body)
       | Semantic (_,message) ->
-        Lwt.return ("GitHub API error: "^string_of_message message)
+        Lwt.return ("GitLabg API error: "^string_of_message message)
       | Bad_response (exn,j) ->
         Lwt.return (sprintf "Bad response: %s\n%s"
           (Printexc.to_string exn)
@@ -350,6 +350,8 @@ module Make(Time: Gitlab_s.Time)(CL : Cohttp_lwt.S.Client)
 
     let user = Uri.of_string (Printf.sprintf "%s/users" api)
     let user_by_id ~id = Uri.of_string (Printf.sprintf "%s/users/%s" api id)
+
+    let user_projects ~id = Uri.of_string (Printf.sprintf "%s/users/%s/projects" api id)
   end
 
   module User = struct
@@ -363,5 +365,8 @@ module Make(Time: Gitlab_s.Time)(CL : Cohttp_lwt.S.Client)
       let params = [("username", name)] in
       API.get ~uri:URI.user ~params (fun body -> return (Gitlab_j.users_of_string body))
 
+    let projects ~id () =
+      let uri = URI.user_projects ~id in
+      API.get ~uri (fun body -> return (Gitlab_j.projects_of_string body))
   end
 end

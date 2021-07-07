@@ -35,14 +35,12 @@ module type Gitlab = sig
         the final URI. *)
   end
 
-
-
   (** All API requests are bound through this monad which encapsulates
       an Lwt cooperative thread and includes some state which may be
       set via {!API} functions. *)
   module Monad : sig
     type 'a t
-    (** ['a t] is an Lwt thread sensitive to GitHub API state. *)
+    (** ['a t] is an Lwt thread sensitive to GitLab API state. *)
 
     val return : 'a -> 'a t
     (** [return x] is the value [x] wrapped in a state-sensitive Lwt thread. *)
@@ -76,12 +74,12 @@ module type Gitlab = sig
     val run : 'a t -> 'a Lwt.t
     (** [run m] is the Lwt thread corresponding to the sequence of API
         actions represented by [m]. Once a {!t} has been [run], any
-        GitHub API state such as associated default security tokens or
+        GitLab API state such as associated default security tokens or
         declared user agent string will not be available in
         subsequently bound functions. *)
 
     val embed : 'a Lwt.t -> 'a t
-    (** [embed lwt] is an Lwt thread lifted into the GitHub API
+    (** [embed lwt] is an Lwt thread lifted into the GitLab API
         monad. Its monadic state will be inherited from any monadic
         values bound before it. *)
   end
@@ -124,7 +122,7 @@ module type Gitlab = sig
       uri:Uri.t ->
       'a parse -> 'a Response.t Monad.t
     (** [get ?rate ?fail_handlers ?expected_code ?headers ?token
-        ?params uri p] is the [p]-parsed response to a GitHub API HTTP
+        ?params uri p] is the [p]-parsed response to a GitLab API HTTP
         GET request to [uri] with extra query parameters [params] and
         extra headers [headers]. If [token] is supplied, it will be
         used instead of any token bound into the monad. [p] will only
@@ -145,7 +143,7 @@ module type Gitlab = sig
       ?params:(string * string) list ->
       uri:Uri.t ->
       'a parse -> 'a Response.t Monad.t
-    (** [post uri p] is the [p]-parsed response to a GitHub API HTTP
+    (** [post uri p] is the [p]-parsed response to a GitLab API HTTP
         POST request to [uri]. For an explanation of the other
         parameters, see {!get}. *)
 
@@ -158,7 +156,7 @@ module type Gitlab = sig
       ?params:(string * string) list ->
       uri:Uri.t ->
       'a parse -> 'a Response.t Monad.t
-    (** [delete uri p] is the [p]-parsed response to a GitHub API HTTP
+    (** [delete uri p] is the [p]-parsed response to a GitLab API HTTP
         DELETE request to [uri]. For an explanation of the other
         parameters, see {!get}. *)
 
@@ -172,7 +170,7 @@ module type Gitlab = sig
       ?params:(string * string) list ->
       uri:Uri.t ->
       'a parse -> 'a Response.t Monad.t
-    (** [patch uri p] is the [p]-parsed response to a GitHub API HTTP
+    (** [patch uri p] is the [p]-parsed response to a GitLab API HTTP
         PATCH request to [uri]. For an explanation of the other
         parameters, see {!get}. *)
 
@@ -186,7 +184,7 @@ module type Gitlab = sig
       ?params:(string * string) list ->
       uri:Uri.t ->
       'a parse -> 'a Response.t Monad.t
-    (** [put uri p] is the [p]-parsed response to a GitHub API HTTP
+    (** [put uri p] is the [p]-parsed response to a GitLab API HTTP
         PUT request to [uri]. For an explanation of the other
         parameters, see {!get}. *)
 
@@ -203,13 +201,30 @@ module type Gitlab = sig
 
     val string_of_message : Gitlab_t.message -> string
     (** [string_of_message message] is the English language error
-        message that GitHub generated in [message]. *)
+        message that GitLab generated in [message]. *)
   end
+
+  (** The [User] module provides access to User {{:https://docs.gitlab.com/14.0/ee/api/users.html}API}. 
+   *)
   module User : sig
 
     val by_id : id:string -> unit -> Gitlab_t.user Response.t Monad.t
-    val by_name : name:string -> unit -> Gitlab_t.users Response.t Monad.t
+    (** [by_id ~id ()] is the user information for user [id]. 
 
+        See {{:https://docs.gitlab.com/14.0/ee/api/users.html#for-user}Single User}.
+     *)
+
+    val by_name : name:string -> unit -> Gitlab_t.users Response.t Monad.t
+    (** [by_name ~name ()] search for user by [name]. 
+
+        See {{:https://docs.gitlab.com/14.0/ee/api/users.html#for-user}List Users}.
+     *)
+
+    val projects : id:string -> unit -> Gitlab_t.projects Response.t Monad.t
+    (** [projects ~id ()] list user projects for user [id].
+        
+        See {{:https://docs.gitlab.com/14.0/ee/api/projects.html#list-user-projects}List User Projects}.
+     *)
   end
 end
 

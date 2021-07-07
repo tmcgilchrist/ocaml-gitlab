@@ -13,7 +13,6 @@ module CommandLine = struct
     Arg.(required
          & opt (some string) None
          & info ["n"; "owner-name"] ~docv:"OWNER_NAME" ~doc)
-
 end
 
 
@@ -39,15 +38,33 @@ let user_name_cmd =
         let open Monad in
         run (
             User.by_name ~name ()
-            >>~ fun users -> List.iter 
-                               (fun (user : Gitlab_t.user_short) -> printf "%s\n" user.Gitlab_t.username) users;
-                             return ()
+            >>~ fun users -> 
+                List.iter (fun (user : Gitlab_t.user_short) -> printf "%s\n" user.Gitlab_t.username) users;
+                return ()
           )
       end  
   in
 
   Term.(pure user_list $ CommandLine.owner_name $ pure ()),
   Term.info "user-name"
+
+let user_projects_cmd =
+  let user_projects_list id () =
+    Lwt_main.run begin
+        let open Gitlab in
+        let open Monad in
+        run (
+            User.projects ~id ()
+            >>~ fun projects ->
+                List.iter (fun (project : Gitlab_t.project_short) -> printf "%s\n" project.Gitlab_t.name) projects;
+                return ()
+          )
+      end  
+  in
+
+  Term.(pure user_projects_list $ CommandLine.owner_id $ pure ()),
+  Term.info "user-projects"
+
 
 let default_cmd =
   let doc = "make git easier with GitLab" in
@@ -63,7 +80,7 @@ let default_cmd =
   Term.info "lab" ~version:"0.1" ~doc ~man
 
 
-let cmds = [user_cmd; user_name_cmd]
+let cmds = [user_cmd; user_name_cmd; user_projects_cmd]
 
 let () =
   match Term.eval_choice ~catch:false default_cmd cmds with

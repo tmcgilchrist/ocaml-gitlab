@@ -50,3 +50,116 @@ type user_short = {
 }
 
 type users = user_short list
+
+type owner = {
+  id: int;
+  name: string;
+  created_at: string;
+}
+
+type namespace = {
+  id: int;
+  name: string;
+  path: string;
+  kind: string;
+  full_path: string;
+}
+
+type merge_method = [
+  | Merge <json name="merge">
+  | RebaseMerge <json name="rebase_merge">
+  | FastForward <json name="ff">
+]
+
+type statistics = {
+  commit_count: int;
+  storage_size: int;
+  repository_size: int;
+  wiki_size: int;
+  lfs_objects_size: int;
+  job_artifacts_size: int;
+  packages_size: int;
+  snippets_size: int;
+}
+
+type links = {
+  self: string;
+  issues: string;
+  merge_requests: string;
+  repo_branches: string;
+  labels: string;
+  events: string;
+  members: string;
+}
+
+type visibility = [
+  | Private <json name="private">
+  | Public <json name="public">
+  | Internal <json name="internal">
+]
+
+type project_short = {
+  id: int;
+  description: string nullable;
+  name: string;
+  name_with_namespace: string;
+  created_at: string;
+  default_branch: string;
+  tag_list: string list;
+  topics: string list;
+  ssh_url_to_repo: string;
+  http_url_to_repo: string;
+  web_url: string;
+  readme_url: string;
+  avatar_url: string nullable;
+  forks_count: int;
+  star_count: int;
+  last_activity_at: string;
+  namespace: namespace;
+}
+
+type project_full = {
+  inherit project_short;
+
+  default_branch: string;
+  visibility: visibility;
+  path: string;
+  path_with_namespace: string;
+  issues_enabled: bool;
+  open_issues_count: int;
+  merge_requests_enabled: bool;
+  jobs_enabled: bool;
+  wiki_enabled: bool;
+  snippets_enabled: bool;
+  can_create_merge_request_in: bool;
+  resolve_outdated_diff_discussions: bool;
+  container_registry_enabled: bool;
+  created_at: string;
+  creator_id: int;
+  import_status: string;
+  archived: bool;
+  avatar_url: string;
+  shared_runners_enabled: bool;
+  runners_token: string;
+  ci_default_git_depth: int;
+  ci_forward_deployment_enabled: bool;
+  public_jobs: bool;
+  shared_with_groups: string list;
+  only_allow_merge_if_pipeline_succeeds: bool;
+  allow_merge_on_skipped_pipeline: bool;
+  restrict_user_defined_variables: bool;
+  only_allow_merge_if_all_discussions_are_resolved: bool;
+  remove_source_branch_after_merge: bool;
+  request_access_enabled: bool;
+  merge_method: merge_method;
+  squash_option: string;
+  autoclose_referenced_issues: bool;
+  suggestion_commit_message: string nullable;
+  marked_for_deletion_at: string;
+  marked_for_deletion_on: string;
+  statistics: statistics;
+  container_registry_image_prefix: string;
+  links: links;
+}
+
+type projects = project_short list

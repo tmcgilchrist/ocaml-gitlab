@@ -8,5 +8,7 @@ Also see https://hackage.haskell.org/package/gitlab-haskell for the Haskell vers
 TODO
 
    * [*] Make basic skeleton for library with ATD and a simple endpoint
-   * [ ] Add ocaml-ci support
+   * [*] Add CI 
    * [ ] Add basic cli cram test
+   * [ ] Add Steaming responses / pagination support
+   * [ ] Add test for authenticated queries
