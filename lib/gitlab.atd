@@ -163,3 +163,97 @@ type project_full = {
 }
 
 type projects = project_short list
+
+type state = [
+  | Opened <json name="opened">
+  | Closed <json name="closed">
+  | Locked <json name="locked">
+  | Merged <json name="merged">
+]
+
+type merge_status = [
+ | Unchecked <json name="unchecked">
+ | Checking <json name="checking">
+ | CanBeMerged <json name="can_be_merged">
+ | CannotBeMerged <json name="cannot_be_merged">
+ | CannotBeMergedRecheck <json name="cannot_be_merged_recheck">
+]
+
+type milestone = {
+  id: int;
+  iid: int;
+  project_id: int;
+  title: string;
+  description: string;
+  state: state;
+  created_at: string;
+  updated_at: string;
+  due_date: string;
+  start_date: string;
+  web_url: string;
+}
+
+type references = {
+  short: string;
+  relative: string;
+  full: string;
+}
+
+type time_stats = {
+  time_estimate: int;
+  total_time_spent: int;
+  human_time_estimate: int nullable;
+  human_total_time_spent: int nullable;
+}
+
+type task_completion_status = {
+  count: int;
+  completed_count: int;
+}
+
+type merge_request = {
+  id: int;
+  iid: int;
+  project_id: int;
+  title: string;
+  description: string;
+  state: state;
+  merged_by: user_short nullable;
+  merged_at: string nullable;
+  closed_by: user nullable;
+  closed_at: string nullable;
+  created_at: string nullable;
+  updated_at: string nullable;
+  target_branch: string;
+  source_branch: string;
+  upvotes: int;
+  downvotes: int;
+  author: user_short;
+  assignee: user_short nullable;
+  assignees: user_short list;
+  reviewers: user_short list;
+  source_project_id: int;
+  target_project_id: int;
+  labels: string list;
+  draft: bool;
+  work_in_progress: bool;
+  milestone: milestone nullable;
+  merge_when_pipeline_succeeds: bool;
+  merge_status: merge_status;
+  sha: string;
+  merge_commit_sha: string nullable;
+  squash_commit_sha: string nullable;
+  user_notes_count: int;
+  discussion_locked: bool nullable;
+  should_remove_source_branch: bool nullable;
+  force_remove_source_branch: bool nullable;
+  ?allow_collaboration: bool option;
+  ?allow_maintainer_to_push: bool option;
+  web_url: string;
+  references: references;
+  time_stats: time_stats;
+  squash: bool;
+  task_completion_status: task_completion_status;
+}
+
+type merge_requests = merge_request list

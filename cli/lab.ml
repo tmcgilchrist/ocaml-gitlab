@@ -1,5 +1,6 @@
 open Cmdliner
 open Printf
+open Config
 
 module CommandLine = struct
   let owner_id =
@@ -65,6 +66,27 @@ let user_projects_cmd =
   Term.(pure user_projects_list $ CommandLine.owner_id $ pure ()),
   Term.info "user-projects"
 
+let merge_requests_cmd =
+  let merge_requests_list () =
+    Lwt_main.run begin
+        let open Gitlab in
+        let open Monad in
+        run (
+            (* 
+              TODO Auth token setup is different to Github. 
+              See https://docs.gitlab.com/14.0/ee/api/README.html#authentication
+             *)
+            User.merge_requests ~token:access_token ()
+            >>~ fun merge_requests ->
+                List.iter (fun (merge_request : Gitlab_t.merge_request) ->
+                    printf "#%i %s\n" merge_request.Gitlab_j.id merge_request.Gitlab_t.title) merge_requests;
+                return ()
+          )
+      end  
+  in
+
+  Term.(pure merge_requests_list $ pure ()),
+  Term.info "merge-requests"
 
 let default_cmd =
   let doc = "make git easier with GitLab" in
@@ -80,7 +102,7 @@ let default_cmd =
   Term.info "lab" ~version:"0.1" ~doc ~man
 
 
-let cmds = [user_cmd; user_name_cmd; user_projects_cmd]
+let cmds = [user_cmd; user_name_cmd; user_projects_cmd; merge_requests_cmd]
 
 let () =
   match Term.eval_choice ~catch:false default_cmd cmds with

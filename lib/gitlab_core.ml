@@ -233,7 +233,7 @@ module Make(Time: Gitlab_s.Time)(CL : Cohttp_lwt.S.Client)
         | `Found | `Temporary_redirect | `Moved_permanently -> begin
             match C.Header.get (C.Response.headers resp) "location" with
             | None -> Lwt.fail (Message (`Expectation_failed, Gitlab_t.{
-              message_message = "ocaml-github got redirect without location";
+              message_message = "ocaml-gitlab got redirect without location";
               message_errors = [];
             }))
             | Some location_s ->
@@ -256,20 +256,18 @@ module Make(Time: Gitlab_s.Time)(CL : Cohttp_lwt.S.Client)
     (* Add the correct mime-type header and the authentication token. *)
     let realize_headers
         ~token
-        ?(media_type="application/vnd.github.v3+json")
-        headers =
-      let headers = C.Header.add_opt headers "accept" media_type in
+        ~headers =
       match token with
-      | None -> headers
-      | Some token -> C.Header.add headers "Authorization" ("token " ^ token)
+      | Some token -> C.Header.add_opt headers "PRIVATE-TOKEN" token
+      | None -> C.Header.init ()
 
     let idempotent meth
-        ?(rate=Core) ?media_type ?headers ?token ?params ~fail_handlers ~expected_code ~uri
+        ?(rate=Core) ?headers ?token ?params ~fail_handlers ~expected_code ~uri
         fn =
       fun state -> Lwt.return
         (state,
          (Monad.(request ?token ?params
-                   {meth; uri; headers=realize_headers ~token ?media_type headers; body=""})
+                   {meth; uri; headers=realize_headers ~token ~headers; body=""})
             (request ~rate ~token
                ((code_handler ~expected_code fn)::fail_handlers))))
 
@@ -286,7 +284,7 @@ module Make(Time: Gitlab_s.Time)(CL : Cohttp_lwt.S.Client)
       fun state -> Lwt.return
         (state,
         (Monad.(request ?token ?params
-                  {meth; uri; headers=realize_headers ~token headers; body })
+                  {meth; uri; headers=realize_headers ~token ~headers; body })
            (request ~rate ~token
               ((code_handler ~expected_code fn)::fail_handlers))))
 
@@ -295,13 +293,13 @@ module Make(Time: Gitlab_s.Time)(CL : Cohttp_lwt.S.Client)
     ) fhs
 
     let get ?rate
-        ?(fail_handlers=[]) ?(expected_code=`OK) ?media_type ?headers
+        ?(fail_handlers=[]) ?(expected_code=`OK) ?headers
         ?token ?params ~uri fn =
       let fail_handlers =
         map_fail_handlers Lwt.(fun f x -> just_body x >>= f) fail_handlers
       in
       idempotent `GET ?rate ~fail_handlers ~expected_code
-        ?media_type ?headers ?token ?params
+        ?headers ?token ?params
         ~uri Lwt.(fun x -> just_body x >>= fn)
 
     let post ?rate ?(fail_handlers=[]) ~expected_code =
@@ -350,8 +348,8 @@ module Make(Time: Gitlab_s.Time)(CL : Cohttp_lwt.S.Client)
 
     let user = Uri.of_string (Printf.sprintf "%s/users" api)
     let user_by_id ~id = Uri.of_string (Printf.sprintf "%s/users/%s" api id)
-
     let user_projects ~id = Uri.of_string (Printf.sprintf "%s/users/%s/projects" api id)
+    let merge_requests = Uri.of_string (Printf.sprintf "%s/merge_requests" api)
   end
 
   module User = struct
@@ -368,5 +366,9 @@ module Make(Time: Gitlab_s.Time)(CL : Cohttp_lwt.S.Client)
     let projects ~id () =
       let uri = URI.user_projects ~id in
       API.get ~uri (fun body -> return (Gitlab_j.projects_of_string body))
+
+    let merge_requests ~token () =
+      let uri = URI.merge_requests in
+      API.get ~token ~uri (fun body -> return (Gitlab_j.merge_requests_of_string body))
   end
 end

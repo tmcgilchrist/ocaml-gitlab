@@ -1,3 +1,5 @@
+(rule (copy config.ml.in config.ml))
+
 (executables
    (libraries cohttp-lwt-unix gitlab_unix cmdliner)
    (package gitlab-unix)

@@ -115,7 +115,6 @@ module type Gitlab = sig
       ?rate:rate ->
       ?fail_handlers:'a parse handler list ->
       ?expected_code:Cohttp.Code.status_code ->
-      ?media_type:string ->
       ?headers:Cohttp.Header.t ->
       ?token:Token.t ->
       ?params:(string * string) list ->
@@ -224,6 +223,12 @@ module type Gitlab = sig
     (** [projects ~id ()] list user projects for user [id].
         
         See {{:https://docs.gitlab.com/14.0/ee/api/projects.html#list-user-projects}List User Projects}.
+     *)
+
+    val merge_requests: token:Token.t -> unit -> Gitlab_t.merge_requests Response.t Monad.t
+    (** [merge_requests ()] list all merge requests the authenticated user has access to.
+
+        See {{:https://docs.gitlab.com/14.0/ee/api/merge_requests.html#list-merge-requests}List Merge Requests}.
      *)
   end
 end
