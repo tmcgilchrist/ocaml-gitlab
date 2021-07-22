@@ -93,7 +93,7 @@ module type Gitlab = sig
         corresponding to the string [token_string]. *)
 
     val to_string : t -> string
-                           (** [to_string token] is the string serialization of [token]. *)
+    (** [to_string token] is the string serialization of [token]. *)
 
   end
 
@@ -104,6 +104,88 @@ module type Gitlab = sig
   type 'a handler = (Cohttp.Response.t * string -> bool) * 'a
   (** ['a handler] is the type of response handlers which consist of
       an activation predicate (fst) and a parse function (snd). *)
+
+  (** Each request to GitHub is made to a specific [Endpoint] in
+      GitHub's REST-like API. *)
+  module Endpoint : sig
+    (** Some endpoints expose resources which change over time and
+        responses from those endpoints may contain version metadata
+        which can be used to make low-cost conditional requests
+        (e.g. cache validation). *)
+    module Version : sig
+      type t =
+        | Etag of string (** An entity tag identifier *)
+        | Last_modified of string
+          (** A timestamp conforming to the HTTP-date production *)
+          (** [t] is a version of a resource representation. *)
+    end
+  end
+
+  (** The [Stream] module provides an abstraction to GitHub's paginated
+      endpoints. Stream creation does not initiate any network
+      activity. When requests are made, results are buffered
+      internally. Streams are not mutable. *)
+  module Stream : sig
+    type 'a t
+    (** ['a t] is a stream consisting roughly of a buffer and a means
+        to refill it. *)
+
+    type 'a parse = string -> 'a list Lwt.t
+    (** ['a parse] is the type of functions which extract elements
+        from a paginated response. *)
+
+    val next : 'a t -> ('a * 'a t) option Monad.t
+    (** [next s] is the next element of the stream and a stream
+        continuation if one exists. The input stream is not
+        modified. This function offers an efficient, lazy, and uniform
+        means to iterate over ordered API results which may be too
+        numerous to fit into a single request/response pair. *)
+
+    val map : ('a -> 'b list Monad.t) -> 'a t -> 'b t
+    (** [map f s] is the lazy stream of [f] applied to elements of [s]
+        as they are demanded. *)
+
+    val fold : ('a -> 'b -> 'a Monad.t) -> 'a -> 'b t -> 'a Monad.t
+    (** [fold f a s] is the left fold of [f] over the elements of [s]
+        with a base value of [a]. {b Warning:} this function may
+        result in {i many} successive API transactions. *)
+
+    val find : ('a -> bool) -> 'a t -> ('a * 'a t) option Monad.t
+    (** [find p s] is the first value in [s] satisfying [p] if one
+        exists and a stream continuation for further ingestion. *)
+
+    val iter : ('a -> unit Monad.t) -> 'a t -> unit Monad.t
+    (** [iter f s] is activated after the application of [f] to each
+        element of [s]. *)
+
+    val to_list : 'a t -> 'a list Monad.t
+    (** [to_list s] is a list with each element of [s]. {b Warning:}
+        this function may result in {i many} successive API transactions. *)
+
+    val of_list : 'a list -> 'a t
+    (** [of_list l] is a stream with each element of [l].
+        Occasionally, it is useful to write interfaces which operate
+        generically on streams. [of_list] allows you to use list
+        values with those interfaces. *)
+
+    val poll : 'a t -> 'a t option Monad.t
+    (** [poll stream] is a stream with items newer than [stream]'s
+        items and will not resolve until any timeouts indicated by
+        GitHub have elapsed. By default, GitHub throttles polling
+        requests to once per minute per URL endpoint. *)
+
+    val since : 'a t -> Endpoint.Version.t -> 'a t
+    (** [since stream version] is [stream] with [version] but without
+        any other change, i.e. the stream is not reset to its
+        beginning. Used in conjunction with [poll], [since] enables
+        low-cost conditional re-synchronization of local state with
+        GitHub state. *)
+
+    val version : 'a t -> Endpoint.Version.t option
+    (** [version stream] is the version of [stream] if one is
+        known. After any stream element is forced, the stream version
+        will be available unless GitHub violates its API specification. *)
+  end
 
   module API : sig
     val code_handler : expected_code:Cohttp.Code.status_code -> 'a -> 'a handler
@@ -132,7 +214,23 @@ module type Gitlab = sig
         accounting regime will be used for caching rate limit values
         in response headers. *)
 
-        val post :
+    val get_stream :
+      ?rate:rate ->
+      ?fail_handlers:'a Stream.parse handler list ->
+      ?expected_code:Cohttp.Code.status_code ->
+      ?headers:Cohttp.Header.t ->
+      ?token:Token.t ->
+      ?params:(string * string) list ->
+      uri:Uri.t ->
+      'a Stream.parse -> 'a Stream.t
+    (** [get_stream uri stream_p] is the {!Stream.t} encapsulating
+        lazy [stream_p]-parsed responses to GitLab API HTTP GET
+        requests to [uri] and
+        {{:https://docs.github.com/rest/overview/resources-in-the-rest-api#pagination}its
+        successors}. For an explanation of the other
+        parameters, see {!get}. *)
+
+    val post :
       ?rate:rate ->
       ?fail_handlers:'a parse handler list ->
       expected_code:Cohttp.Code.status_code ->
@@ -225,10 +323,28 @@ module type Gitlab = sig
         See {{:https://docs.gitlab.com/14.0/ee/api/projects.html#list-user-projects}List User Projects}.
      *)
 
-    val merge_requests: token:Token.t -> unit -> Gitlab_t.merge_requests Response.t Monad.t
+    val merge_requests: token:Token.t -> unit -> Gitlab_t.merge_request Stream.t
     (** [merge_requests ()] list all merge requests the authenticated user has access to.
 
-        See {{:https://docs.gitlab.com/14.0/ee/api/merge_requests.html#list-merge-requests}List Merge Requests}.
+        See {{:https://docs.gitlab.com/14.0/ee/api/merge_requests.html#list-merge-requests}List merge requests}.
+     *)
+  end
+
+  module Project : sig
+
+    val merge_requests: ?token:Token.t -> id:string -> unit -> Gitlab_t.merge_request Stream.t
+    (** [merge_requests ?token ~id ()] list all merge requests for project [id].
+
+        See {{:https://docs.gitlab.com/14.0/ee/api/merge_requests.html#list-project-merge-requests}List project merge requests}.
+     *)
+
+  end
+
+  module Group : sig
+    val merge_requests: ?token:Token.t -> id:string -> unit -> Gitlab_t.merge_request Stream.t
+    (** [merge_requests ?token ~id ()] list all merge requests for group [id].
+
+        See {{:https://docs.gitlab.com/14.0/ee/api/merge_requests.html#list-group-merge-requests}List group merge requests}.
      *)
   end
 end
@@ -240,6 +356,6 @@ module type Time = sig
   (** [now ()] is the current UNIX epoch time in seconds. *)
 
   val sleep : float -> unit Lwt.t
-                            (** [sleep sec] activates after [sec] seconds have elapsed. *)
+  (** [sleep sec] activates after [sec] seconds have elapsed. *)
 end
 

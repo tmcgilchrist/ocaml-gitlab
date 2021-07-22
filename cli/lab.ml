@@ -76,11 +76,10 @@ let merge_requests_cmd =
               TODO Auth token setup is different to Github. 
               See https://docs.gitlab.com/14.0/ee/api/README.html#authentication
              *)
-            User.merge_requests ~token:access_token ()
-            >>~ fun merge_requests ->
-                List.iter (fun (merge_request : Gitlab_t.merge_request) ->
-                    printf "#%i %s\n" merge_request.Gitlab_j.id merge_request.Gitlab_t.title) merge_requests;
-                return ()
+            return (User.merge_requests ~token:access_token ()) >>=
+            Stream.iter (fun merge_request ->
+                printf "#%i %s\n" merge_request.Gitlab_j.id merge_request.Gitlab_t.title;
+                return ())
           )
       end  
   in

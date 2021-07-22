@@ -169,6 +169,153 @@ module Make(Time: Gitlab_s.Time)(CL : Cohttp_lwt.S.Client)
     let catch try_ with_ state =
       Lwt.catch (fun () -> try_ () state) (fun exn -> with_ exn state)
   end
+  module Endpoint = struct
+    module Version = struct
+      type t = Etag of string | Last_modified of string
+
+      let of_headers headers =
+        match C.Header.get headers "etag" with
+        | Some etag -> Some (Etag etag)
+        | None -> match C.Header.get headers "last-modified" with
+          | Some last -> Some (Last_modified last)
+          | None -> None
+
+      let add_conditional_headers headers = function
+        | None -> headers
+        | Some (Etag etag) ->
+          C.Header.add headers "If-None-Match" etag
+        | Some (Last_modified time) ->
+          C.Header.add headers "If-Modified-Since" time
+    end
+
+    type t = {
+      uri     : Uri.t;
+      version : Version.t option;
+    }
+
+    let empty = { uri = Uri.empty; version = None; }
+
+    let poll_after : (string, float) Hashtbl.t = Hashtbl.create 8
+
+    let update_poll_after uri { C.Response.headers; _ } =
+      let now = Time.now () in
+      let poll_limit = match C.Header.get headers "x-poll-interval" with
+        | Some interval -> now +. (float_of_string interval)
+        | None -> now +. 60.
+      in
+      let uri_s = Uri.to_string uri in
+      let t_0 = try Hashtbl.find poll_after uri_s with Not_found -> 0. in
+      if t_0 < poll_limit then Hashtbl.replace poll_after uri_s poll_limit
+
+    let poll_result uri ({ C.Response.headers; _ } as envelope) =
+      let version = Version.of_headers headers in
+      update_poll_after uri envelope;
+      { uri; version; }
+
+    (* TODO: multiple polling threads need to queue *)
+    let wait_to_poll uri =
+      let now = Time.now () in
+      let uri_s = Uri.to_string uri in
+      let t_1 = try Hashtbl.find poll_after uri_s with Not_found -> 0. in
+      Monad.embed begin
+        if now < t_1
+        then Time.sleep (t_1 -. now)
+        else Lwt.return_unit
+      end
+  end
+  module Stream = struct
+    type 'a t = {
+      restart  : Endpoint.t -> 'a t option Monad.t;
+      buffer   : 'a list;
+      refill   : (unit -> 'a t Monad.t) option;
+      endpoint : Endpoint.t;
+    }
+    type 'a parse = string -> 'a list Lwt.t
+
+    let empty = {
+      restart = (fun _endpoint -> Monad.return None);
+      buffer = []; refill = None;
+      endpoint = Endpoint.empty;
+    }
+
+    let rec next = Monad.(function
+      | { buffer=[]; refill=None; _ } -> return None
+      | { buffer=[]; refill=Some refill; _ } -> refill () >>= next
+      | { buffer=h::buffer; _ } as s -> return (Some (h, { s with buffer }))
+    )
+
+    let map f s =
+      let rec refill s () = Monad.(
+        next s
+        >>= function
+        | None -> return empty
+        | Some (v,s) ->
+          f v
+          >>= function
+          | [] -> refill s ()
+          | buffer ->
+            return { s with restart; buffer; refill = Some (refill s) }
+      )
+      and restart endpoint = Monad.(
+        s.restart endpoint
+        >>= function
+        | Some s -> return (Some {
+          s with restart; buffer = []; refill = Some (refill s);
+        })
+        | None -> return None
+      ) in
+      {
+        s with
+        restart;
+        buffer = [];
+        refill = Some (refill s);
+      }
+
+    let rec fold f a s = Monad.(
+      next s
+      >>= function
+      | None -> return a
+      | Some (v,s) ->
+        f a v
+        >>= fun a ->
+        fold f a s
+    )
+
+    let rec find p s = Monad.(
+      next s
+      >>= function
+      | None -> return None
+      | Some (n,s) as c -> if p n then return c else find p s
+    )
+
+    let rec iter f s = Monad.(
+      next s
+      >>= function
+      | None -> return ()
+      | Some (v,s) -> f v >>= fun () -> iter f s
+    )
+
+    let to_list s =
+      let rec aux lst s = Monad.(
+        next s
+        >>= function
+        | None -> return (List.rev lst)
+        | Some (v,s) -> aux (v::lst) s
+      ) in
+      aux [] s
+
+    let of_list buffer = { empty with buffer; refill=None; }
+
+    let poll stream = stream.restart stream.endpoint
+
+    let since stream version =
+      { stream with endpoint = {
+          stream.endpoint with Endpoint.version = Some version;
+        };
+      }
+
+    let version stream = stream.endpoint.Endpoint.version
+  end
 
   type 'a parse = string -> 'a Lwt.t
   type 'a handler = (C.Response.t * string -> bool) * 'a
@@ -302,6 +449,117 @@ module Make(Time: Gitlab_s.Time)(CL : Cohttp_lwt.S.Client)
         ?headers ?token ?params
         ~uri Lwt.(fun x -> just_body x >>= fn)
 
+    let rec next_link base = Cohttp.Link.(function
+    | { context; arc = { Arc.relation; _ }; target }::_
+      when Uri.(equal context empty) && List.mem Rel.next relation ->
+      Some (Uri.resolve "" base target)
+    | _::rest -> next_link base rest
+    | [] -> None
+    )
+
+    let stream_fail_handlers restart fhs =
+      map_fail_handlers Lwt.(fun f (_envelope, body) ->
+        f body >>= fun buffer ->
+        return {
+          Stream.restart; buffer; refill=None; endpoint=Endpoint.empty;
+        }
+      ) fhs
+
+    let rec stream_next restart request uri fn endpoint (envelope, body) = Lwt.(
+      let endpoint = match endpoint.Endpoint.version with
+        | None -> Endpoint.poll_result uri envelope
+        | Some _ -> endpoint
+      in
+      let refill = Some (fun () ->
+        let links = Cohttp.(Header.get_links envelope.Response.headers) in
+        match next_link uri links with
+        | None -> Monad.return Stream.empty
+        | Some uri -> request ~uri (stream_next restart request uri fn endpoint)
+      ) in
+      fn body >>= fun buffer ->
+      return { Stream.restart; buffer; refill; endpoint }
+    )
+
+    let rec restart_stream
+        ?rate ~fail_handlers ~expected_code ?headers ?token
+        ?params fn endpoint =
+      let restart = restart_stream
+          ?rate ~fail_handlers ~expected_code ?headers ?token ?params fn
+      in
+      let first_request ~uri f =
+        let not_mod_handler =
+          code_handler ~expected_code:`Not_modified (fun (envelope,_) ->
+            Endpoint.update_poll_after uri envelope;
+            Lwt.return_none
+          )
+        in
+        let fail_handlers = stream_fail_handlers restart fail_handlers in
+        let fail_handlers = map_fail_handlers Lwt.(fun f response ->
+          f response >|= fun stream -> Some stream
+        ) fail_handlers in
+        let fail_handlers = not_mod_handler::fail_handlers in
+        let f ((envelope, _) as response) = Lwt.(
+          let endpoint = Endpoint.poll_result uri envelope in
+          f response
+          >|= fun stream ->
+          Some { stream with Stream.endpoint }
+        ) in
+        let headers = match headers with
+          | None -> C.Header.init ()
+          | Some h -> h
+        in
+        let headers =
+          Endpoint.(Version.add_conditional_headers headers endpoint.version)
+        in
+        Monad.(
+          Endpoint.wait_to_poll uri
+          >>= fun () ->
+          idempotent ?rate
+            `GET ~headers ?token ?params ~fail_handlers
+            ~expected_code ~uri f
+        )
+      in
+      let request ~uri f =
+        let fail_handlers = stream_fail_handlers restart fail_handlers in
+        Monad.map Response.value
+          (idempotent ?rate
+             `GET ?headers ?token ?params ~fail_handlers
+             ~expected_code ~uri f)
+      in
+      let uri = endpoint.Endpoint.uri in
+      Monad.map Response.value
+        (first_request ~uri (stream_next restart request uri fn endpoint))
+
+    let get_stream (type a)
+        ?rate
+        ?(fail_handlers:a Stream.parse handler list=[])
+        ?(expected_code:Cohttp.Code.status_code=`OK)
+        ?(headers:Cohttp.Header.t option) ?(token:string option)
+        ?(params:(string * string) list option)
+        ~(uri:Uri.t) (fn : a Stream.parse) =
+      let restart = restart_stream
+          ?rate ~fail_handlers ~expected_code ?headers ?token ?params fn
+      in
+      let request ~uri f =
+        let fail_handlers = stream_fail_handlers restart fail_handlers in
+        Monad.map Response.value
+          (idempotent ?rate
+             `GET ?headers ?token ?params ~fail_handlers
+             ~expected_code ~uri f)
+      in
+      let endpoint = Endpoint.({ empty with uri }) in
+      let refill = Some (fun () ->
+        request ~uri (stream_next restart request uri fn endpoint)
+      ) in
+      {
+        Stream.restart;
+        buffer = [];
+        refill;
+        endpoint;
+      }
+
+
+
     let post ?rate ?(fail_handlers=[]) ~expected_code =
       effectful `POST ?rate ~fail_handlers ~expected_code
 
@@ -344,12 +602,15 @@ module Make(Time: Gitlab_s.Time)(CL : Cohttp_lwt.S.Client)
 
   module URI = struct
 
+    (* TODO This needs to be parameterised to support various gitlab installs. *)
     let api = "https://gitlab.com/api/v4"
 
     let user = Uri.of_string (Printf.sprintf "%s/users" api)
     let user_by_id ~id = Uri.of_string (Printf.sprintf "%s/users/%s" api id)
     let user_projects ~id = Uri.of_string (Printf.sprintf "%s/users/%s/projects" api id)
     let merge_requests = Uri.of_string (Printf.sprintf "%s/merge_requests" api)
+    let project_merge_requests ~id = Uri.of_string (Printf.sprintf "%s/projects/%s/merge_requests" api id)
+    let group_merge_requests ~id = Uri.of_string (Printf.sprintf "%s/groups/%s/merge_requests" api id)
   end
 
   module User = struct
@@ -369,6 +630,24 @@ module Make(Time: Gitlab_s.Time)(CL : Cohttp_lwt.S.Client)
 
     let merge_requests ~token () =
       let uri = URI.merge_requests in
-      API.get ~token ~uri (fun body -> return (Gitlab_j.merge_requests_of_string body))
+      API.get_stream ~token ~uri
+        (fun body -> return (Gitlab_j.merge_requests_of_string body))
   end
+  
+  module Project = struct
+    open Lwt
+
+    let merge_requests ?token ~id () =
+      let uri = URI.project_merge_requests ~id in
+      API.get_stream ?token ~uri (fun body -> return (Gitlab_j.merge_requests_of_string body))
+  end
+
+  module Group = struct
+    open Lwt
+
+    let merge_requests ?token ~id () =
+      let uri = URI.group_merge_requests ~id in
+      API.get_stream ?token ~uri (fun body -> return (Gitlab_j.merge_requests_of_string body))
+  end
+
 end
