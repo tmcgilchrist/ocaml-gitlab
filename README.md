@@ -10,7 +10,7 @@ TODO
    * [x] Make basic skeleton for library with ATD and a simple endpoint
    * [x] Add CI 
    * [ ] Add basic cli cram test
-   * [ ] Add Steaming responses / pagination support
+   * [X] Add Steaming responses / pagination support
    * [ ] Add test for authenticated queries
 
 Support for ocurrent
