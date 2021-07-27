@@ -19,7 +19,7 @@ This library provides an OCaml interface to the
 [Gitlab APIv4](https://docs.gitlab.com/ee/api/) (JSON).
 This package installs the Unix (Lwt) version."""
 depends: [
-  "ocaml" {>= "4.04.0"}
+  "ocaml" {>= "4.08.0"}
   "dune" {>= "1.10"}
   "gitlab" {= version}
   "cohttp" {>= "4.0"}

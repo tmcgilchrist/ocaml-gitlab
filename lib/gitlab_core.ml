@@ -613,6 +613,35 @@ module Make(Time: Gitlab_s.Time)(CL : Cohttp_lwt.S.Client)
     let group_merge_requests ~id = Uri.of_string (Printf.sprintf "%s/groups/%s/merge_requests" api id)
   end
 
+  (* Query Parameter helpers *)
+  let state_param (state : Gitlab_j.state option) uri = match state with
+    | None -> uri
+    | Some state -> Uri.add_query_params' uri [("state", Gitlab_j.string_of_state state)]
+
+  let milestone_param milestone uri = match milestone with
+    | None -> uri
+    | Some milestone -> Uri.add_query_params' uri [("milestone", milestone)]
+
+  let labels_param (labels : string list option) uri = match labels with
+    | None | Some [] -> uri
+    | Some labels -> Uri.add_query_params' uri [("labels", String.concat "," labels)]
+
+  let author_id_param author_id uri = match author_id with
+    | None -> uri
+    | Some author_id -> Uri.add_query_params' uri [("author_id", author_id)]
+
+  let author_username_param author_username uri = match author_username with
+    | None -> uri
+    | Some author_username -> Uri.add_query_params' uri [("author_username", author_username)]
+
+  let my_reaction_param my_reaction uri = match my_reaction with
+    | None -> uri
+    | Some my_reaction -> Uri.add_query_params' uri [("my_reaction", my_reaction)]
+
+  let scope_param (scope : Gitlab_j.scope option) uri = match scope with
+    | None -> uri
+    | Some scope -> Uri.add_query_params' uri [("scope", Gitlab_j.string_of_scope scope)]
+
   module User = struct
     open Lwt
 
@@ -628,8 +657,10 @@ module Make(Time: Gitlab_s.Time)(CL : Cohttp_lwt.S.Client)
       let uri = URI.user_projects ~id in
       API.get ~uri (fun body -> return (Gitlab_j.projects_of_string body))
 
-    let merge_requests ~token () =
-      let uri = URI.merge_requests in
+    let merge_requests ~token ?state ?milestone ?labels ?author ?author_username ?my_reaction ?scope () =
+      let uri = URI.merge_requests |> state_param state |> milestone_param milestone |> labels_param labels
+                |> author_id_param author |> author_username_param author_username |> my_reaction_param my_reaction 
+                |> scope_param scope in
       API.get_stream ~token ~uri
         (fun body -> return (Gitlab_j.merge_requests_of_string body))
   end
@@ -637,16 +668,20 @@ module Make(Time: Gitlab_s.Time)(CL : Cohttp_lwt.S.Client)
   module Project = struct
     open Lwt
 
-    let merge_requests ?token ~id () =
-      let uri = URI.project_merge_requests ~id in
+    let merge_requests ?token ?state ?milestone ?labels ?author ?author_username ?my_reaction ?scope ~id () =
+      let uri = URI.project_merge_requests ~id |> state_param state |> milestone_param milestone |> labels_param labels
+                |> author_id_param author |> author_username_param author_username |> my_reaction_param my_reaction 
+                |> scope_param scope in
       API.get_stream ?token ~uri (fun body -> return (Gitlab_j.merge_requests_of_string body))
   end
 
   module Group = struct
     open Lwt
 
-    let merge_requests ?token ~id () =
-      let uri = URI.group_merge_requests ~id in
+    let merge_requests ?token ?state ?milestone ?labels ?author ?author_username ?my_reaction ?scope ~id () =
+      let uri = URI.group_merge_requests ~id |> state_param state |> milestone_param milestone |> labels_param labels
+                |> author_id_param author |> author_username_param author_username |> my_reaction_param my_reaction 
+                |> scope_param scope in
       API.get_stream ?token ~uri (fun body -> return (Gitlab_j.merge_requests_of_string body))
   end
 

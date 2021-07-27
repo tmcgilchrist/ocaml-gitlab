@@ -15,6 +15,12 @@ type error_detail = {
   detail: string option
 }
 
+type scope = [
+  | CreatedByMe <json name="created_by_me">
+  | AssignedToMe <json name="assigned_to_me">
+  | All <json name="all">
+]
+
 type user = {
   id: int;
   username: string;

@@ -1,6 +1,5 @@
 module type Gitlab = sig
-
-  type rate = Core 
+  type rate = Core
 
   (** Functions corresponding to direct API requests return
       {!Response.t} values inside of {!Monad.t} values so that more
@@ -8,22 +7,22 @@ module type Gitlab = sig
       available. {!Monad.(>>~)} is a convenience operator that lets
       you bind directly to the carried value. *)
   module Response : sig
-    type redirect =
-      | Temporary of Uri.t (** The redirection is temporary. *)
-      | Permanent of Uri.t (** The redirection is permanent. *)
     (** [redirect] indicates whether the originally requested
         endpoint should continue to be used in the future. *)
+    type redirect =
+      | Temporary of Uri.t  (** The redirection is temporary. *)
+      | Permanent of Uri.t  (** The redirection is permanent. *)
 
-    type 'a t = private < value : 'a; redirects : redirect list; .. >
+    type 'a t = private < value : 'a ; redirects : redirect list ; .. >
     (** ['a t] is an API response containing a payload of type
         ['a]. {b Do not} refer to this type explicitly as its identity and
         representation are subject to change (e.g. a family of object
         types may replace it before 3.0). *)
 
-    val value : < value : 'a; .. > -> 'a
+    val value : < value : 'a ; .. > -> 'a
     (** [value r] is the payload in response [r]. *)
 
-    val redirects : < redirects : redirect list; .. > -> redirect list
+    val redirects : < redirects : redirect list ; .. > -> redirect list
     (** [redirects r] is the sequence of redirects prior to response [r]. *)
 
     val final_resource : redirect list -> redirect option
@@ -53,13 +52,13 @@ module type Gitlab = sig
     (** [map f m] is {!bind} [m (fun x -> return (f x))]. Its argument
         order is designed for currying. *)
 
-    val (>>=) : 'a t -> ('a -> 'b t) -> 'b t
+    val ( >>= ) : 'a t -> ('a -> 'b t) -> 'b t
     (** [m >>= f] is [{!bind} f m]. *)
 
-    val (>|=) : 'a t -> ('a -> 'b) -> 'b t
+    val ( >|= ) : 'a t -> ('a -> 'b) -> 'b t
     (** [m >|= f] is [{!map} f m]. *)
 
-    val (>>~) : 'a Response.t t -> ('a -> 'b t) -> 'b t
+    val ( >>~ ) : 'a Response.t t -> ('a -> 'b t) -> 'b t
     (** [m >>~ f] is [m >|= {!Response.value} >>= f]. *)
 
     val catch : (unit -> 'a t) -> (exn -> 'a t) -> 'a t
@@ -94,7 +93,6 @@ module type Gitlab = sig
 
     val to_string : t -> string
     (** [to_string token] is the string serialization of [token]. *)
-
   end
 
   type +'a parse = string -> 'a Lwt.t
@@ -113,11 +111,11 @@ module type Gitlab = sig
         which can be used to make low-cost conditional requests
         (e.g. cache validation). *)
     module Version : sig
+      (** [t] is a version of a resource representation. *)
       type t =
-        | Etag of string (** An entity tag identifier *)
+        | Etag of string  (** An entity tag identifier *)
         | Last_modified of string
-          (** A timestamp conforming to the HTTP-date production *)
-          (** [t] is a version of a resource representation. *)
+            (** A timestamp conforming to the HTTP-date production *)
     end
   end
 
@@ -201,7 +199,8 @@ module type Gitlab = sig
       ?token:Token.t ->
       ?params:(string * string) list ->
       uri:Uri.t ->
-      'a parse -> 'a Response.t Monad.t
+      'a parse ->
+      'a Response.t Monad.t
     (** [get ?rate ?fail_handlers ?expected_code ?headers ?token
         ?params uri p] is the [p]-parsed response to a GitLab API HTTP
         GET request to [uri] with extra query parameters [params] and
@@ -222,7 +221,8 @@ module type Gitlab = sig
       ?token:Token.t ->
       ?params:(string * string) list ->
       uri:Uri.t ->
-      'a Stream.parse -> 'a Stream.t
+      'a Stream.parse ->
+      'a Stream.t
     (** [get_stream uri stream_p] is the {!Stream.t} encapsulating
         lazy [stream_p]-parsed responses to GitLab API HTTP GET
         requests to [uri] and
@@ -239,7 +239,8 @@ module type Gitlab = sig
       ?token:Token.t ->
       ?params:(string * string) list ->
       uri:Uri.t ->
-      'a parse -> 'a Response.t Monad.t
+      'a parse ->
+      'a Response.t Monad.t
     (** [post uri p] is the [p]-parsed response to a GitLab API HTTP
         POST request to [uri]. For an explanation of the other
         parameters, see {!get}. *)
@@ -252,7 +253,8 @@ module type Gitlab = sig
       ?token:Token.t ->
       ?params:(string * string) list ->
       uri:Uri.t ->
-      'a parse -> 'a Response.t Monad.t
+      'a parse ->
+      'a Response.t Monad.t
     (** [delete uri p] is the [p]-parsed response to a GitLab API HTTP
         DELETE request to [uri]. For an explanation of the other
         parameters, see {!get}. *)
@@ -266,7 +268,8 @@ module type Gitlab = sig
       ?token:Token.t ->
       ?params:(string * string) list ->
       uri:Uri.t ->
-      'a parse -> 'a Response.t Monad.t
+      'a parse ->
+      'a Response.t Monad.t
     (** [patch uri p] is the [p]-parsed response to a GitLab API HTTP
         PATCH request to [uri]. For an explanation of the other
         parameters, see {!get}. *)
@@ -280,7 +283,8 @@ module type Gitlab = sig
       ?token:Token.t ->
       ?params:(string * string) list ->
       uri:Uri.t ->
-      'a parse -> 'a Response.t Monad.t
+      'a parse ->
+      'a Response.t Monad.t
     (** [put uri p] is the [p]-parsed response to a GitLab API HTTP
         PUT request to [uri]. For an explanation of the other
         parameters, see {!get}. *)
@@ -304,7 +308,6 @@ module type Gitlab = sig
   (** The [User] module provides access to User {{:https://docs.gitlab.com/14.0/ee/api/users.html}API}. 
    *)
   module User : sig
-
     val by_id : id:string -> unit -> Gitlab_t.user Response.t Monad.t
     (** [by_id ~id ()] is the user information for user [id]. 
 
@@ -323,7 +326,17 @@ module type Gitlab = sig
         See {{:https://docs.gitlab.com/14.0/ee/api/projects.html#list-user-projects}List User Projects}.
      *)
 
-    val merge_requests: token:Token.t -> unit -> Gitlab_t.merge_request Stream.t
+    val merge_requests :
+      token:Token.t ->
+      ?state:Gitlab_t.state ->
+      ?milestone:string ->
+      ?labels:string list ->
+      ?author:string ->
+      ?author_username:string ->
+      ?my_reaction:string ->
+      ?scope:Gitlab_t.scope ->
+      unit ->
+      Gitlab_t.merge_request Stream.t
     (** [merge_requests ()] list all merge requests the authenticated user has access to.
 
         See {{:https://docs.gitlab.com/14.0/ee/api/merge_requests.html#list-merge-requests}List merge requests}.
@@ -331,17 +344,37 @@ module type Gitlab = sig
   end
 
   module Project : sig
-
-    val merge_requests: ?token:Token.t -> id:string -> unit -> Gitlab_t.merge_request Stream.t
+    val merge_requests :
+      ?token:Token.t ->
+      ?state:Gitlab_t.state ->
+      ?milestone:string ->
+      ?labels:string list ->
+      ?author:string ->
+      ?author_username:string ->
+      ?my_reaction:string ->
+      ?scope:Gitlab_t.scope ->
+      id:string ->
+      unit ->
+      Gitlab_t.merge_request Stream.t
     (** [merge_requests ?token ~id ()] list all merge requests for project [id].
 
         See {{:https://docs.gitlab.com/14.0/ee/api/merge_requests.html#list-project-merge-requests}List project merge requests}.
      *)
-
   end
 
   module Group : sig
-    val merge_requests: ?token:Token.t -> id:string -> unit -> Gitlab_t.merge_request Stream.t
+    val merge_requests :
+      ?token:Token.t ->
+      ?state:Gitlab_t.state ->
+      ?milestone:string ->
+      ?labels:string list ->
+      ?author:string ->
+      ?author_username:string ->
+      ?my_reaction:string ->
+      ?scope:Gitlab_t.scope ->
+      id:string ->
+      unit ->
+      Gitlab_t.merge_request Stream.t
     (** [merge_requests ?token ~id ()] list all merge requests for group [id].
 
         See {{:https://docs.gitlab.com/14.0/ee/api/merge_requests.html#list-group-merge-requests}List group merge requests}.
@@ -358,4 +391,3 @@ module type Time = sig
   val sleep : float -> unit Lwt.t
   (** [sleep sec] activates after [sec] seconds have elapsed. *)
 end
-
