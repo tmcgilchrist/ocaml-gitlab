@@ -1,17 +1,20 @@
 (rule
  (targets gitlab_t.ml gitlab_t.mli)
-  (deps gitlab.atd)
-  (action  (run atdgen -t %{deps})))
+ (deps gitlab.atd)
+ (action
+  (run atdgen -t %{deps})))
 
 (rule
  (targets gitlab_j.ml gitlab_j.mli)
  (deps gitlab.atd)
- (action  (run atdgen -j -j-std %{deps})))
+ (action
+  (run atdgen -j -j-std %{deps})))
 
 (rule
  (targets gitlab_s.ml)
- (deps   gitlab_s.mli)
- (action (copy %{deps} %{targets})))
+ (deps gitlab_s.mli)
+ (action
+  (copy %{deps} %{targets})))
 
 (library
  (name gitlab)

@@ -8,14 +8,15 @@ Also see https://hackage.haskell.org/package/gitlab-haskell for the Haskell vers
 TODO
 
    * [x] Make basic skeleton for library with ATD and a simple endpoint
-   * [x] Add CI 
+   * [x] Add CI
    * [ ] Add basic cli cram test
    * [X] Add Steaming responses / pagination support
    * [ ] Add test for authenticated queries
+   * [ ] Parameterise gitlab url to support various gitlab hosting arrangements
+   * [ ] documentation introduction on how to use the library
+   * [ ] Functor across HTTP libraries, Cohttp / httpaf ???
 
 Support for ocurrent
 
    * [ ] Webhooks integration for delivering Merge Request open, merge to master
-   * [ ] CRUD for Merge requests 
-
-
+   * [ ] CRUD for Merge requests

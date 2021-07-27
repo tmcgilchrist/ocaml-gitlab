@@ -97,14 +97,14 @@ module type Gitlab = sig
 
   type +'a parse = string -> 'a Lwt.t
   (** ['a parse] is the type of functions which extract meaningful
-      values from Gitlab responses. *)
+      values from GitLab responses. *)
 
   type 'a handler = (Cohttp.Response.t * string -> bool) * 'a
   (** ['a handler] is the type of response handlers which consist of
       an activation predicate (fst) and a parse function (snd). *)
 
-  (** Each request to GitHub is made to a specific [Endpoint] in
-      GitHub's REST-like API. *)
+  (** Each request to GitLan is made to a specific [Endpoint] in
+      GitLab's REST-like API. *)
   module Endpoint : sig
     (** Some endpoints expose resources which change over time and
         responses from those endpoints may contain version metadata
@@ -119,7 +119,7 @@ module type Gitlab = sig
     end
   end
 
-  (** The [Stream] module provides an abstraction to GitHub's paginated
+  (** The [Stream] module provides an abstraction to GitLab's paginated
       endpoints. Stream creation does not initiate any network
       activity. When requests are made, results are buffered
       internally. Streams are not mutable. *)
@@ -169,7 +169,7 @@ module type Gitlab = sig
     val poll : 'a t -> 'a t option Monad.t
     (** [poll stream] is a stream with items newer than [stream]'s
         items and will not resolve until any timeouts indicated by
-        GitHub have elapsed. By default, GitHub throttles polling
+        GitLab have elapsed. By default, GitLab throttles polling
         requests to once per minute per URL endpoint. *)
 
     val since : 'a t -> Endpoint.Version.t -> 'a t
@@ -177,12 +177,12 @@ module type Gitlab = sig
         any other change, i.e. the stream is not reset to its
         beginning. Used in conjunction with [poll], [since] enables
         low-cost conditional re-synchronization of local state with
-        GitHub state. *)
+        GitLab state. *)
 
     val version : 'a t -> Endpoint.Version.t option
     (** [version stream] is the version of [stream] if one is
         known. After any stream element is forced, the stream version
-        will be available unless GitHub violates its API specification. *)
+        will be available unless GitLab violates its API specification. *)
   end
 
   module API : sig
@@ -226,7 +226,7 @@ module type Gitlab = sig
     (** [get_stream uri stream_p] is the {!Stream.t} encapsulating
         lazy [stream_p]-parsed responses to GitLab API HTTP GET
         requests to [uri] and
-        {{:https://docs.github.com/rest/overview/resources-in-the-rest-api#pagination}its
+        {{:https://docs.gitlab.com/ee/api/index.html#pagination}its
         successors}. For an explanation of the other
         parameters, see {!get}. *)
 
@@ -305,24 +305,24 @@ module type Gitlab = sig
         message that GitLab generated in [message]. *)
   end
 
-  (** The [User] module provides access to User {{:https://docs.gitlab.com/14.0/ee/api/users.html}API}. 
+  (** The [User] module provides access to User {{:https://docs.gitlab.com/14.0/ee/api/users.html}API}.
    *)
   module User : sig
     val by_id : id:string -> unit -> Gitlab_t.user Response.t Monad.t
-    (** [by_id ~id ()] is the user information for user [id]. 
+    (** [by_id ~id ()] is the user information for user [id].
 
         See {{:https://docs.gitlab.com/14.0/ee/api/users.html#for-user}Single User}.
      *)
 
     val by_name : name:string -> unit -> Gitlab_t.users Response.t Monad.t
-    (** [by_name ~name ()] search for user by [name]. 
+    (** [by_name ~name ()] search for user by [name].
 
         See {{:https://docs.gitlab.com/14.0/ee/api/users.html#for-user}List Users}.
      *)
 
     val projects : id:string -> unit -> Gitlab_t.projects Response.t Monad.t
     (** [projects ~id ()] list user projects for user [id].
-        
+
         See {{:https://docs.gitlab.com/14.0/ee/api/projects.html#list-user-projects}List User Projects}.
      *)
 
@@ -343,6 +343,7 @@ module type Gitlab = sig
      *)
   end
 
+  (** The [Project] module provides access to {{:https://docs.gitlab.com/ee/api/projects.html}Project API}. *)
   module Project : sig
     val merge_requests :
       ?token:Token.t ->
@@ -360,8 +361,53 @@ module type Gitlab = sig
 
         See {{:https://docs.gitlab.com/14.0/ee/api/merge_requests.html#list-project-merge-requests}List project merge requests}.
      *)
+
+    val merge_request :
+      ?token:Token.t ->
+      project_id:string ->
+      merge_request_iid:string ->
+      unit ->
+      Gitlab_j.merge_request Response.t Monad.t
+    (** [merge_request ?token ~project_id ~merge_request_iid ()] shows information about a single merge request.
+
+        See {{:https://docs.gitlab.com/14.0/ee/api/merge_requests.html#get-single-mr}Get single merge request}.
+     *)
+
+    val merge_request_participants :
+      ?token:Token.t ->
+      project_id:string ->
+      merge_request_iid:string ->
+      unit ->
+      Gitlab_j.users Response.t Monad.t
+    (** [merge_request_participants ?token ~project_id ~merge_request_iid ()] gets a list of merge request participants.
+
+        See {{:https://docs.gitlab.com/14.0/ee/api/merge_requests.html#get-single-mr-participants}Get a list of merge request participants}.
+     *)
+
+    val merge_request_commits :
+      ?token:Token.t ->
+      project_id:string ->
+      merge_request_iid:string ->
+      unit ->
+      Gitlab_j.commits Response.t Monad.t
+    (** [merge_request_commits ?token ~project_id ~merge_request_iid ()] gets a list of merge request commits.
+
+       See {{:https://docs.gitlab.com/14.0/ee/api/merge_requests.html#get-single-mr-commits}Get single merge request commits}.
+     *)
+
+    val merge_request_changes :
+      ?token:Token.t ->
+      project_id:string ->
+      merge_request_iid:string ->
+      unit ->
+      Gitlab_j.changes Response.t Monad.t
+   (** [merge_request_changes ?token ~project_id ~merge_request_iid ()] shows information about the merge request including its files and changes.
+
+       See {{:https://docs.gitlab.com/ee/api/merge_requests.html#get-single-mr-changes}Get single MR changes}.
+    *)
   end
 
+  (** The [Group] module provies access to {{:https://docs.gitlab.com/ee/api/groups.html}Group API}. *)
   module Group : sig
     val merge_requests :
       ?token:Token.t ->
