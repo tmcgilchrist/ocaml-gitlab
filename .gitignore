@@ -23,3 +23,6 @@ _build/
 
 # Local OPAM switch
 _opam/
+
+# direnv setup
+.envrc

@@ -13,13 +13,13 @@
 (package
  (name gitlab)
  (depends
-  (ocaml (>= 4.04.0))
+  (ocaml (>= 4.08.0))
   (dune (>= 1.10))
   (uri (>= 1.9.0))
   (cohttp (>= 4.0))
   (lwt (>= 2.4.4))
   (atdgen (>= 2.0.0))
-  (yojson (>= 1.6.0))
+  (yojson (>= 1.7.0))
   stringext)
  (synopsis "Gitlab APIv4 OCaml library")
  (description "This library provides an OCaml interface to the
@@ -31,7 +31,7 @@ JavaScript via [js_of_ocaml](http://ocsigen.org/js_of_ocaml)."))
 (package
  (name gitlab-unix)
  (depends
-  (ocaml (>= 4.04.0))
+  (ocaml (>= 4.08.0))
   (dune (>= 1.10))
   (gitlab (= :version))
   (cohttp (>= 4.0))
