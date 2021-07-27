@@ -44,7 +44,7 @@ type user = {
   work_information: string nullable;
   followers: int;
   following: int;
-}
+} <ocaml field_prefix="user_">
 
 type user_short = {
   id: int;
@@ -53,7 +53,7 @@ type user_short = {
   state: string;
   avatar_url: string;
   web_url: string;
-}
+} <ocaml field_prefix="user_short_">
 
 type users = user_short list
 
@@ -61,7 +61,7 @@ type owner = {
   id: int;
   name: string;
   created_at: string;
-}
+} <ocaml field_prefix="owner_">
 
 type namespace = {
   id: int;
@@ -69,7 +69,7 @@ type namespace = {
   path: string;
   kind: string;
   full_path: string;
-}
+} <ocaml field_prefix="namespace_">
 
 type merge_method = [
   | Merge <json name="merge">
@@ -86,7 +86,7 @@ type statistics = {
   job_artifacts_size: int;
   packages_size: int;
   snippets_size: int;
-}
+} <ocaml field_prefix="statistics_">
 
 type links = {
   self: string;
@@ -96,7 +96,7 @@ type links = {
   labels: string;
   events: string;
   members: string;
-}
+} <ocaml field_prefix="links_">
 
 type visibility = [
   | Private <json name="private">
@@ -122,7 +122,7 @@ type project_short = {
   star_count: int;
   last_activity_at: string;
   namespace: namespace;
-}
+} <ocaml field_prefix="project_short_">
 
 type project_full = {
   inherit project_short;
@@ -166,7 +166,7 @@ type project_full = {
   statistics: statistics;
   container_registry_image_prefix: string;
   links: links;
-}
+} <ocaml field_prefix="project_full_">
 
 type projects = project_short list
 
@@ -197,25 +197,25 @@ type milestone = {
   due_date: string;
   start_date: string;
   web_url: string;
-}
+} <ocaml field_prefix="milestone_">
 
 type references = {
   short: string;
   relative: string;
   full: string;
-}
+} <ocaml field_prefix="references_">
 
 type time_stats = {
   time_estimate: int;
   total_time_spent: int;
   human_time_estimate: int nullable;
   human_total_time_spent: int nullable;
-}
+} <ocaml field_prefix="time_stats_">
 
 type task_completion_status = {
   count: int;
   completed_count: int;
-}
+} <ocaml field_prefix="time_completion_status_">
 
 type merge_request = {
   id: int;
@@ -260,6 +260,72 @@ type merge_request = {
   time_stats: time_stats;
   squash: bool;
   task_completion_status: task_completion_status;
-}
+} <ocaml field_prefix="merge_request_">
 
 type merge_requests = merge_request list
+
+type commit = {
+  id: string;
+  short_id: string;
+  title: string;
+  author_name: string;
+  author_email: string;
+  created_at: string;
+  message: string;
+} <ocaml field_prefix="commit_">
+
+type commits = commit list
+
+type change = {
+  old_path: string;
+  new_path: string;
+  a_mode: string;
+  b_mode: string;
+  diff: string;
+  new_file: bool;
+  renamed_file: bool;
+  deleted_file: bool;
+} <ocaml field_prefix="change_">
+
+type changes = {
+  id: int;
+  iid: int;
+  project_id: int;
+  title: string;
+  state: string; (* TODO Should be an enum *)
+  created_at: string;
+  updated_at: string;
+  target_branch: string;
+  source_branch: string;
+  upvotes: int;
+  downvotes: int;
+  author: user_short;
+  assignee: user_short;
+  assignees: user_short list;
+  reviewers: user_short list;
+  source_project_id: int;
+  target_project_id: int;
+  labels: string list;
+  description: string;
+  draft: bool;
+  work_in_progress: bool;
+  milestone: milestone nullable;
+  merge_when_pipeline_succeeds: bool;
+  merge_status: merge_status;
+  subscribed: bool;
+  sha: string;
+  merge_commit_sha: string nullable;
+  squash_commit_sha: string nullable;
+  user_notes_count: int;
+  changes_count: int;
+  should_remove_source_branch: bool;
+  force_remove_source_branch: bool;
+  squash: bool;
+  web_url: string;
+  references: references;
+  discussion_locked: bool;
+  time_stats: time_stats;
+  task_completion_status: task_completion_status;
+  changes: change list;
+  overflow: bool;
+} <ocaml field_prefix="changes_">

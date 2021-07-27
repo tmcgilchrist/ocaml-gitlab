@@ -1,4 +1,4 @@
-(lang dune 1.10)
+(lang dune 2.4)
 
 (name gitlab)
 
@@ -36,6 +36,7 @@ JavaScript via [js_of_ocaml](http://ocsigen.org/js_of_ocaml)."))
   (gitlab (= :version))
   (cohttp (>= 4.0))
   (cohttp-lwt-unix (>= 4.0))
+  (tls (>= 0.11.0))
   (lwt (>= 2.4.4))
   stringext
   (cmdliner (>= 0.9.8))
