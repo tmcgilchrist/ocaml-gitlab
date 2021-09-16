@@ -2,7 +2,7 @@ doc:
 	dune build @doc
 
 gh-pages: doc
-	git clone `git config --get remote.upstream.url` .gh-pages --reference .
+	git clone `git config --get remote.origin.url` .gh-pages --reference .
 	git -C .gh-pages checkout --orphan gh-pages
 	git -C .gh-pages reset
 	git -C .gh-pages clean -dxf
