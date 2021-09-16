@@ -1,0 +1,95 @@
+{0:top OCaml GitLab}
+
+[GitLab] is an OCaml library that allows interaction with the GitLab source control
+software.
+
+{i NOTE: This library is still under development and parts of the API might not be stable.}
+
+{1:installing Installing}
+
+{2:install-source Source code}
+
+The source code for [GitLab] can be found at {{:http://github.com/tmcgilchrist/ocaml-gitlab}},
+uses the {{:https://dune.readthedocs.io/}dune} build system and
+{{:https://opam.ocaml.org}opam} for package management.
+
+{2:install-opam Using opam}
+
+You can install [GitLab] using [opam] by folllowing the instructions below:
+
+{v
+opam install gitlab
+v}
+
+{1:fundamentals Fundamentals}
+
+[GitLab] allows OCaml programmers to programatically interact with the GitLab REST API. It uses
+two key libraries in OCaml, {{:https://ocsigen.org/lwt/latest/manual/manual}LWT} for concurrent programming using Promises and {{:https://github.com/mirage/ocaml-cohttp}CoHTTP} to make HTTP requests. Familiarity with at least LWT is useful to understand using [GitLab], in particular the Monadic interface.
+
+To make a simple API request to find GitLab users by name:
+
+{[
+let open Gitlab in
+let open Monad in
+run
+  ( User.by_name ~name () >>~ fun users ->
+    List.iter
+      (fun user ->
+         printf "%s\n" user.Gitlab_t.user_short_username) users;
+    return () )
+]}
+
+We open both the [Gitlab] and [Monad] modules to bring everything into scope, then build up a Monadic
+computation with [User.by_name ~name] and print out the users returned. {!module: Gitlab_s.Gitlab.Monad} contains the
+expected [bind], [map] and [return] functions along with infix operations like [>>~] and [>>=].
+
+This expression then needs to be run in Lwt as:
+
+{[
+
+let user_cmd name =
+  let open Gitlab in
+  let open Monad in
+  run
+    ( User.by_name ~name () >>~ fun users ->
+      List.iter (fun user ->
+          printf "%s\n" user.Gitlab_t.user_short_username) users;
+      return ()) in
+
+Lwt_main.run (user_cmd "tmcgilchrist")
+
+]}
+
+The GitLab API functions come in two flavours:
+
+ {ol
+  {- Simple requests that receive a single response ending with ['a Response.t Monad.t]}
+  {- Streaming paginated request that return many responses that would not fit into a single response. ['a Stream.t]}
+  }
+
+For simple request use {!val: bind} and the helper {!val: >>~} from {!module: Gitlab_s.Gitlab.Monad}.
+For streaming responses the {!module: Gitlab_s.Gitlab.Stream} provides an abstraction to GitLab's paginated
+endpoints. For a more detailed example using the API look at the
+{{:https://github.com/tmcgilchrist/ocaml-gitlab/blob/master/cli/lab.ml}lab} command line tool.
+
+See {!Gitlab_s.Gitlab} for the generalised GitLab API.
+
+The GitLab API types are in {!Gitlab_t}, users of the library would typically use these types over those in {!Gitlab_j}.
+
+The GitLab API types again and serialisation code for the API are in {!Gitlab_j}, it contains duplicate type definitions from {!Gitlab_t} and is useful if access to serialisation functions is required. Typically used for debugging or formatted output as JSON.
+
+{!Gitlab_core} provides the portable Functor to the GitLab API. Users of the library will not
+typically need this unless they want to provide another Lwt runtime eg Mirage or Javascript.
+
+{1:full GitLab API}
+
+Full GitLab API:
+
+{!modules: Gitlab_s Gitlab_core Gitlab_t Gitlab_j}
+
+{1:resources Resources}
+
+The REST API for Gitlab is available at {{:https://docs.gitlab.com/ee/api/api_resources.html}}.
+
+{1:bugs Bugs}
+Please file any issues encountered at {{:https://github.com/tmcgilchrist/ocaml-gitlab/issues}}
