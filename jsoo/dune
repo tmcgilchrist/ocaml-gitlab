@@ -1,0 +1,5 @@
+(library
+ (name gitlab_jsoo)
+ (public_name gitlab-jsoo)
+ (wrapped false)
+ (libraries gitlab js_of_ocaml-lwt cohttp-lwt-jsoo))

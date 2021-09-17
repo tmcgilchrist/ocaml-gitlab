@@ -56,3 +56,16 @@ This package installs the Unix (Lwt) version."))
   (cmdliner (>= 0.9.8))
   (otoml (>= 0.9.0)))
  (synopsis "GitLab cli"))
+
+(package
+ (name gitlab-jsoo)
+ (depends
+  (ocaml (>= 4.08.0))
+  (gitlab (= :version))
+  (cohttp (>= 4.0))
+  (cohttp-lwt-jsoo (>= 4.0))
+  (js_of_ocaml-lwt (>= 3.4.0)))
+ (synopsis "Gitlab APIv4 OCaml library")
+ (description "This library provides an OCaml interface to the
+[Gitlab APIv4](https://docs.gitlab.com/ee/api/) (JSON).
+This library installs the JavaScript version, which uses [js_of_ocaml](http://ocsigen.org/js_of_ocaml)."))
