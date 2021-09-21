@@ -15,6 +15,7 @@ jobs:
           - macos-latest
           - ubuntu-latest
           - windows-latest
+
         ocaml-compiler:
           - 4.08.x
           - 4.09.x
@@ -37,4 +38,13 @@ jobs:
 
       - run: opam exec -- dune build @all
 
-      - run: opam exec -- dune build @runtest
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.13.1' # The Go version to download (if necessary) and use.
+      - run: |
+          # Install go json diff tool for running tests
+          go version
+          go install github.com/josephburnett/jd@latest
+
+      - run: |
+          opam exec -- dune build @runtest
