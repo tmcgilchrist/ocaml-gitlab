@@ -1,0 +1,30 @@
+{
+  "id": 1066316,
+  "description": "An implementation of \"Freer Monads, More Extensible Effects\".",
+  "name": "freer",
+  "name_with_namespace": "Tim McGilchrist / freer",
+  "path": "freer",
+  "path_with_namespace": "tmcgilchrist/freer",
+  "created_at": "2016-04-13T00:24:25.445Z",
+  "default_branch": "master",
+  "tag_list": [],
+  "topics": [],
+  "ssh_url_to_repo": "git@gitlab.com:tmcgilchrist/freer.git",
+  "http_url_to_repo": "https://gitlab.com/tmcgilchrist/freer.git",
+  "web_url": "https://gitlab.com/tmcgilchrist/freer",
+  "readme_url": "https://gitlab.com/tmcgilchrist/freer/-/blob/master/README.md",
+  "avatar_url": null,
+  "forks_count": 0,
+  "star_count": 0,
+  "last_activity_at": "2021-09-17T04:39:23.127Z",
+  "namespace": {
+    "id": 578093,
+    "name": "Tim McGilchrist",
+    "path": "tmcgilchrist",
+    "kind": "user",
+    "full_path": "tmcgilchrist",
+    "parent_id": null,
+    "avatar_url": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
+    "web_url": "https://gitlab.com/tmcgilchrist"
+  }
+}
