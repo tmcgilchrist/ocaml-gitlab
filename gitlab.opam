@@ -15,16 +15,17 @@ doc: "https://tmcgilchrist.github.io/ocaml-gitlab/"
 bug-reports: "https://github.com/tmcgilchrist/ocaml-gitlab/issues"
 depends: [
   "ocaml" {>= "4.08.0"}
-  "dune" {>= "1.10"}
+  "dune" {>= "2.7" & >= "1.10"}
   "uri" {>= "1.9.0"}
   "cohttp" {>= "4.0"}
   "lwt" {>= "2.4.4"}
   "atdgen" {>= "2.0.0"}
   "yojson" {>= "1.7.0"}
   "stringext"
+  "odoc" {with-doc}
 ]
 build: [
-  ["dune" "subst"] {pinned}
+  ["dune" "subst"] {dev}
   [
     "dune"
     "build"

@@ -50,9 +50,10 @@ type user_short = {
   id: int;
   username: string;
   name: string;
-  state: string;
+  ?state: string nullable;
   avatar_url: string;
-  web_url: string;
+  ?web_url: string nullable;
+  ?email: string nullable;
 } <ocaml field_prefix="user_short_">
 
 type users = user_short list
@@ -106,13 +107,15 @@ type visibility = [
 
 type project_short = {
   id: int;
-  description: string nullable;
+  description: string;
   name: string;
   name_with_namespace: string;
+  path: string;
+  path_with_namespace: string;
   created_at: string;
   default_branch: string;
-  tag_list: string list;
-  topics: string list;
+(*  tag_list: string list; *)
+(*  topic_list: string list; *)
   ssh_url_to_repo: string;
   http_url_to_repo: string;
   web_url: string;
@@ -140,7 +143,6 @@ type project_full = {
   can_create_merge_request_in: bool;
   resolve_outdated_diff_discussions: bool;
   container_registry_enabled: bool;
-  created_at: string;
   creator_id: int;
   import_status: string;
   archived: bool;
@@ -270,7 +272,7 @@ type commit = {
   title: string;
   author_name: string;
   author_email: string;
-  created_at: string;
+  created_at: string option;
   message: string;
 } <ocaml field_prefix="commit_">
 
@@ -300,8 +302,8 @@ type changes = {
   upvotes: int;
   downvotes: int;
   author: user_short;
-  assignee: user_short;
-  assignees: user_short list;
+  ?assignee: user_short option;
+  ?assignees: user_short list option;
   reviewers: user_short list;
   source_project_id: int;
   target_project_id: int;
@@ -329,3 +331,132 @@ type changes = {
   changes: change list;
   overflow: bool;
 } <ocaml field_prefix="changes_">
+
+type repository = {
+  name: string;
+  url: string;
+  description: string;
+  homepage: string;
+} <ocaml field_prefix="repository_">
+
+type author = {
+  name: string;
+  email: string;
+} <ocaml field_prefix="author_">
+
+type merge_commit = {
+  id: string;
+  message: string;
+  title: string;
+  timestamp: string;
+  url: string;
+  author: author;
+} <ocaml field_prefix="merge_commit_">
+
+type object_attributes_project = {
+  id: int;
+  name: string;
+  description: string nullable;
+  web_url: string;
+  avatar_url: string nullable;
+  git_ssh_url: string;
+  git_http_url: string;
+  namespace: string;
+  path_with_namespace: string;
+  visibility_level: int;
+  default_branch: string;
+  ?ci_config_path: string option;
+  ?homepage: string option;
+  ?url: string option;
+  ?ssh_url: string option;
+  ?http_url: string option;
+} <ocaml field_prefix="object_attributes_project_">
+
+type object_attributes = {
+  assignee_id: int nullable;
+  author_id: int;
+  created_at: string;
+  description: string;
+  head_pipeline_id: string nullable;
+  id: int;
+  iid: int;
+  (* last_edited_at: string nullable; *)
+  (* last_edited_by_id: string nullable; *)
+  last_commit: merge_commit;
+  (* merge_commit_sha: string nullable; *)
+  (* merge_error: string nullable; *)
+  merge_status: merge_status;
+  merge_user_id: int nullable;
+  milestone_id: string nullable;
+  source: object_attributes_project;
+  source_branch: string;
+  source_project_id: int;
+  state_id: int;
+  state: string;
+  target: object_attributes_project;
+  target_branch: string;
+  target_project_id: int;
+  title: string;
+  updated_at: string;
+  updated_by_id: int nullable;
+  url: string;
+  work_in_progress: bool;
+  total_time_spent: int;
+  time_change: int;
+  ?action: string option;
+} <ocaml field_prefix="object_attributes_">
+
+type label = {
+  id: int;
+  title: string;
+  colour: string;
+  project_id: int;
+  created_at: string;
+  updated_at: string;
+  template: bool;
+  description: string;
+  label_type: string <json name="type">;
+  group_id: int;
+} <ocaml field_prefix="label_">
+
+type updated_by_id = {
+  previous: int nullable;
+  current: int;
+} <ocaml field_prefix="update_by_id_">
+
+type updated_at = {
+  previous: string;
+  current: string;
+} <ocaml field_prefix="updated_at_">
+
+type labels = {
+  previous: label list;
+  current: label list;
+} <ocaml field_prefix="labels_">
+
+type assignees = {
+  previous: user_short list;
+  current: user_short list;
+}
+
+type merge_request_changes = {
+  ?updated_by_id: updated_by_id option;
+  ?updated_at: updated_at option;
+  ?assignees: assignees option;
+} <ocaml field_prefix="merge_request_changes_">
+
+type payload = {
+  object_kind: string;
+  event_type: string;
+  user: user_short;
+  project: object_attributes_project;
+  repository: repository;
+  object_attributes: object_attributes;
+  labels: label list;
+  changes: merge_request_changes;
+  ?assignees: user_short list option;
+} <ocaml field_prefix="merge_request_event_">
+
+type value = {
+  payload : payload
+}

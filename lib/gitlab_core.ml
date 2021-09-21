@@ -637,17 +637,17 @@ module Make (Time : Gitlab_s.Time) (CL : Cohttp_lwt.S.Client) = struct
         (Printf.sprintf "%s/projects/%s/merge_requests/%s" api id
            merge_request_iid)
 
-   let project_merge_request_participants ~id ~merge_request_iid =
+    let project_merge_request_participants ~id ~merge_request_iid =
       Uri.of_string
         (Printf.sprintf "%s/projects/%s/merge_requests/%s/participants" api id
            merge_request_iid)
 
-  let project_merge_request_commits ~id ~merge_request_iid =
+    let project_merge_request_commits ~id ~merge_request_iid =
       Uri.of_string
         (Printf.sprintf "%s/projects/%s/merge_requests/%s/commits" api id
            merge_request_iid)
 
- let project_merge_request_changes ~id ~merge_request_iid =
+    let project_merge_request_changes ~id ~merge_request_iid =
       Uri.of_string
         (Printf.sprintf "%s/projects/%s/merge_requests/%s/changes" api id
            merge_request_iid)
@@ -742,25 +742,28 @@ module Make (Time : Gitlab_s.Time) (CL : Cohttp_lwt.S.Client) = struct
       API.get_stream ?token ~uri (fun body ->
           return (Gitlab_j.merge_requests_of_string body))
 
-    (** GET /projects/:id/merge_requests/:merge_request_iid *)
     let merge_request ?token ~project_id ~merge_request_iid () =
       let uri = URI.project_merge_request ~id:project_id ~merge_request_iid in
       API.get ?token ~uri (fun body ->
           return (Gitlab_j.merge_request_of_string body))
 
-    (** GET /projects/:id/merge_requests/:merge_request_iid/participants*)
     let merge_request_participants ?token ~project_id ~merge_request_iid () =
-      let uri = URI.project_merge_request_participants ~id:project_id ~merge_request_iid in
+      let uri =
+        URI.project_merge_request_participants ~id:project_id ~merge_request_iid
+      in
       API.get ?token ~uri (fun body -> return (Gitlab_j.users_of_string body))
 
     let merge_request_commits ?token ~project_id ~merge_request_iid () =
-      let uri = URI.project_merge_request_commits ~id:project_id ~merge_request_iid in
+      let uri =
+        URI.project_merge_request_commits ~id:project_id ~merge_request_iid
+      in
       API.get ?token ~uri (fun body -> return (Gitlab_j.commits_of_string body))
 
     let merge_request_changes ?token ~project_id ~merge_request_iid () =
-      let uri = URI.project_merge_request_changes ~id:project_id ~merge_request_iid in
+      let uri =
+        URI.project_merge_request_changes ~id:project_id ~merge_request_iid
+      in
       API.get ?token ~uri (fun body -> return (Gitlab_j.changes_of_string body))
-
   end
 
   module Group = struct

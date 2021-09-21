@@ -401,7 +401,7 @@ module type Gitlab = sig
       merge_request_iid:string ->
       unit ->
       Gitlab_j.changes Response.t Monad.t
-   (** [merge_request_changes ?token ~project_id ~merge_request_iid ()] shows information about the merge request including its files and changes.
+    (** [merge_request_changes ?token ~project_id ~merge_request_iid ()] shows information about the merge request including its files and changes.
 
        See {{:https://docs.gitlab.com/ee/api/merge_requests.html#get-single-mr-changes}Get single MR changes}.
     *)
