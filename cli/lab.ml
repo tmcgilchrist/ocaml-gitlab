@@ -37,13 +37,13 @@ let user_name_cmd =
     let open Monad in
     run
       ( User.by_name ~name () >>~ fun users ->
-        List.iter (fun user ->
-            printf "%s\n" user.Gitlab_t.user_short_username) users;
-        return ()) in
-
-  let user_list name () =
-    Lwt_main.run (user_cmd name)
+        List.iter
+          (fun user -> printf "%s\n" user.Gitlab_t.user_short_username)
+          users;
+        return () )
   in
+
+  let user_list name () = Lwt_main.run (user_cmd name) in
 
   ( Term.(pure user_list $ CommandLine.owner_name $ pure ()),
     Term.info "user-name" )
@@ -71,13 +71,18 @@ let merge_requests_cmd =
       (let open Gitlab in
       let open Monad in
       run
-        ((*
+        ( (*
               TODO Auth token setup is different to Github.
               See https://docs.gitlab.com/14.0/ee/api/README.html#authentication
              *)
-         return (User.merge_requests ~token:access_token ()) >>= fun x ->
-         Stream.iter (fun merge_request -> printf "#%i %s\n" merge_request.Gitlab_t.merge_request_id merge_request.Gitlab_t.merge_request_title; return ()) x
-      ))
+          return (User.merge_requests ~token:access_token ())
+        >>= fun x ->
+          Stream.iter
+            (fun merge_request ->
+              printf "#%i %s\n" merge_request.Gitlab_t.merge_request_id
+                merge_request.Gitlab_t.merge_request_title;
+              return ())
+            x ))
   in
 
   (Term.(pure merge_requests_list $ pure ()), Term.info "merge-requests")

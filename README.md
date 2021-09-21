@@ -19,4 +19,5 @@ TODO
 Support for ocurrent
 
    * [ ] Webhooks integration for delivering Merge Request open, merge to master
+   * [ ] Support events serialisation, add tests for de-serialising events
    * [ ] CRUD for Merge requests

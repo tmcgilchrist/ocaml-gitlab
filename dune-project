@@ -1,7 +1,5 @@
-(lang dune 2.4)
-
+(lang dune 2.7)
 (name gitlab)
-
 (generate_opam_files true)
 
 (license BSD-3-clause)
@@ -39,6 +37,9 @@ JavaScript via [js_of_ocaml](http://ocsigen.org/js_of_ocaml)."))
   (tls (>= 0.11.0))
   (lwt (>= 2.4.4))
   stringext
+  (alcotest :with-test)
+  (qcheck :with-test)
+  (qcheck-alcotest :with-test)
   (cmdliner (>= 0.9.8))
   base-unix)
  (synopsis "Gitlab APIv4 OCaml library")
