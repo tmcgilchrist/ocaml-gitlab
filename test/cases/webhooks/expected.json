@@ -1,0 +1,234 @@
+[
+  {
+    "object_kind": "push",
+    "event_name": "push",
+    "before": "3ba79b765be680658a35bc240d6fdf02fed6f5b2",
+    "after": "f332bc71b0407c19e416c5813cc9334ebf65826e",
+    "ref": "refs/heads/master",
+    "checkout_sha": "f332bc71b0407c19e416c5813cc9334ebf65826e",
+    "message": null,
+    "user_id": 490393,
+    "user_name": "Tim McGilchrist",
+    "user_username": "tmcgilchrist",
+    "user_email": "",
+    "user_avatar": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
+    "project_id": 1066316,
+    "project": {
+      "id": 1066316,
+      "name": "freer",
+      "description": "An implementation of \"Freer Monads, More Extensible Effects\".",
+      "web_url": "https://gitlab.com/tmcgilchrist/freer",
+      "avatar_url": null,
+      "git_ssh_url": "git@gitlab.com:tmcgilchrist/freer.git",
+      "git_http_url": "https://gitlab.com/tmcgilchrist/freer.git",
+      "namespace": "Tim McGilchrist",
+      "visibility_level": 20,
+      "path_with_namespace": "tmcgilchrist/freer",
+      "default_branch": "master",
+      "ci_config_path": null,
+      "homepage": "https://gitlab.com/tmcgilchrist/freer",
+      "url": "git@gitlab.com:tmcgilchrist/freer.git",
+      "ssh_url": "git@gitlab.com:tmcgilchrist/freer.git",
+      "http_url": "https://gitlab.com/tmcgilchrist/freer.git"
+    },
+    "commits": [
+      {
+        "id": "f332bc71b0407c19e416c5813cc9334ebf65826e",
+        "message": "Merge branch 'fix-tests' into 'master'\r\n\r\nFix tests: Add Tests.Coroutine to cabal file\r\n\r\nAddresses #5 \r\n\r\nSee merge request !5",
+        "title": "Merge branch 'fix-tests' into 'master'",
+        "timestamp": "2016-04-17T02:36:16+00:00",
+        "url": "https://gitlab.com/tmcgilchrist/freer/-/commit/f332bc71b0407c19e416c5813cc9334ebf65826e",
+        "author": {
+          "name": "Allele Dev",
+          "email": "allele.dev@gmail.com"
+        },
+        "added": [],
+        "modified": [
+          ".gitignore",
+          "freer.cabal"
+        ],
+        "removed": [
+          "stack.yaml"
+        ]
+      },
+      {
+        "id": "d09e9e5075b0cb78b081c171310304216eaeb8b2",
+        "message": "ensure Tests.Coroutine is included\n",
+        "title": "ensure Tests.Coroutine is included",
+        "timestamp": "2016-04-16T21:34:33-05:00",
+        "url": "https://gitlab.com/tmcgilchrist/freer/-/commit/d09e9e5075b0cb78b081c171310304216eaeb8b2",
+        "author": {
+          "name": "Allele Dev",
+          "email": "allele.dev@gmail.com"
+        },
+        "added": [],
+        "modified": [
+          "freer.cabal"
+        ],
+        "removed": []
+      },
+      {
+        "id": "3ba79b765be680658a35bc240d6fdf02fed6f5b2",
+        "message": "prevent stack.yaml from being checked in\n",
+        "title": "prevent stack.yaml from being checked in",
+        "timestamp": "2016-04-16T21:33:09-05:00",
+        "url": "https://gitlab.com/tmcgilchrist/freer/-/commit/3ba79b765be680658a35bc240d6fdf02fed6f5b2",
+        "author": {
+          "name": "Allele Dev",
+          "email": "allele.dev@gmail.com"
+        },
+        "added": [],
+        "modified": [
+          ".gitignore"
+        ],
+        "removed": []
+      }
+    ],
+    "total_commits_count": 3,
+    "push_options": {
+    },
+    "repository": {
+      "name": "freer",
+      "url": "git@gitlab.com:tmcgilchrist/freer.git",
+      "description": "An implementation of \"Freer Monads, More Extensible Effects\".",
+      "homepage": "https://gitlab.com/tmcgilchrist/freer",
+      "git_http_url": "https://gitlab.com/tmcgilchrist/freer.git",
+      "git_ssh_url": "git@gitlab.com:tmcgilchrist/freer.git",
+      "visibility_level": 20
+    }
+  },
+  {
+    "object_kind": "merge_request",
+    "event_type": "merge_request",
+    "user": {
+      "id": 490393,
+      "name": "Tim McGilchrist",
+      "username": "tmcgilchrist",
+      "avatar_url": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
+      "email": "timmcgil@gmail.com"
+    },
+    "project": {
+      "id": 1066316,
+      "name": "freer",
+      "description": "An implementation of \"Freer Monads, More Extensible Effects\".",
+      "web_url": "https://gitlab.com/tmcgilchrist/freer",
+      "avatar_url": null,
+      "git_ssh_url": "git@gitlab.com:tmcgilchrist/freer.git",
+      "git_http_url": "https://gitlab.com/tmcgilchrist/freer.git",
+      "namespace": "Tim McGilchrist",
+      "visibility_level": 20,
+      "path_with_namespace": "tmcgilchrist/freer",
+      "default_branch": "master",
+      "ci_config_path": null,
+      "homepage": "https://gitlab.com/tmcgilchrist/freer",
+      "url": "git@gitlab.com:tmcgilchrist/freer.git",
+      "ssh_url": "git@gitlab.com:tmcgilchrist/freer.git",
+      "http_url": "https://gitlab.com/tmcgilchrist/freer.git"
+    },
+    "object_attributes": {
+      "assignee_id": 490393,
+      "author_id": 490393,
+      "created_at": "2021-09-17T04:39:49.024Z",
+      "description": "",
+      "head_pipeline_id": null,
+      "id": 117243068,
+      "iid": 1,
+      "last_edited_at": null,
+      "last_edited_by_id": null,
+      "merge_commit_sha": null,
+      "merge_error": null,
+      "merge_params": {
+        "force_remove_source_branch": "0"
+      },
+      "merge_status": "can_be_merged",
+      "merge_user_id": null,
+      "merge_when_pipeline_succeeds": false,
+      "milestone_id": null,
+      "source_branch": "tmcgilchrist-master-patch-54782",
+      "source_project_id": 1066316,
+      "state_id": 1,
+      "target_branch": "master",
+      "target_project_id": 1066316,
+      "time_estimate": 0,
+      "title": "Update freer.cabal",
+      "updated_at": "2021-09-17T04:58:20.207Z",
+      "updated_by_id": 490393,
+      "url": "https://gitlab.com/tmcgilchrist/freer/-/merge_requests/1",
+      "source": {
+        "id": 1066316,
+        "name": "freer",
+        "description": "An implementation of \"Freer Monads, More Extensible Effects\".",
+        "web_url": "https://gitlab.com/tmcgilchrist/freer",
+        "avatar_url": null,
+        "git_ssh_url": "git@gitlab.com:tmcgilchrist/freer.git",
+        "git_http_url": "https://gitlab.com/tmcgilchrist/freer.git",
+        "namespace": "Tim McGilchrist",
+        "visibility_level": 20,
+        "path_with_namespace": "tmcgilchrist/freer",
+        "default_branch": "master",
+        "ci_config_path": null,
+        "homepage": "https://gitlab.com/tmcgilchrist/freer",
+        "url": "git@gitlab.com:tmcgilchrist/freer.git",
+        "ssh_url": "git@gitlab.com:tmcgilchrist/freer.git",
+        "http_url": "https://gitlab.com/tmcgilchrist/freer.git"
+      },
+      "target": {
+        "id": 1066316,
+        "name": "freer",
+        "description": "An implementation of \"Freer Monads, More Extensible Effects\".",
+        "web_url": "https://gitlab.com/tmcgilchrist/freer",
+        "avatar_url": null,
+        "git_ssh_url": "git@gitlab.com:tmcgilchrist/freer.git",
+        "git_http_url": "https://gitlab.com/tmcgilchrist/freer.git",
+        "namespace": "Tim McGilchrist",
+        "visibility_level": 20,
+        "path_with_namespace": "tmcgilchrist/freer",
+        "default_branch": "master",
+        "ci_config_path": null,
+        "homepage": "https://gitlab.com/tmcgilchrist/freer",
+        "url": "git@gitlab.com:tmcgilchrist/freer.git",
+        "ssh_url": "git@gitlab.com:tmcgilchrist/freer.git",
+        "http_url": "https://gitlab.com/tmcgilchrist/freer.git"
+      },
+      "last_commit": {
+        "id": "1de710b32f7302934655ab94b6e5ceef87f681f2",
+        "message": "Update freer.cabal",
+        "title": "Update freer.cabal",
+        "timestamp": "2021-09-17T04:39:22+00:00",
+        "url": "https://gitlab.com/tmcgilchrist/freer/-/commit/1de710b32f7302934655ab94b6e5ceef87f681f2",
+        "author": {
+          "name": "Tim McGilchrist",
+          "email": "timmcgil@gmail.com"
+        }
+      },
+      "work_in_progress": false,
+      "total_time_spent": 0,
+      "time_change": 0,
+      "human_total_time_spent": null,
+      "human_time_change": null,
+      "human_time_estimate": null,
+      "assignee_ids": [
+        490393
+      ],
+      "state": "opened"
+    },
+    "labels": [],
+    "changes": {
+    },
+    "repository": {
+      "name": "freer",
+      "url": "git@gitlab.com:tmcgilchrist/freer.git",
+      "description": "An implementation of \"Freer Monads, More Extensible Effects\".",
+      "homepage": "https://gitlab.com/tmcgilchrist/freer"
+    },
+    "assignees": [
+      {
+        "id": 490393,
+        "name": "Tim McGilchrist",
+        "username": "tmcgilchrist",
+        "avatar_url": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
+        "email": "timmcgil@gmail.com"
+      }
+    ]
+  }
+]

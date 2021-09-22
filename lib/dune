@@ -25,5 +25,5 @@
  ; ;|#
  ; (flags (:standard -principal -strict-sequence -g -safe-string
  ;          -w "A-E-41-42-44-48" -w "-27-32"))
- (modules gitlab_s gitlab_core gitlab_j gitlab_t)
+ (modules gitlab_s gitlab_core gitlab_j gitlab_t gitlab_json)
  (libraries cohttp cohttp-lwt-unix uri yojson atdgen))

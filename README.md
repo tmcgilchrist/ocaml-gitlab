@@ -21,6 +21,7 @@ Support for ocurrent
    * [ ] Webhooks integration for delivering Merge Request open, merge to master
    * [ ] Support events serialisation, add tests for de-serialising events
    * [ ] CRUD for Merge requests
+   * [ ] Authenticated user support via tokens / oauth ???
 
 
 Pre-requisites
