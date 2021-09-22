@@ -20,7 +20,7 @@ let check_diff dir s =
   let oc = open_out output in
   output_string oc s;
   close_out oc;
-  (* TODO Do type comparison rather than via strings. *)
+  (* TODO Do type comparison rather than via strings and external jd tool. *)
   let diff = Printf.sprintf "jd -set %s %s" expected output in
   let diff_out, diff_in = Unix.open_process diff in
   let diff_output = read_ic diff_out in
@@ -50,12 +50,12 @@ end = struct
     [test_case M.name `Quick (fun () -> (check_diff dir (M.pp a)))]
 end
 
-module Gitlab_j_value : TestableJson = struct
-  type t = Gitlab_j.value
-  let name = "merge_request_event"
-  let of_string = Gitlab_j.value_of_string
-  let pp v = Yojson.Basic.pretty_to_string @@ Yojson.Basic.from_string (Gitlab_j.string_of_value v)
-end
+(* module Gitlab_j_events : TestableJson = struct *)
+(*   type t = Gitlab_j.events *)
+(*   let name = "events" *)
+(*   let of_string = Gitlab_j.events_of_string *)
+(*   let pp v = Yojson.Basic.pretty_to_string @@ Yojson.Basic.from_string (Gitlab_j.string_of_events v) *)
+(* end *)
 
 module Gitlab_j_user_short : TestableJson = struct
   type t = Gitlab_j.user_short
@@ -71,10 +71,18 @@ module Gitlab_j_project_short : TestableJson = struct
   let pp v = Yojson.Basic.pretty_to_string @@ Yojson.Basic.from_string (Gitlab_j.string_of_project_short v)
 end
 
+module Gitlab_j_webhooks : TestableJson = struct
+  type t = Gitlab_j.webhooks
+  let name = "webhooks"
+  let of_string = Gitlab_j.webhooks_of_string
+  let pp v = Yojson.Basic.pretty_to_string @@ Yojson.Basic.from_string (Gitlab_j.string_of_webhooks v)
+end
+
 (* instances under test *)
-module MR = Make(Gitlab_j_value)
+(* module E = Make(Gitlab_j_events) *)
 module US = Make(Gitlab_j_user_short)
 module PS = Make(Gitlab_j_project_short)
+module WH = Make(Gitlab_j_webhooks)
 
 let passing =
   QCheck.Test.make ~count:1000
@@ -94,7 +102,8 @@ let () =
   let open Alcotest in
   run "GitLab" [
       (* "quick-check",     List.map QCheck_alcotest.to_alcotest [ passing(\* ; failing *\)]; *)
-      ("merge_request", MR.test ());
+      (* ("events", E.test ()); *)
       ("user_short", US.test ());
       ("project_short", PS.test ());
+      ("webhooks", WH.test ());
     ]

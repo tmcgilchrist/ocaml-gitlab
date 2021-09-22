@@ -107,8 +107,8 @@ type visibility = [
 
 type project_short = {
   id: int;
-  description: string;
   name: string;
+  description: string;
   name_with_namespace: string;
   path: string;
   path_with_namespace: string;
@@ -129,7 +129,6 @@ type project_short = {
 
 type project_full = {
   inherit project_short;
-
   default_branch: string;
   visibility: visibility;
   path: string;
@@ -337,6 +336,9 @@ type repository = {
   url: string;
   description: string;
   homepage: string;
+  ?git_http_url: string nullable;
+  ?git_ssh_url: string nullable;
+  ?visibility_level: int option;
 } <ocaml field_prefix="repository_">
 
 type author = {
@@ -344,16 +346,52 @@ type author = {
   email: string;
 } <ocaml field_prefix="author_">
 
-type merge_commit = {
+type issue = {
+  author_id: int;
+  closed_at: string nullable;
+  confidential: bool;
+  created_at: string;
+  description: string;
+  discussion_locked: string nullable;
+  due_date: string nullable;
+  id: int;
+  iid: int;
+  last_edited_at: string nullable;
+  last_edited_by_id: string nullable;
+  milestone_id: string nullable;
+  moved_to_id: string nullable;
+  duplicated_to_id: int nullable;
+  project_id: int;
+  relative_position: int;
+  state_id: int;
+  time_estimate: int;
+  title: string;
+  updated_at: string;
+  updated_by_id: string nullable;
+  weight: string nullable;
+  url: string;
+  total_time_spent: int;
+  time_change: int;
+  human_total_time_spent: int nullable;
+  human_time_change: int nullable;
+  human_time_estimate: int nullable;
+  assignee_ids: int list;
+  assignee_id: int;
+  labels: string list;
+  state: state;
+  severity: string;
+} <ocmal field_prefix="issue_">
+
+type commit_short_webhook = {
   id: string;
   message: string;
   title: string;
   timestamp: string;
   url: string;
   author: author;
-} <ocaml field_prefix="merge_commit_">
+} <ocaml field_prefix="commit_short_webhook">
 
-type object_attributes_project = {
+type project_webhook = {
   id: int;
   name: string;
   description: string nullable;
@@ -370,41 +408,45 @@ type object_attributes_project = {
   ?url: string option;
   ?ssh_url: string option;
   ?http_url: string option;
-} <ocaml field_prefix="object_attributes_project_">
+} <ocaml field_prefix="project_webhook_">
 
-type object_attributes = {
-  assignee_id: int nullable;
+type merge_request_attributes = {
+  assignee_id: int;
+  assignee_ids: int list;
   author_id: int;
   created_at: string;
   description: string;
   head_pipeline_id: string nullable;
   id: int;
   iid: int;
-  (* last_edited_at: string nullable; *)
-  (* last_edited_by_id: string nullable; *)
-  last_commit: merge_commit;
-  (* merge_commit_sha: string nullable; *)
-  (* merge_error: string nullable; *)
+  last_edited_at: string nullable;
+  last_edited_by_id: string nullable;
+  last_commit: commit_short_webhook;
+  merge_commit_sha: string nullable;
+  merge_error: string nullable;
   merge_status: merge_status;
   merge_user_id: int nullable;
+  merge_when_pipeline_succeeds: bool;
   milestone_id: string nullable;
-  source: object_attributes_project;
+  source: project_webhook;
   source_branch: string;
   source_project_id: int;
   state_id: int;
   state: string;
-  target: object_attributes_project;
+  target: project_webhook;
   target_branch: string;
   target_project_id: int;
   title: string;
   updated_at: string;
-  updated_by_id: int nullable;
+  updated_by_id: int;
   url: string;
   work_in_progress: bool;
   total_time_spent: int;
   time_change: int;
-  ?action: string option;
-} <ocaml field_prefix="object_attributes_">
+  human_total_time_spent: int nullable;
+  human_time_change: int nullable;
+  human_time_estimate: int nullable;
+} <ocaml field_prefix="merge_request_attributes_">
 
 type label = {
   id: int;
@@ -437,7 +479,7 @@ type labels = {
 type assignees = {
   previous: user_short list;
   current: user_short list;
-}
+} <ocaml field_prefix="assignees_">
 
 type merge_request_changes = {
   ?updated_by_id: updated_by_id option;
@@ -445,18 +487,281 @@ type merge_request_changes = {
   ?assignees: assignees option;
 } <ocaml field_prefix="merge_request_changes_">
 
-type payload = {
-  object_kind: string;
-  event_type: string;
-  user: user_short;
-  project: object_attributes_project;
+type author_short = {
+  name: string;
+  email: string;
+} <ocaml field_prefix="author_short_">
+
+(* TODO Rename these *)
+type commit_webhook = {
+  inherit commit_short_webhook;
+  added: string list;
+  modified: string list;
+  removed: string list;
+} <ocaml field_prefix="commit_webhook_">
+
+type commits_webhook = commit_webhook list
+
+type push_webhook = {
+  before: string;
+  after: string;
+  ref: string;
+  checkout_sha: string;
+  message: string nullable;
+  user_id: int;
+  user_name: string;
+  user_username: string;
+  user_email: string;
+  user_avatar: string;
+  project_id: int;
+  project: project_webhook;
+  commits: commits_webhook;
+  total_commits_count: int;
+  (* push_options: ??? *)
   repository: repository;
-  object_attributes: object_attributes;
+} <ocaml field_prefix="push_webhook_">
+
+type merge_request_webhook = {
+  user: user_short;
+  project: project_webhook;
+  attributes<json name="object_attributes">: merge_request_attributes;
+  repository: repository;
   labels: label list;
-  changes: merge_request_changes;
-  ?assignees: user_short list option;
+  (* changes: ???; *)
+  assignees: user_short list;
+} <ocaml field_prefix="merge_request_webhook_">
+
+type issue_attributes = {
+  assignee_id: int nullable;
+  assignee_ids: int list;
+  author_id: int;
+  closed_at: string nullable;
+  confidential: bool;
+  created_at: string;
+  description: string;
+ (*
+  discussion_locked: NULL;
+  due_date: NULL;
+  duplicated_to_id:NULL;
+  human_time_change:NULL;
+  human_time_estimate:NULL;
+  human_total_time_spent:NULL;
+  *)
+  id: int;
+  iid: int;
+  labels: string list;
+  last_edited_at: string nullable;
+  last_edited_by_id: string nullable;
+  milestone_id: string nullable;
+  moved_to_id: int nullable;
+  project_id: int;
+  relative_position: int;
+  severity: string;
+  state: string;
+  state_id: int;
+  time_change: int;
+  time_estimate: int;
+  title: string;
+  total_time_spent: int;
+  updated_at: string;
+  updated_by_id: int nullable;
+  url: string;
+  weight: int nullable;
+} <ocaml field_prefix="issue_attributes_">
+
+type issue_webhook = {
+  user: user_short;
+  project: project_webhook;
+  attributes <json name="object_attributes">: issue_attributes;
+  labels: label list;
+  (* changes: ???; *)
+  repository: repository;
+  assignees: user_short list;
+} <ocaml field_prefix="issue_webhook_">
+
+type note_attributes = {
+  attachment: string nullable;
+  author_id: int;
+  change_position: string nullable;
+  commit_id: string nullable;
+  created_at: string;
+  discussion_id: string;
+  id: int;
+  line_code: int nullable;
+  note: string;
+  noteable_id: int;
+  noteable_type: string;
+  original_position: string nullable;
+  position: string nullable;
+  project_id: int;
+  resolved_at: string nullable;
+  resolved_by_id: string nullable;
+  resolved_by_push: string nullable;
+  st_diff: string nullable;
+  system: bool;
+  note_attribute_type <json name="type">: string nullable;
+  updated_at: string;
+  updated_by_id: string nullable;
+  description: string;
+  url: string;
+} <ocaml field_prefix="note_attrbutes_">
+
+type note_webhook = {
+  user: user_short;
+  project: project_webhook;
+  attributes <json name="object_attributes">: note_attributes;
+  repository: repository;
+  project_id: int;
+  issue: issue;
+} <ocaml field_prefix="note_webhook_">
+
+type wiki = {
+  web_url: string;
+  git_ssh_url: string;
+  git_http_url: string;
+  path_with_namespace: string;
+  default_branch: string;
+} <ocaml field_prefix="wiki_">
+
+type wiki_attributes = {
+  title: string;
+  content: string;
+  format: string;
+  slug: string;
+  url: string;
+  action: string;
+  diff_url: string;
+} <ocaml field_prefix="wiki_attributes_">
+
+type wiki_page_webhook = {
+  user: user_short;
+  project: project_webhook;
+  wiki: wiki;
+  attributes <json name="object_attributes">: wiki_attributes;
+} <ocaml field_prefix="wiki_page_webhook_">
+
+type source = {
+  format: string;
+  url: string;
+} <ocaml field_prefix="source_">
+
+type assets = {
+  count: int;
+  links: string list;
+  sources: source list;
+} <ocaml field_prefix="assets_">
+
+type release_webhook = {
+  id: int;
+  created_at: string;
+  description: string;
+  name: string;
+  released_at: string;
+  tag: string;
+  project: project_webhook;
+  url: string;
+  action: string;
+  assets: assets;
+  commit: commit_short_webhook;
+} <ocaml field_prefix="release_webhook_">
+
+(* https://docs.gitlab.com/ee/user/project/integrations/webhooks.html#events *)
+type webhooks = webhook list
+
+type webhook = [
+  | Push <json name="push"> of push_webhook
+  | MergeRequest <json name="merge_request"> of merge_request_webhook
+  | Issue <json name="issue"> of issue_webhook
+  | Note <json name="note"> of note_webhook
+  | WikiPage <json name="wiki_page"> of wiki_page_webhook
+  | Release <json name="release"> of release_webhook
+  (* TODO Add support for these webhooks.
+  | Pipeline
+  | Job
+  | Deployment
+  | FeatureFlag
+   *)
+] <ocaml field_prefix="webhook_">
+  <json adapter.ocaml="Gitlab_json.Adapter.WebhookEvent">
+
+type event_action_name = [
+  | Approved <json name="approved">
+  | Closed <json name="closed">
+  | CommentedOn <json name="commented on">
+  | Created <json name="created">
+  | Destroyed <json name="destroyed">
+  | Expired <json name="expired">
+  | Joined <json name="joined">
+  | Left <json name="left">
+  | Merged <json name="merged">
+  | Opened <json name="opened">
+  | Pushed <json name="pushed">
+  | Reopened <json name="reopend">
+  | Updated <json name="updated">
+]
+
+type events = event list
+
+(* https://docs.gitlab.com/ee/api/events.html *)
+type event = [
+  | Issue <json name="Issue"> of issue_event
+  | Milestone <json name="Milestone">
+  | MergeRequest <json name="MergeRequest"> of merge_request_event
+  | Note <json name="Note"> of note_event
+  | Project <json name="Project">
+  | Snippet <json name="Snippet">
+  | User <json name="User">
+] <ocaml field_prefix="event_">
+  <json adapter.ocaml="Gitlab_json.Adapter.Event">
+
+(* Common fields for all events *)
+type event_common = {
+  id: int;
+  project_id: int;
+  action_name: event_action_name;
+  target_id: int;
+  target_iid: int;
+  author_id: int;
+  target_title: string;
+  created_at: string;
+}
+
+type issue_event = {
+  inherit event_common;
+  author: user_short;
+  author_username: string;
+} <ocaml field_prefix="issue_event_">
+
+type merge_request_event = {
+  inherit event_common;
+  author: user_short;
+  author_username: string;
 } <ocaml field_prefix="merge_request_event_">
 
-type value = {
-  payload : payload
+type note_event = {
+  inherit event_common;
+  note: note;
+  author: user_short;
+  author_username: string;
+} <ocaml field_prefix="note_event_">
+
+type noteable_type = [
+  | MergeRequest <json name="MergeRequest">
+]
+
+type note = {
+  id: int;
+  note_type <json name="type"> : string nullable;
+  body: string;
+  attachment: string nullable;
+  author: user_short;
+  created_at: string;
+  updated_at: string;
+  system: bool;
+  noteable_id: int;
+  noteable_type: noteable_type;
+  resolvable: bool;
+  confidential: bool;
+  noteable_iid: int;
+  (* commands_changes: {} *)
 }
