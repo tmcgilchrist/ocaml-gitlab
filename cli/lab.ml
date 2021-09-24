@@ -16,6 +16,13 @@ module CommandLine = struct
       required
       & opt (some string) None
       & info [ "n"; "owner-name" ] ~docv:"OWNER_NAME" ~doc)
+
+  let api =
+    let doc = " The GitLub API endpoint to send the HTTP request to" in
+    Arg.(required
+         & pos 0 (some string) None
+         & info []
+         ~docv:"ENDPOINT" ~doc)
 end
 
 let user_cmd =
@@ -38,7 +45,7 @@ let user_name_cmd =
     run
       ( User.by_name ~name () >>~ fun users ->
         List.iter
-          (fun user -> printf "%s\n" user.Gitlab_t.user_short_username)
+          (fun user -> printf "%s:%i\n" user.Gitlab_t.user_short_username user.Gitlab_t.user_short_id)
           users;
         return () )
   in
@@ -65,6 +72,20 @@ let user_projects_cmd =
   ( Term.(pure user_projects_list $ CommandLine.owner_id $ pure ()),
     Term.info "user-projects" )
 
+let user_events_cmd =
+  let user_projects_list id () =
+    Lwt_main.run
+      (let open Gitlab in
+      let open Monad in
+      run
+        ( User.events ~token:access_token ~id () >>~ fun events ->
+          printf "%s\n" (Gitlab_j.string_of_events events);
+          return () ))
+  in
+
+  ( Term.(pure user_projects_list $ CommandLine.owner_id $ pure ()),
+    Term.info "user-events" )
+
 let merge_requests_cmd =
   let merge_requests_list () =
     Lwt_main.run
@@ -87,6 +108,22 @@ let merge_requests_cmd =
 
   (Term.(pure merge_requests_list $ pure ()), Term.info "merge-requests")
 
+
+let api_cmd =
+  let api uri_str () =
+    Lwt_main.run (
+      let open Gitlab in
+      let open Monad in
+      run (
+        let uri = Uri.of_string uri_str in
+        API.get ~uri (fun body -> Lwt.return (Yojson.Basic.from_string body)) >>~ fun json ->
+        printf "%s" (Yojson.Basic.pretty_to_string json);
+        return ()
+      )
+    )
+  in
+  (Term.(pure api $ CommandLine.api $ pure ()), Term.info "api")
+
 let default_cmd =
   let doc = "make git easier with GitLab" in
   ( Term.(ret (pure (`Help (`Pager, None)))),
@@ -104,7 +141,15 @@ let default_cmd =
     in
     Term.info "lab" ~version:"0.1" ~doc ~man )
 
-let cmds = [ user_cmd; user_name_cmd; user_projects_cmd; merge_requests_cmd ]
+let cmds =
+  [
+    user_cmd;
+    user_name_cmd;
+    user_projects_cmd;
+    merge_requests_cmd;
+    user_events_cmd;
+    api_cmd;
+  ]
 
 let () =
   match Term.eval_choice ~catch:false default_cmd cmds with

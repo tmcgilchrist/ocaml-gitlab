@@ -617,12 +617,19 @@ module Make (Time : Gitlab_s.Time) (CL : Cohttp_lwt.S.Client) = struct
   end
 
   module URI = struct
-    (* TODO This needs to be parameterised to support various gitlab installs. *)
+    (* TODO This needs to be parameterised to support various gitlab installs.
+            Provide an Env module with this and verbose logging flag.
+    *)
     let api = "https://gitlab.com/api/v4"
+
+    let events = Uri.of_string (Printf.sprintf "%s/events" api)
 
     let user = Uri.of_string (Printf.sprintf "%s/users" api)
 
     let user_by_id ~id = Uri.of_string (Printf.sprintf "%s/users/%s" api id)
+
+    let user_events ~id =
+      Uri.of_string (Printf.sprintf "%s/users/%s/events" api id)
 
     let user_projects ~id =
       Uri.of_string (Printf.sprintf "%s/users/%s/projects" api id)
@@ -652,6 +659,9 @@ module Make (Time : Gitlab_s.Time) (CL : Cohttp_lwt.S.Client) = struct
         (Printf.sprintf "%s/projects/%s/merge_requests/%s/changes" api id
            merge_request_iid)
 
+    let project_events ~id =
+      Uri.of_string (Printf.sprintf "%s/projects/%s/events" api id)
+
     let group_merge_requests ~id =
       Uri.of_string (Printf.sprintf "%s/groups/%s/merge_requests" api id)
   end
@@ -662,6 +672,17 @@ module Make (Time : Gitlab_s.Time) (CL : Cohttp_lwt.S.Client) = struct
     | None -> uri
     | Some state ->
         Uri.add_query_params' uri [ ("state", Gitlab_j.string_of_state state) ]
+
+  let action_param (action : string option) uri =
+    match action with
+    | None -> uri
+    | Some action -> Uri.add_query_params' uri [ ("action", action) ]
+
+  let target_type_param (target_type : string option) uri =
+    match target_type with
+    | None -> uri
+    | Some target_type ->
+        Uri.add_query_params' uri [ ("target_type", target_type) ]
 
   let milestone_param milestone uri =
     match milestone with
@@ -697,6 +718,14 @@ module Make (Time : Gitlab_s.Time) (CL : Cohttp_lwt.S.Client) = struct
     | Some scope ->
         Uri.add_query_params' uri [ ("scope", Gitlab_j.string_of_scope scope) ]
 
+  module Event = struct
+    open Lwt
+
+    let all ~token () =
+      let uri = URI.events in
+      API.get ~token ~uri (fun body -> return (Gitlab_j.events_of_string body))
+  end
+
   module User = struct
     open Lwt
 
@@ -724,6 +753,13 @@ module Make (Time : Gitlab_s.Time) (CL : Cohttp_lwt.S.Client) = struct
       in
       API.get_stream ~token ~uri (fun body ->
           return (Gitlab_j.merge_requests_of_string body))
+
+    let events ~token ~id ?action ?target_type () =
+      let uri =
+        URI.user_events ~id |> action_param action
+        |> target_type_param target_type
+      in
+      API.get ~token ~uri (fun body -> return (Gitlab_j.events_of_string body))
   end
 
   module Project = struct
@@ -764,6 +800,14 @@ module Make (Time : Gitlab_s.Time) (CL : Cohttp_lwt.S.Client) = struct
         URI.project_merge_request_changes ~id:project_id ~merge_request_iid
       in
       API.get ?token ~uri (fun body -> return (Gitlab_j.changes_of_string body))
+
+    let events ~token ~project_id ?action ?target_type () =
+      let uri =
+        URI.project_events ~id:project_id
+        |> action_param action
+        |> target_type_param target_type
+      in
+      API.get ~token ~uri (fun body -> return (Gitlab_j.events_of_string body))
   end
 
   module Group = struct

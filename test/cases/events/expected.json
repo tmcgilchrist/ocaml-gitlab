@@ -1,0 +1,165 @@
+[
+  {
+    "id": 1474314364,
+    "project_id": 29798678,
+    "action_name": "pushed new",
+    "target_id": null,
+    "target_iid": null,
+    "target_type": null,
+    "author_id": 490393,
+    "target_title": null,
+    "created_at": "2021-09-22T04:59:05.083Z",
+    "author": {
+      "id": 490393,
+      "name": "Tim McGilchrist",
+      "username": "tmcgilchrist",
+      "state": "active",
+      "avatar_url": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
+      "web_url": "https://gitlab.com/tmcgilchrist"
+    },
+    "push_data": {
+      "commit_count": 1,
+      "action": "created",
+      "ref_type": "branch",
+      "commit_from": null,
+      "commit_to": "9d2cb7f1f974b14913d146b64e045633e5617c84",
+      "ref": "main",
+      "commit_title": "Initial commit",
+      "ref_count": null
+    },
+    "author_username": "tmcgilchrist"
+  },
+  {
+    "id": 1474314353,
+    "project_id": 29798678,
+    "action_name": "created",
+    "target_id": null,
+    "target_iid": null,
+    "target_type": null,
+    "author_id": 490393,
+    "target_title": null,
+    "created_at": "2021-09-22T04:59:04.527Z",
+    "author": {
+      "id": 490393,
+      "name": "Tim McGilchrist",
+      "username": "tmcgilchrist",
+      "state": "active",
+      "avatar_url": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
+      "web_url": "https://gitlab.com/tmcgilchrist"
+    },
+    "author_username": "tmcgilchrist"
+  },
+  {
+    "id": 1474158126,
+    "project_id": 1066316,
+    "action_name": "opened",
+    "target_id": 94071379,
+    "target_iid": 1,
+    "target_type": "Issue",
+    "author_id": 490393,
+    "target_title": "Test issue",
+    "created_at": "2021-09-22T01:21:45.357Z",
+    "author": {
+      "id": 490393,
+      "name": "Tim McGilchrist",
+      "username": "tmcgilchrist",
+      "state": "active",
+      "avatar_url": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
+      "web_url": "https://gitlab.com/tmcgilchrist"
+    },
+    "author_username": "tmcgilchrist"
+  },
+  {
+    "id": 1467348911,
+    "project_id": 1066316,
+    "action_name": "commented on",
+    "target_id": 680137735,
+    "target_iid": 680137735,
+    "target_type": "Note",
+    "author_id": 490393,
+    "target_title": "Update freer.cabal",
+    "created_at": "2021-09-17T04:40:17.737Z",
+    "note": {
+      "id": 680137735,
+      "type": null,
+      "body": "Test merge request to generate GitLab events.",
+      "attachment": null,
+      "author": {
+        "id": 490393,
+        "name": "Tim McGilchrist",
+        "username": "tmcgilchrist",
+        "state": "active",
+        "avatar_url": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
+        "web_url": "https://gitlab.com/tmcgilchrist"
+      },
+      "created_at": "2021-09-17T04:40:17.652Z",
+      "updated_at": "2021-09-17T04:40:17.652Z",
+      "system": false,
+      "noteable_id": 117243068,
+      "noteable_type": "MergeRequest",
+      "resolvable": false,
+      "confidential": false,
+      "noteable_iid": 1,
+      "commands_changes": {}
+    },
+    "author": {
+      "id": 490393,
+      "name": "Tim McGilchrist",
+      "username": "tmcgilchrist",
+      "state": "active",
+      "avatar_url": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
+      "web_url": "https://gitlab.com/tmcgilchrist"
+    },
+    "author_username": "tmcgilchrist"
+  },
+  {
+    "id": 1467348510,
+    "project_id": 1066316,
+    "action_name": "opened",
+    "target_id": 117243068,
+    "target_iid": 1,
+    "target_type": "MergeRequest",
+    "author_id": 490393,
+    "target_title": "Update freer.cabal",
+    "created_at": "2021-09-17T04:39:49.586Z",
+    "author": {
+      "id": 490393,
+      "name": "Tim McGilchrist",
+      "username": "tmcgilchrist",
+      "state": "active",
+      "avatar_url": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
+      "web_url": "https://gitlab.com/tmcgilchrist"
+    },
+    "author_username": "tmcgilchrist"
+  },
+  {
+    "id": 1467348174,
+    "project_id": 1066316,
+    "action_name": "pushed new",
+    "target_id": null,
+    "target_iid": null,
+    "target_type": null,
+    "author_id": 490393,
+    "target_title": null,
+    "created_at": "2021-09-17T04:39:23.127Z",
+    "author": {
+      "id": 490393,
+      "name": "Tim McGilchrist",
+      "username": "tmcgilchrist",
+      "state": "active",
+      "avatar_url": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
+      "web_url": "https://gitlab.com/tmcgilchrist"
+    },
+    "push_data": {
+      "commit_count": 1,
+      "action": "created",
+      "ref_type": "branch",
+      "commit_from": null,
+      "commit_to": "1de710b32f7302934655ab94b6e5ceef87f681f2",
+      "ref": "tmcgilchrist-master-patch-54782",
+      "commit_title": "Update freer.cabal",
+      "ref_count": null
+    },
+    "author_username": "tmcgilchrist"
+  }
+]
