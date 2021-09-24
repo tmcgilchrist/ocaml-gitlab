@@ -1,6 +1,7 @@
-(lang dune 2.7)
+(lang dune 2.9)
 (name gitlab)
 (generate_opam_files true)
+(using mdx 0.1)
 
 (license BSD-3-clause)
 (maintainers "Tim McGilchrist <timmcgil@gmail.com>")
@@ -40,9 +41,18 @@ JavaScript via [js_of_ocaml](http://ocsigen.org/js_of_ocaml)."))
   (alcotest :with-test)
   (qcheck :with-test)
   (qcheck-alcotest :with-test)
-  (cmdliner (>= 0.9.8))
+
   base-unix)
  (synopsis "Gitlab APIv4 OCaml library")
  (description "This library provides an OCaml interface to the
 [Gitlab APIv4](https://docs.gitlab.com/ee/api/) (JSON).
 This package installs the Unix (Lwt) version."))
+
+(package
+ (name lab)
+ (depends
+  (ocaml (>= 4.08.0))
+  (mdx :with-test)
+  (cmdliner (>= 0.9.8))
+
+))

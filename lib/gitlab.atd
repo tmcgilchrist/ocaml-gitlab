@@ -684,6 +684,53 @@ type webhook = [
 ] <ocaml field_prefix="webhook_">
   <json adapter.ocaml="Gitlab_json.Adapter.WebhookEvent">
 
+(* https://docs.gitlab.com/ee/api/events.html *)
+type events = event list
+type event = {
+  id: int;
+  project_id: int;
+  action_name: event_action_name nullable;
+  target_id: int nullable;
+  target_iid: int nullable;
+  target_type: event_target_type nullable;
+  author_id: int;
+  target_title: string nullable;
+  created_at: string;
+
+  ?author: user_short nullable;
+  ?push_data: push_data nullable;
+  ?note: note nullable;
+  ?wiki_page: wiki_page nullable;
+  author_username: string;
+} <ocaml field_prefix="event_">
+
+type event_target_type = [
+  | Issue <json name="Issue">
+  | Milestone <json name="Milestone">
+  | MergeRequest <json name="MergeRequest">
+  | Note <json name="Note">
+  | Project <json name="Project">
+  | Snippet <json name="Snippet">
+  | User <json name="User">
+  | WikiPage <json name="WikiPage::Meta">
+]
+type wiki_page = {
+  format: string;
+  slug: string;
+  title: string;
+} <ocaml field_prefix="wiki_page_">
+
+type push_data = {
+  commit_count: int;
+  action: string;
+  ref_type: string;
+  commit_from: string nullable;
+  commit_to: string;
+  ref: string;
+  commit_title: string;
+  ref_count: string nullable;
+} <ocaml field_prefix="push_data_">
+
 type event_action_name = [
   | Approved <json name="approved">
   | Closed <json name="closed">
@@ -696,54 +743,11 @@ type event_action_name = [
   | Merged <json name="merged">
   | Opened <json name="opened">
   | Pushed <json name="pushed">
+  | PushedTo <json name="pushed to">
+  | PushedNew <json name="pushed new">
   | Reopened <json name="reopend">
   | Updated <json name="updated">
 ]
-
-type events = event list
-
-(* https://docs.gitlab.com/ee/api/events.html *)
-type event = [
-  | Issue <json name="Issue"> of issue_event
-  | Milestone <json name="Milestone">
-  | MergeRequest <json name="MergeRequest"> of merge_request_event
-  | Note <json name="Note"> of note_event
-  | Project <json name="Project">
-  | Snippet <json name="Snippet">
-  | User <json name="User">
-] <ocaml field_prefix="event_">
-  <json adapter.ocaml="Gitlab_json.Adapter.Event">
-
-(* Common fields for all events *)
-type event_common = {
-  id: int;
-  project_id: int;
-  action_name: event_action_name;
-  target_id: int;
-  target_iid: int;
-  author_id: int;
-  target_title: string;
-  created_at: string;
-}
-
-type issue_event = {
-  inherit event_common;
-  author: user_short;
-  author_username: string;
-} <ocaml field_prefix="issue_event_">
-
-type merge_request_event = {
-  inherit event_common;
-  author: user_short;
-  author_username: string;
-} <ocaml field_prefix="merge_request_event_">
-
-type note_event = {
-  inherit event_common;
-  note: note;
-  author: user_short;
-  author_username: string;
-} <ocaml field_prefix="note_event_">
 
 type noteable_type = [
   | MergeRequest <json name="MergeRequest">
@@ -764,4 +768,4 @@ type note = {
   confidential: bool;
   noteable_iid: int;
   (* commands_changes: {} *)
-}
+} <ocaml field_prefix="note_">

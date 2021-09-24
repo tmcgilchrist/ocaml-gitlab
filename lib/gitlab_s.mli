@@ -305,6 +305,14 @@ module type Gitlab = sig
         message that GitLab generated in [message]. *)
   end
 
+  module Event : sig
+    val all : token:Token.t -> unit -> Gitlab_t.events Response.t Monad.t
+    (** [all ~token] get a list of events for the authenticated user.
+
+        See {{:https://docs.gitlab.com/ee/api/events.html#list-currently-authenticated-users-events}List currently authenticated user’s events}
+    *)
+  end
+
   (** The [User] module provides access to User {{:https://docs.gitlab.com/14.0/ee/api/users.html}API}.
    *)
   module User : sig
@@ -340,7 +348,19 @@ module type Gitlab = sig
     (** [merge_requests ()] list all merge requests the authenticated user has access to.
 
         See {{:https://docs.gitlab.com/14.0/ee/api/merge_requests.html#list-merge-requests}List merge requests}.
-     *)
+    *)
+
+    val events :
+      token:Token.t ->
+      id:string ->
+      ?action:string ->
+      ?target_type:string ->
+      unit ->
+      Gitlab_t.events Response.t Monad.t
+    (** [events ~token ~id] get the contribution events for the specified user.
+
+        See {{:https://docs.gitlab.com/ee/api/events.html#get-user-contribution-events}Get user contribution events}.
+    *)
   end
 
   (** The [Project] module provides access to {{:https://docs.gitlab.com/ee/api/projects.html}Project API}. *)
@@ -404,6 +424,18 @@ module type Gitlab = sig
     (** [merge_request_changes ?token ~project_id ~merge_request_iid ()] shows information about the merge request including its files and changes.
 
        See {{:https://docs.gitlab.com/ee/api/merge_requests.html#get-single-mr-changes}Get single MR changes}.
+    *)
+
+    val events :
+      token:Token.t ->
+      project_id:string ->
+      ?action:string ->
+      ?target_type:string ->
+      unit ->
+      Gitlab_t.events Response.t Monad.t
+    (** [events ~project_id] get visible events for a project.
+
+        See {{:https://docs.gitlab.com/ee/api/events.html#list-a-projects-visible-events}:ist a projects visible events}.
     *)
   end
 
