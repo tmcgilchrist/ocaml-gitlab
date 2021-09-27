@@ -18,7 +18,7 @@ module CommandLine = struct
       & info [ "n"; "owner-name" ] ~docv:"OWNER_NAME" ~doc)
 
   let api =
-    let doc = " The GitLub API endpoint to send the HTTP request to" in
+    let doc = " The GitLab API endpoint to send the HTTP request to" in
     Arg.(required & pos 0 (some string) None & info [] ~docv:"ENDPOINT" ~doc)
 end
 
