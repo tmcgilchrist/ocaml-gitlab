@@ -159,5 +159,4 @@ let () =
       ("project_short", PS.test ());
       ("webhooks", WH.test ());
       ("merge_requests", MR.test ());
-
     ]

@@ -29,3 +29,20 @@ Pre-requisites
 
  * opam / ocaml
  * jd for diffing json (github.com/josephburnett/jd)
+
+Lab Cli
+----------
+
+A command line client is provided called `lab` in the style of a similarly named
+tool `hub` for GitHub. From source you can run as:
+
+``` shell
+dune exec cli/lab.exe -- <arguments>
+```
+
+If you opam install lab then the executable is available as `lab`.
+
+GITLAB_DEBUG=[true|false] for printing debug information like what HTTP requests and responses occur.
+GITLAB_URL to configure the GitLab instance to connect to. This defaults to `https://gitlab.com/api/v4` on the public `https://github.com` site.
+
+Run `lab -h` for more information about cli options.

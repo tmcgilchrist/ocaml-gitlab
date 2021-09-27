@@ -462,6 +462,16 @@ end
 
 (** A module of this type is required in order to construct a
     {!Gitlab} module using {!Gitlab_core.Make}. *)
+module type Env = sig
+  val debug : bool
+  (** [debug] is the initial debugging flag value. *)
+
+  val gitlab_uri : string
+  (** [gitlab_uri] is the gitlab instance to connect to. *)
+end
+
+(** A module of this type is required in order to construct a
+    {!Gitlab} module using {!Gitlab_core.Make}. *)
 module type Time = sig
   val now : unit -> float
   (** [now ()] is the current UNIX epoch time in seconds. *)

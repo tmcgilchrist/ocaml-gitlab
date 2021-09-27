@@ -1,8 +1,11 @@
 let user_agent = "ocaml-gitlab"
 
-module Make (Time : Gitlab_s.Time) (CL : Cohttp_lwt.S.Client) = struct
-  (** TODO Configure this! *)
-  let log_active = ref true
+module Make
+    (Env : Gitlab_s.Env)
+    (Time : Gitlab_s.Time)
+    (CL : Cohttp_lwt.S.Client) =
+struct
+  let log_active = ref Env.debug
 
   let log fmt =
     Printf.ksprintf
@@ -106,7 +109,7 @@ module Make (Time : Gitlab_s.Time) (CL : Cohttp_lwt.S.Client) = struct
                (String.concat "" (C.Header.to_lines (C.Response.headers res)))
                body)
       | Semantic (_, message) ->
-          Lwt.return ("GitLabg API error: " ^ string_of_message message)
+          Lwt.return ("GitLab API error: " ^ string_of_message message)
       | Bad_response (exn, j) ->
           Lwt.return
             (sprintf "Bad response: %s\n%s" (Printexc.to_string exn)
@@ -617,10 +620,7 @@ module Make (Time : Gitlab_s.Time) (CL : Cohttp_lwt.S.Client) = struct
   end
 
   module URI = struct
-    (* TODO This needs to be parameterised to support various gitlab installs.
-            Provide an Env module with this and verbose logging flag.
-    *)
-    let api = "https://gitlab.com/api/v4"
+    let api = Env.gitlab_uri
 
     let events = Uri.of_string (Printf.sprintf "%s/events" api)
 
