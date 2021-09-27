@@ -79,6 +79,18 @@ module Gitlab_j_user_short : TestableJson = struct
     @@ Yojson.Basic.from_string (Gitlab_j.string_of_user_short v)
 end
 
+module Gitlab_j_projects : TestableJson = struct
+  type t = Gitlab_j.projects
+
+  let name = "projects"
+
+  let of_string = Gitlab_j.projects_of_string
+
+  let pp v =
+    Yojson.Basic.pretty_to_string
+    @@ Yojson.Basic.from_string (Gitlab_j.string_of_projects v)
+end
+
 module Gitlab_j_project_short : TestableJson = struct
   type t = Gitlab_j.project_short
 
@@ -103,11 +115,25 @@ module Gitlab_j_webhooks : TestableJson = struct
     @@ Yojson.Basic.from_string (Gitlab_j.string_of_webhooks v)
 end
 
+module Gitlab_j_merge_requests : TestableJson = struct
+  type t = Gitlab_j.merge_requests
+
+  let name = "merge_requests"
+
+  let of_string = Gitlab_j.merge_requests_of_string
+
+  let pp v =
+    Yojson.Basic.pretty_to_string
+    @@ Yojson.Basic.from_string (Gitlab_j.string_of_merge_requests v)
+end
+
 (* instances under test *)
 module E = Make (Gitlab_j_events)
 module US = Make (Gitlab_j_user_short)
+module P = Make (Gitlab_j_projects)
 module PS = Make (Gitlab_j_project_short)
 module WH = Make (Gitlab_j_webhooks)
+module MR = Make (Gitlab_j_merge_requests)
 
 let passing =
   QCheck.Test.make ~count:1000 ~name:"list_rev_is_involutive"
@@ -129,6 +155,9 @@ let () =
       (* "quick-check",     List.map QCheck_alcotest.to_alcotest [ passing(\* ; failing *\)]; *)
       ("events", E.test ());
       ("user_short", US.test ());
+      ("projects", P.test ());
       ("project_short", PS.test ());
       ("webhooks", WH.test ());
+      ("merge_requests", MR.test ());
+
     ]
