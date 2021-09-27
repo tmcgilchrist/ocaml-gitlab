@@ -20,9 +20,9 @@
   (atdgen (>= 2.0.0))
   (yojson (>= 1.7.0))
   stringext)
- (synopsis "Gitlab APIv4 OCaml library")
+ (synopsis "GitLab APIv4 OCaml library")
  (description "This library provides an OCaml interface to the
-[Gitlab APIv4](https://docs.gitlab.com/ee/api/) (JSON).
+[GitLab APIv4](https://docs.gitlab.com/ee/api/) (JSON).
 
 It is compatible with [MirageOS](https://mirage.io) and also compiles to pure
 JavaScript via [js_of_ocaml](http://ocsigen.org/js_of_ocaml)."))
@@ -43,7 +43,7 @@ JavaScript via [js_of_ocaml](http://ocsigen.org/js_of_ocaml)."))
   (qcheck-alcotest :with-test)
 
   base-unix)
- (synopsis "Gitlab APIv4 OCaml library")
+ (synopsis "GitLab APIv4 OCaml library")
  (description "This library provides an OCaml interface to the
 [Gitlab APIv4](https://docs.gitlab.com/ee/api/) (JSON).
 This package installs the Unix (Lwt) version."))
@@ -53,6 +53,6 @@ This package installs the Unix (Lwt) version."))
  (depends
   (ocaml (>= 4.08.0))
   (mdx :with-test)
-  (cmdliner (>= 0.9.8))
-
-))
+  (cmdliner (>= 0.9.8)))
+ (synopsis "GitLab cli")
+)

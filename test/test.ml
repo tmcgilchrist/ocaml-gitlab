@@ -57,9 +57,14 @@ end
 
 module Gitlab_j_events : TestableJson = struct
   type t = Gitlab_j.events
+
   let name = "events"
+
   let of_string = Gitlab_j.events_of_string
-  let pp v = Yojson.Basic.pretty_to_string @@ Yojson.Basic.from_string (Gitlab_j.string_of_events v)
+
+  let pp v =
+    Yojson.Basic.pretty_to_string
+    @@ Yojson.Basic.from_string (Gitlab_j.string_of_events v)
 end
 
 module Gitlab_j_user_short : TestableJson = struct
@@ -99,7 +104,7 @@ module Gitlab_j_webhooks : TestableJson = struct
 end
 
 (* instances under test *)
-module E = Make(Gitlab_j_events)
+module E = Make (Gitlab_j_events)
 module US = Make (Gitlab_j_user_short)
 module PS = Make (Gitlab_j_project_short)
 module WH = Make (Gitlab_j_webhooks)

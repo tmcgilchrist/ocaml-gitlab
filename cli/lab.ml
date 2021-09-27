@@ -19,10 +19,7 @@ module CommandLine = struct
 
   let api =
     let doc = " The GitLub API endpoint to send the HTTP request to" in
-    Arg.(required
-         & pos 0 (some string) None
-         & info []
-         ~docv:"ENDPOINT" ~doc)
+    Arg.(required & pos 0 (some string) None & info [] ~docv:"ENDPOINT" ~doc)
 end
 
 let user_cmd =
@@ -45,7 +42,9 @@ let user_name_cmd =
     run
       ( User.by_name ~name () >>~ fun users ->
         List.iter
-          (fun user -> printf "%s:%i\n" user.Gitlab_t.user_short_username user.Gitlab_t.user_short_id)
+          (fun user ->
+            printf "%s:%i\n" user.Gitlab_t.user_short_username
+              user.Gitlab_t.user_short_id)
           users;
         return () )
   in
@@ -108,19 +107,17 @@ let merge_requests_cmd =
 
   (Term.(pure merge_requests_list $ pure ()), Term.info "merge-requests")
 
-
 let api_cmd =
   let api uri_str () =
-    Lwt_main.run (
-      let open Gitlab in
+    Lwt_main.run
+      (let open Gitlab in
       let open Monad in
-      run (
-        let uri = Uri.of_string uri_str in
-        API.get ~uri (fun body -> Lwt.return (Yojson.Basic.from_string body)) >>~ fun json ->
-        printf "%s" (Yojson.Basic.pretty_to_string json);
-        return ()
-      )
-    )
+      run
+        (let uri = Uri.of_string uri_str in
+         API.get ~uri (fun body -> Lwt.return (Yojson.Basic.from_string body))
+         >>~ fun json ->
+         printf "%s" (Yojson.Basic.pretty_to_string json);
+         return ()))
   in
   (Term.(pure api $ CommandLine.api $ pure ()), Term.info "api")
 

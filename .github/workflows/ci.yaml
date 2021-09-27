@@ -46,5 +46,10 @@ jobs:
           go version
           go install github.com/josephburnett/jd@latest
 
-      - run: |
+      - name: Tests
+        run: |
           opam exec -- dune build @runtest
+
+      - name: Opam Lint
+        run: |
+          opam lint gitlab-unix.opam gitlab.opam lab.opam
