@@ -9,7 +9,7 @@ TODO
 
    * [x] Make basic skeleton for library with ATD and a simple endpoint
    * [x] Add CI
-   * [ ] Add basic cli cram test
+   * [x] Add basic cli mdx test
    * [X] Add Steaming responses / pagination support
    * [ ] Add test for authenticated queries
    * [ ] Parameterise gitlab url to support various gitlab hosting arrangements
@@ -19,7 +19,7 @@ TODO
 Support for ocurrent
 
    * [ ] Webhooks integration for delivering Merge Request open, merge to master
-   * [ ] Support events serialisation, add tests for de-serialising events
+   * [x] Support events serialisation, add tests for de-serialising events
    * [ ] CRUD for Merge requests
    * [ ] Authenticated user support via tokens / oauth ???
 
