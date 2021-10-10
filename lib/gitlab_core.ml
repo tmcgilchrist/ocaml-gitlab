@@ -168,11 +168,23 @@ struct
       | _, Err (Semantic (status, msg)) -> Lwt.(fail (Message (status, msg)))
       | _, Err e -> Lwt.(error_to_string e >>= fun err -> fail (Failure err))
 
+    let both p1 p2 = bind (fun x -> bind (fun y -> return (x, y)) p2) p1
+
     let ( >>= ) m f = bind f m
+
+    let ( let* ) m f = bind f m
+
+    let ( and* ) m n = both m n
 
     let ( >|= ) m f = map f m
 
+    let ( let+ ) m f = map f m
+
+    let ( and+ ) m n = both m n
+
     let ( >>~ ) m f = m >|= Response.value >>= f
+
+    let ( *> ) p1 p2 = p1 >>= fun _ -> p2
 
     let embed lw = Lwt.(fun state -> lw >>= fun v -> return (state, Response v))
 
@@ -636,87 +648,144 @@ struct
 
     let merge_requests = Uri.of_string (Printf.sprintf "%s/merge_requests" api)
 
+    let projects =
+      Uri.of_string (Printf.sprintf "%s/projects" api)
+
     let project_merge_requests ~id =
-      Uri.of_string (Printf.sprintf "%s/projects/%s/merge_requests" api id)
+      Uri.of_string (Printf.sprintf "%s/projects/%i/merge_requests" api id)
 
     let project_merge_request ~id ~merge_request_iid =
       Uri.of_string
-        (Printf.sprintf "%s/projects/%s/merge_requests/%s" api id
+        (Printf.sprintf "%s/projects/%i/merge_requests/%s" api id
            merge_request_iid)
 
     let project_merge_request_participants ~id ~merge_request_iid =
       Uri.of_string
-        (Printf.sprintf "%s/projects/%s/merge_requests/%s/participants" api id
+        (Printf.sprintf "%s/projects/%i/merge_requests/%s/participants" api id
            merge_request_iid)
 
     let project_merge_request_commits ~id ~merge_request_iid =
       Uri.of_string
-        (Printf.sprintf "%s/projects/%s/merge_requests/%s/commits" api id
+        (Printf.sprintf "%s/projects/%i/merge_requests/%s/commits" api id
            merge_request_iid)
 
     let project_merge_request_changes ~id ~merge_request_iid =
       Uri.of_string
-        (Printf.sprintf "%s/projects/%s/merge_requests/%s/changes" api id
+        (Printf.sprintf "%s/projects/%i/merge_requests/%s/changes" api id
            merge_request_iid)
 
     let project_events ~id =
-      Uri.of_string (Printf.sprintf "%s/projects/%s/events" api id)
+      Uri.of_string (Printf.sprintf "%s/projects/%i/events" api id)
 
     let group_merge_requests ~id =
       Uri.of_string (Printf.sprintf "%s/groups/%s/merge_requests" api id)
+
+    let external_status_checks ~id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/external_status_checks" api id)
+
+    let external_status_check ~id ~check_id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/external_status_checks/%i" api id
+           check_id)
+
+    let list_status_checks ~id ~merge_request_iid =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/merge_requests/%s/status_checks" api id
+           merge_request_iid)
+
+    let set_status_check ~id ~merge_request_iid =
+      Uri.of_string
+        (Printf.sprintf
+           "%s/projects/%i/merge_requests/%s/status_check_responses" api id
+           merge_request_iid)
   end
 
   (* Query Parameter helpers *)
-  let state_param (state : Gitlab_j.state option) uri =
+  let state_param state uri =
     match state with
     | None -> uri
     | Some state ->
-        Uri.add_query_params' uri [ ("state", Gitlab_j.string_of_state state) ]
+        Uri.add_query_param' uri ("state", Gitlab_j.string_of_state state)
 
-  let action_param (action : string option) uri =
+  let action_param action uri =
     match action with
     | None -> uri
-    | Some action -> Uri.add_query_params' uri [ ("action", action) ]
+    | Some action -> Uri.add_query_param' uri ("action", action)
 
-  let target_type_param (target_type : string option) uri =
+  let target_type_param target_type uri =
     match target_type with
     | None -> uri
     | Some target_type ->
-        Uri.add_query_params' uri [ ("target_type", target_type) ]
+        Uri.add_query_param' uri ("target_type", target_type)
 
   let milestone_param milestone uri =
     match milestone with
     | None -> uri
-    | Some milestone -> Uri.add_query_params' uri [ ("milestone", milestone) ]
+    | Some milestone -> Uri.add_query_param' uri ("milestone", milestone)
 
-  let labels_param (labels : string list option) uri =
+  let labels_param labels uri =
     match labels with
     | None | Some [] -> uri
     | Some labels ->
-        Uri.add_query_params' uri [ ("labels", String.concat "," labels) ]
+        Uri.add_query_param' uri ("labels", String.concat "," labels)
 
   let author_id_param author_id uri =
     match author_id with
     | None -> uri
-    | Some author_id -> Uri.add_query_params' uri [ ("author_id", author_id) ]
+    | Some author_id -> Uri.add_query_param' uri ("author_id", author_id)
 
   let author_username_param author_username uri =
     match author_username with
     | None -> uri
     | Some author_username ->
-        Uri.add_query_params' uri [ ("author_username", author_username) ]
+        Uri.add_query_param' uri ("author_username", author_username)
 
   let my_reaction_param my_reaction uri =
     match my_reaction with
     | None -> uri
     | Some my_reaction ->
-        Uri.add_query_params' uri [ ("my_reaction", my_reaction) ]
+        Uri.add_query_param' uri ("my_reaction", my_reaction)
 
-  let scope_param (scope : Gitlab_j.scope option) uri =
+  let scope_param scope uri =
     match scope with
     | None -> uri
     | Some scope ->
-        Uri.add_query_params' uri [ ("scope", Gitlab_j.string_of_scope scope) ]
+        Uri.add_query_param' uri ("scope", Gitlab_j.string_of_scope scope)
+
+  let name_param name uri =
+    match name with
+    | None -> uri
+    | Some name -> Uri.add_query_param' uri ("name", name)
+
+  let description_param description uri =
+    match description with
+    | None -> uri
+    | Some description -> Uri.add_query_param' uri ("description", description)
+
+  let external_url_param external_url uri =
+    match external_url with
+    | None -> uri
+    | Some external_url ->
+        Uri.add_query_param' uri ("external_url", external_url)
+
+  let owned_param owned uri =
+    match owned with
+    | None -> uri
+    | Some owned ->
+      Uri.add_query_param' uri ("owned", Bool.to_string owned)
+
+  let search_param search uri =
+    match search with
+    | None -> uri
+    | Some search ->
+      Uri.add_query_param' uri ("search", search)
+
+  let with_programming_language_param lang uri =
+    match lang with
+    | None -> uri
+    | Some lang ->
+      Uri.add_query_param' uri ("with_programming_language", lang)
 
   module Event = struct
     open Lwt
@@ -765,6 +834,10 @@ struct
   module Project = struct
     open Lwt
 
+    let create ~token ~name ?description () =
+      let uri = URI.projects |> description_param description |> name_param (Some name) in
+      API.post ~token ~uri ~expected_code:`Created (fun _ -> return ())
+
     let merge_requests ?token ?state ?milestone ?labels ?author ?author_username
         ?my_reaction ?scope ~id () =
       let uri =
@@ -808,6 +881,68 @@ struct
         |> target_type_param target_type
       in
       API.get ~token ~uri (fun body -> return (Gitlab_j.events_of_string body))
+
+    let all_projects ~token ?owned ?search ?with_programming_language () =
+      let uri = URI.projects
+                |> owned_param owned
+                |> search_param search
+                |> with_programming_language_param with_programming_language
+      in
+      API.get_stream ~token ~uri (fun body -> return (Gitlab_j.project_shorts_of_string body))
+
+    module ExternalStatusCheck = struct
+      let list_for_merge_request ~token ~project_id ~merge_request_iid () =
+        let uri = URI.list_status_checks ~id:project_id ~merge_request_iid in
+        API.get ~token ~uri (fun body ->
+            return (Gitlab_j.status_checks_of_string body))
+
+      let set_status ~token ~project_id ~merge_request_iid ~sha
+          ~external_status_check_id () =
+        let uri =
+          URI.set_status_check ~id:project_id ~merge_request_iid |> fun uri ->
+          Uri.add_query_params' uri
+            [
+              ("sha", sha);
+              ("external_status_check_id", external_status_check_id);
+            ]
+        in
+        API.post ~body:"" ~token ~uri ~expected_code:`Created (fun body ->
+            return (Gitlab_j.external_status_check_of_string body))
+
+      let checks ~token ~project_id () =
+        let uri = URI.external_status_checks ~id:project_id in
+        API.get ~token ~uri (fun body ->
+            return (Gitlab_j.external_status_checks_of_string body))
+
+      let create ~token ~project_id ~name ~external_url ?protected_branch_ids:_
+          () =
+        let uri =
+          URI.external_status_checks ~id:project_id |> fun uri ->
+          Uri.add_query_params' uri
+            [
+              ("name", name);
+              ("external_url", external_url);
+              (* ; ("protected_branch_ids", protected_branch_ids) *)
+            ]
+        in
+        API.post ~token ~uri ~expected_code:`Created (fun body ->
+            return (Gitlab_j.external_status_check_of_string body))
+
+      let delete ~token ~project_id ~rule_id () =
+        let uri = URI.external_status_check ~id:project_id ~check_id:rule_id in
+        API.delete ~token ~uri (fun _ -> return ())
+
+      let update ~token ~project_id ~rule_id ?name ?external_url
+          ?protected_branch_ids:_ () =
+        let uri =
+          URI.external_status_check ~id:project_id ~check_id:rule_id
+          |> name_param name
+          |> external_url_param external_url
+          (* |> protected_branch_ids_param protected_branch_ids *)
+        in
+        API.put ~body:"" ~token ~uri ~expected_code:`Created (fun body ->
+            return (Gitlab_j.external_status_check_of_string body))
+    end
   end
 
   module Group = struct

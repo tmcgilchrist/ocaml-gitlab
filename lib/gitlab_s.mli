@@ -58,6 +58,9 @@ module type Gitlab = sig
     val ( >|= ) : 'a t -> ('a -> 'b) -> 'b t
     (** [m >|= f] is [{!map} f m]. *)
 
+    val ( *> ) : 'a t -> 'b t -> 'b t
+    (** [m *> n] is [{m >>= fun _ -> n}]. *)
+
     val ( >>~ ) : 'a Response.t t -> ('a -> 'b t) -> 'b t
     (** [m >>~ f] is [m >|= {!Response.value} >>= f]. *)
 
@@ -81,6 +84,14 @@ module type Gitlab = sig
     (** [embed lwt] is an Lwt thread lifted into the GitLab API
         monad. Its monadic state will be inherited from any monadic
         values bound before it. *)
+
+    val ( let+ ) : 'a t -> ('a -> 'b) -> 'b t
+
+    val ( and+ ) : 'a t -> 'b t -> ('a * 'b) t
+
+    val ( let* ) : 'a t -> ('a -> 'b t) -> 'b t
+
+    val ( and* ) : 'a t -> 'b t -> ('a * 'b) t
   end
 
   module Token : sig
@@ -365,6 +376,17 @@ module type Gitlab = sig
 
   (** The [Project] module provides access to {{:https://docs.gitlab.com/ee/api/projects.html}Project API}. *)
   module Project : sig
+    val create :
+      token:Token.t ->
+      name:string ->
+      ?description:string ->
+      unit ->
+      unit Response.t Monad.t
+    (** [create ~token ~name ?description ()] Creates a new project owned by the authenticated user.
+
+        See {{:https://docs.gitlab.com/ee/api/projects.html#create-project}Create project}.
+    *)
+
     val merge_requests :
       ?token:Token.t ->
       ?state:Gitlab_t.state ->
@@ -374,7 +396,7 @@ module type Gitlab = sig
       ?author_username:string ->
       ?my_reaction:string ->
       ?scope:Gitlab_t.scope ->
-      id:string ->
+      id:int ->
       unit ->
       Gitlab_t.merge_request Stream.t
     (** [merge_requests ?token ~id ()] list all merge requests for project [id].
@@ -384,7 +406,7 @@ module type Gitlab = sig
 
     val merge_request :
       ?token:Token.t ->
-      project_id:string ->
+      project_id:int ->
       merge_request_iid:string ->
       unit ->
       Gitlab_j.merge_request Response.t Monad.t
@@ -395,7 +417,7 @@ module type Gitlab = sig
 
     val merge_request_participants :
       ?token:Token.t ->
-      project_id:string ->
+      project_id:int ->
       merge_request_iid:string ->
       unit ->
       Gitlab_j.users Response.t Monad.t
@@ -406,7 +428,7 @@ module type Gitlab = sig
 
     val merge_request_commits :
       ?token:Token.t ->
-      project_id:string ->
+      project_id:int ->
       merge_request_iid:string ->
       unit ->
       Gitlab_j.commits Response.t Monad.t
@@ -417,7 +439,7 @@ module type Gitlab = sig
 
     val merge_request_changes :
       ?token:Token.t ->
-      project_id:string ->
+      project_id:int ->
       merge_request_iid:string ->
       unit ->
       Gitlab_j.changes Response.t Monad.t
@@ -428,15 +450,97 @@ module type Gitlab = sig
 
     val events :
       token:Token.t ->
-      project_id:string ->
+      project_id:int ->
       ?action:string ->
       ?target_type:string ->
       unit ->
       Gitlab_t.events Response.t Monad.t
     (** [events ~project_id] get visible events for a project.
 
-        See {{:https://docs.gitlab.com/ee/api/events.html#list-a-projects-visible-events}:ist a projects visible events}.
+        See {{:https://docs.gitlab.com/ee/api/events.html#list-a-projects-visible-events}List a projects visible events}.
     *)
+
+    val all_projects : token:Token.t -> ?owned:bool -> ?search:string -> ?with_programming_language:string -> unit -> Gitlab_t.project_short Stream.t
+    (** [all_projects ~token ()] Get a list of all visible projects across GitLab for the authenticated user.
+
+        See {{:https://docs.gitlab.com/ee/api/projects.html#list-all-projects}List all projects}.
+    *)
+
+    (** External Status Checks API. {{:https://docs.gitlab.com/ee/api/status_checks.html}} *)
+    module ExternalStatusCheck : sig
+      val list_for_merge_request :
+        token:Token.t ->
+        project_id:int ->
+        merge_request_iid:string ->
+        unit ->
+        Gitlab_t.status_checks Response.t Monad.t
+      (** [list_for_merge_request ~project_id ~merge_request_iid] For a single merge request, list the external status checks that apply to it and their status.
+
+          See {{:https://docs.gitlab.com/ee/api/status_checks.html#list-status-checks-for-a-merge-request}List status checks for a merge request}.
+      *)
+
+      val set_status :
+        token:Token.t ->
+        project_id:int ->
+        merge_request_iid:string ->
+        sha:string ->
+        external_status_check_id:string ->
+        unit ->
+        Gitlab_t.external_status_check Response.t Monad.t
+      (** [set_status ~project_id ~merge_request_iid ~sha ~external_status_check_id] For a single merge request, use the API to inform GitLab that a merge request has passed a check by an external service.
+
+          See {{:https://docs.gitlab.com/ee/api/status_checks.html#set-status-of-an-external-status-check}Set status of an external status check}.
+      *)
+
+      val checks :
+        token:Token.t ->
+        project_id:int ->
+        unit ->
+        Gitlab_j.external_status_checks Response.t Monad.t
+      (** [checks ~project_id ] request project's external status checks.
+
+          See {{:https://docs.gitlab.com/ee/api/status_checks.html#get-project-external-status-checks}Get project external status checks}.
+      *)
+
+      val create :
+        token:Token.t ->
+        project_id:int ->
+        name:string ->
+        external_url:string ->
+        ?protected_branch_ids:int list ->
+        unit ->
+        Gitlab_j.external_status_check Response.t Monad.t
+      (** [create ] create a new external status check for a project.
+
+            See {{:https://docs.gitlab.com/ee/api/status_checks.html#create-external-status-check}Create external status check}.
+       *)
+
+      val delete :
+        token:Token.t ->
+        project_id:int ->
+        rule_id:int ->
+        unit ->
+        unit Response.t Monad.t
+      (** [delete ~project_id ~rule_id] an external status check for a project.
+
+          See {{:https://docs.gitlab.com/ee/api/status_checks.html#delete-external-status-check}Delete external status check}.
+      *)
+
+      val update :
+        token:Token.t ->
+        project_id:int ->
+        rule_id:int ->
+        ?name:string ->
+        ?external_url:string ->
+        ?protected_branch_ids:int list ->
+        unit ->
+        Gitlab_t.external_status_check Response.t Monad.t
+      (** [update ~project_id ~rule_id] an external status check for a project.
+
+
+            See {{:https://docs.gitlab.com/ee/api/status_checks.html#update-external-status-check}Update external status check}.
+        *)
+    end
   end
 
   (** The [Group] module provies access to {{:https://docs.gitlab.com/ee/api/groups.html}Group API}. *)
