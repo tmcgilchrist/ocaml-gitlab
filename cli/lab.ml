@@ -20,104 +20,144 @@ module CommandLine = struct
   let api =
     let doc = " The GitLab API endpoint to send the HTTP request to" in
     Arg.(required & pos 0 (some string) None & info [] ~docv:"ENDPOINT" ~doc)
+
+  let project_id =
+    let doc = "Project Name" in
+    Arg.(
+      required
+      & opt (some int) None
+      & info [ "p"; "project-id" ] ~docv:"PROJECT_ID" ~doc)
+
+  let merge_request_id =
+    let doc = "Merge Request Id" in
+    Arg.(
+      required
+      & opt (some string) None
+      & info [ "m"; "merge-request-id" ] ~docv:"MERGE_REQUEST_ID" ~doc)
+
+  let project_name =
+    let doc = "Project name" in
+    Arg.(required & opt (some string) None & info ["p"; "project-name"] ~docv:"PROJECT_NAME" ~doc)
 end
 
 let user_cmd =
   let user_list user () =
-    Lwt_main.run
-      (let open Gitlab in
+    let cmd =
+      let open Gitlab in
       let open Monad in
-      run
-        ( User.by_id ~id:user () >>~ fun user ->
-          printf "%s\n" user.Gitlab_t.user_username;
-          return () ))
+      User.by_id ~id:user () >>~ fun user ->
+      return @@ printf "%s\n" user.Gitlab_t.user_username
+    in
+    Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-
   (Term.(pure user_list $ CommandLine.owner_id $ pure ()), Term.info "user-list")
 
 let user_name_cmd =
-  let user_cmd name =
-    let open Gitlab in
-    let open Monad in
-    run
-      ( User.by_name ~name () >>~ fun users ->
-        List.iter
-          (fun user ->
-            printf "%s:%i\n" user.Gitlab_t.user_short_username
-              user.Gitlab_t.user_short_id)
-          users;
-        return () )
+  let user_list name () =
+    let cmd name =
+      let open Gitlab in
+      let open Monad in
+      User.by_name ~name () >>~ fun users ->
+      return
+      @@ List.iter
+           (fun user ->
+             printf "%s:%i\n" user.Gitlab_t.user_short_username
+               user.Gitlab_t.user_short_id)
+           users
+    in
+    Lwt_main.run @@ Gitlab.Monad.run (cmd name)
   in
-
-  let user_list name () = Lwt_main.run (user_cmd name) in
-
   ( Term.(pure user_list $ CommandLine.owner_name $ pure ()),
     Term.info "user-name" )
 
 let user_projects_cmd =
   let user_projects_list id () =
-    Lwt_main.run
-      (let open Gitlab in
+    let cmd =
+      let open Gitlab in
       let open Monad in
-      run
-        ( User.projects ~id () >>~ fun projects ->
-          List.iter
-            (fun (project : Gitlab_t.project_short) ->
-              printf "%s\n" project.Gitlab_t.project_short_name)
-            projects;
-          return () ))
+      User.projects ~id () >>~ fun projects ->
+      return
+      @@ List.iter
+           (fun project -> printf "%s\n" project.Gitlab_t.project_short_name)
+           projects
+    in
+    Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-
   ( Term.(pure user_projects_list $ CommandLine.owner_id $ pure ()),
     Term.info "user-projects" )
 
 let user_events_cmd =
   let user_projects_list id () =
-    Lwt_main.run
-      (let open Gitlab in
+    let cmd =
+      let open Gitlab in
       let open Monad in
-      run
-        ( User.events ~token:access_token ~id () >>~ fun events ->
-          printf "%s\n" (Gitlab_j.string_of_events events);
-          return () ))
+      User.events ~token:access_token ~id () >>~ fun events ->
+      return @@ printf "%s\n" (Gitlab_j.string_of_events events)
+    in
+    Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-
   ( Term.(pure user_projects_list $ CommandLine.owner_id $ pure ()),
     Term.info "user-events" )
 
 let merge_requests_cmd =
   let merge_requests_list () =
-    Lwt_main.run
-      (let open Gitlab in
+    let cmd =
+      let open Gitlab in
       let open Monad in
-      run
-        ( (*
-              TODO Auth token setup is different to Github.
-              See https://docs.gitlab.com/14.0/ee/api/README.html#authentication
-             *)
-          return (User.merge_requests ~token:access_token ())
-        >>= fun x ->
-          Stream.iter
-            (fun merge_request ->
-              printf "#%i %s\n" merge_request.Gitlab_t.merge_request_id
-                merge_request.Gitlab_t.merge_request_title;
-              return ())
-            x ))
+      let* mr = return (User.merge_requests ~token:access_token ()) in
+      Stream.iter
+        (fun merge_request ->
+          printf "#%i %s\n" merge_request.Gitlab_t.merge_request_id
+            merge_request.Gitlab_t.merge_request_title;
+          return ())
+        mr
+    in
+    Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-
   (Term.(pure merge_requests_list $ pure ()), Term.info "merge-requests")
+
+let status_checks_cmd =
+  let status_checks project_id () =
+    let cmd =
+      let open Gitlab in
+      let open Monad in
+      Project.ExternalStatusCheck.checks ~token:access_token ~project_id ()
+      >>~ fun x ->
+      return
+      @@ List.iter
+           (fun check ->
+             printf "%s\t%s\t%i\n" check.Gitlab_t.external_status_check_name
+               check.Gitlab_t.external_status_check_external_url
+               check.Gitlab_t.external_status_check_id)
+           x
+    in
+    Lwt_main.run @@ Gitlab.Monad.run cmd
+  in
+  ( Term.(pure status_checks $ CommandLine.project_id $ pure ()),
+    Term.info "status-checks" )
+
+let project_create_cmd =
+  let project_create name ?description () =
+    let cmd =
+      let open Gitlab in
+      let open Monad in
+      Project.create ~token:access_token ~name ~description () *>
+      User.projects
+    in
+    Lwt_main.run @@ Gitlab.Monad.run cmd
+  in
+  ( Term.(pure project_create $ CommandLine.name $ CommandLine.description $ pure ()), Term.info "project-create")
 
 let api_cmd =
   let api uri_str () =
-    Lwt_main.run
-      (let open Gitlab in
+    let cmd =
+      let open Gitlab in
       let open Monad in
-      run
-        (let uri = Uri.of_string uri_str in
-         API.get ~uri (fun body -> Lwt.return (Yojson.Basic.from_string body))
-         >>~ fun json ->
-         printf "%s" (Yojson.Basic.pretty_to_string json);
-         return ()))
+      let uri = Uri.of_string uri_str in
+      API.get ~uri (fun body -> Lwt.return (Yojson.Basic.from_string body))
+      >>~ fun json -> return @@ printf "%s" (Yojson.Basic.pretty_to_string json)
+    in
+    Lwt_main.run @@ Gitlab.Monad.run cmd
   in
   (Term.(pure api $ CommandLine.api $ pure ()), Term.info "api")
 
@@ -144,8 +184,10 @@ let cmds =
     user_name_cmd;
     user_projects_cmd;
     merge_requests_cmd;
+    status_checks_cmd;
     user_events_cmd;
     api_cmd;
+    project_create_cmd;
   ]
 
 let () =

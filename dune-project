@@ -39,6 +39,7 @@ JavaScript via [js_of_ocaml](http://ocsigen.org/js_of_ocaml)."))
   (lwt (>= 2.4.4))
   stringext
   (alcotest :with-test)
+  (alcotest-lwt :with-test)
   (qcheck :with-test)
   (qcheck-alcotest :with-test)
 

@@ -114,8 +114,8 @@ type project_short = {
   path_with_namespace: string;
   created_at: string;
   default_branch: string;
-(*  tag_list: string list; *)
-(*  topic_list: string list; *)
+  tag_list: string list nullable;
+  topics: string list nullable;
   ssh_url_to_repo: string;
   http_url_to_repo: string;
   web_url: string;
@@ -126,6 +126,8 @@ type project_short = {
   last_activity_at: string;
   namespace: namespace;
 } <ocaml field_prefix="project_short_">
+
+type project_shorts = project_short list
 
 type project_full = {
   inherit project_short;
@@ -769,3 +771,36 @@ type note = {
   noteable_iid: int;
   (* commands_changes: {} *)
 } <ocaml field_prefix="note_">
+
+type branch = {
+  id: int;
+  project_id: int;
+  name: string;
+  created_at: string;
+  updated_at: string;
+  code_owner_approval_required: bool;
+} <ocaml field_prefix="branch_">
+
+type status_check_status = [
+  | Approved <json name="approved">
+  | Pending <json name="pending">
+] <ocaml field_prefix="status_check_status_">
+
+type status_check = {
+  id: int;
+  name: string;
+  external_url: string;
+  status: status_check_status;
+} <ocaml field_prefix="status_check_">
+
+type status_checks = status_check list
+
+type external_status_check = {
+  id: int;
+  name: string;
+  project_id: int;
+  external_url: string;
+  protected_branches: branch list;
+} <ocaml field_prefix="external_status_check_">
+
+type external_status_checks = external_status_check list
