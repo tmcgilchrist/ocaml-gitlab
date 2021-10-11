@@ -19,6 +19,7 @@ $ ./lab.exe api "https://gitlab.com/api/v4/users?username=tmcgilchrist"
 ]
 ```
 
+
 ```sh
 $ GITLAB_DEBUG=true ./lab.exe user-name --owner-name tmcgilchrist
 >>> GitLab: Requesting https://gitlab.com/api/v4/users?username=tmcgilchrist
