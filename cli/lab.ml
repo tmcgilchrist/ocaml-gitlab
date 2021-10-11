@@ -21,13 +21,6 @@ module CommandLine = struct
     let doc = " The GitLab API endpoint to send the HTTP request to" in
     Arg.(required & pos 0 (some string) None & info [] ~docv:"ENDPOINT" ~doc)
 
-  let project_id =
-    let doc = "Project Name" in
-    Arg.(
-      required
-      & opt (some int) None
-      & info [ "p"; "project-id" ] ~docv:"PROJECT_ID" ~doc)
-
   let merge_request_id =
     let doc = "Merge Request Id" in
     Arg.(
@@ -35,10 +28,30 @@ module CommandLine = struct
       & opt (some string) None
       & info [ "m"; "merge-request-id" ] ~docv:"MERGE_REQUEST_ID" ~doc)
 
+  let project_id =
+    let doc = "Project Id" in
+    Arg.(
+      required
+      & opt (some int) None
+      & info [ "p"; "project-id" ] ~docv:"PROJECT_ID" ~doc)
+
   let project_name =
-    let doc = "Project name" in
-    Arg.(required & opt (some string) None & info ["p"; "project-name"] ~docv:"PROJECT_NAME" ~doc)
+    let doc = "The repository name on GitLab." in
+    Arg.(
+      required & pos 0 (some string) None & info [] ~docv:"PROJECT_NAME" ~doc)
+
+  let project_description =
+    let doc = "A short description of the GitLab repository." in
+    Arg.(
+      required
+      & opt (some string) None
+      & info [ "d"; "description" ] ~docv:"PROJECT_DESCRIPTION" ~doc)
 end
+
+(* Non-zero exit with error message *)
+let exit_with str =
+  eprintf "%s" str;
+  exit 1
 
 let user_cmd =
   let user_list user () =
@@ -86,12 +99,12 @@ let user_projects_cmd =
   ( Term.(pure user_projects_list $ CommandLine.owner_id $ pure ()),
     Term.info "user-projects" )
 
-let user_events_cmd =
+let user_events_cmd config =
   let user_projects_list id () =
     let cmd =
       let open Gitlab in
       let open Monad in
-      User.events ~token:access_token ~id () >>~ fun events ->
+      User.events ~token:config.token ~id () >>~ fun events ->
       return @@ printf "%s\n" (Gitlab_j.string_of_events events)
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
@@ -99,12 +112,12 @@ let user_events_cmd =
   ( Term.(pure user_projects_list $ CommandLine.owner_id $ pure ()),
     Term.info "user-events" )
 
-let merge_requests_cmd =
+let merge_requests_cmd config =
   let merge_requests_list () =
     let cmd =
       let open Gitlab in
       let open Monad in
-      let* mr = return (User.merge_requests ~token:access_token ()) in
+      let* mr = return (User.merge_requests ~token:config.token ()) in
       Stream.iter
         (fun merge_request ->
           printf "#%i %s\n" merge_request.Gitlab_t.merge_request_id
@@ -116,12 +129,12 @@ let merge_requests_cmd =
   in
   (Term.(pure merge_requests_list $ pure ()), Term.info "merge-requests")
 
-let status_checks_cmd =
+let status_checks_cmd config =
   let status_checks project_id () =
     let cmd =
       let open Gitlab in
       let open Monad in
-      Project.ExternalStatusCheck.checks ~token:access_token ~project_id ()
+      Project.ExternalStatusCheck.checks ~token:config.token ~project_id ()
       >>~ fun x ->
       return
       @@ List.iter
@@ -133,20 +146,28 @@ let status_checks_cmd =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
+  let exits = Term.default_exits in
   ( Term.(pure status_checks $ CommandLine.project_id $ pure ()),
-    Term.info "status-checks" )
+    Term.info "status-checks" ~exits )
 
-let project_create_cmd =
-  let project_create name ?description () =
+let project_create_cmd config =
+  let project_create name description () =
     let cmd =
       let open Gitlab in
       let open Monad in
-      Project.create ~token:access_token ~name ~description () *>
-      User.projects
+      Project.create ~token:config.token ~name ~description () >>~ fun p ->
+      return
+      @@ printf "%s\n"
+           (Yojson.Basic.prettify (Gitlab_j.string_of_project_short p))
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  ( Term.(pure project_create $ CommandLine.name $ CommandLine.description $ pure ()), Term.info "project-create")
+  ( Term.(
+      pure project_create $ CommandLine.project_name
+      $ CommandLine.project_description $ pure ()),
+    Term.info
+      "project-create - Creates a new project owned by the authenticated user."
+  )
 
 let api_cmd =
   let api uri_str () =
@@ -179,18 +200,19 @@ let default_cmd =
     Term.info "lab" ~version:"0.1" ~doc ~man )
 
 let cmds =
+  let config = Config.from_file () in
   [
     user_cmd;
     user_name_cmd;
     user_projects_cmd;
-    merge_requests_cmd;
-    status_checks_cmd;
-    user_events_cmd;
+    merge_requests_cmd config;
+    status_checks_cmd config;
+    user_events_cmd config;
     api_cmd;
-    project_create_cmd;
+    project_create_cmd config;
   ]
 
 let () =
-  match Term.eval_choice ~catch:false default_cmd cmds with
+  match Term.eval_choice ~catch:true default_cmd cmds with
   | `Error _ -> exit 1
   | _ -> exit 0

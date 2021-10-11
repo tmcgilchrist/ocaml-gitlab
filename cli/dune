@@ -1,8 +1,5 @@
-(rule
- (copy config.ml.in config.ml))
-
 (executables
- (libraries cohttp-lwt-unix gitlab-unix cmdliner)
+ (libraries cohttp-lwt-unix gitlab-unix cmdliner otoml)
  (package lab)
  (public_names lab)
  (names lab))

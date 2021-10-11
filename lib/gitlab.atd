@@ -119,7 +119,7 @@ type project_short = {
   ssh_url_to_repo: string;
   http_url_to_repo: string;
   web_url: string;
-  readme_url: string;
+  readme_url: string nullable;
   avatar_url: string nullable;
   forks_count: int;
   star_count: int;

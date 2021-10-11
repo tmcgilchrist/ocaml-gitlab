@@ -1,5 +1,6 @@
 (test
  (name test)
- (libraries gitlab gitlab-unix alcotest qcheck qcheck-alcotest)
+ (libraries gitlab gitlab-unix alcotest qcheck qcheck-alcotest alcotest-lwt)
+ (modules test)
  (deps
   (source_tree cases)))

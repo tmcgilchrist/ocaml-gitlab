@@ -40,11 +40,9 @@ module type TestableJson = sig
   val pp : t -> string
 end
 
-module Make (M : TestableJson) : sig
-  val test : unit -> unit Alcotest.test_case list
-end = struct
+module Make (M : TestableJson) = struct
   let test () =
-    let open Alcotest in
+    let open Alcotest_lwt in
     let dir = "cases" / M.name in
     let str = read_file (dir / "event.json") in
     let a =
@@ -52,7 +50,7 @@ end = struct
       with e ->
         Alcotest.fail (M.name ^ " failed with: " ^ Printexc.to_string e)
     in
-    [ test_case M.name `Quick (fun () -> check_diff dir (M.pp a)) ]
+    [ test_case_sync M.name `Quick (fun () -> check_diff dir (M.pp a)) ]
 end
 
 module Gitlab_j_events : TestableJson = struct
@@ -135,28 +133,16 @@ module PS = Make (Gitlab_j_project_short)
 module WH = Make (Gitlab_j_webhooks)
 module MR = Make (Gitlab_j_merge_requests)
 
-let passing =
-  QCheck.Test.make ~count:1000 ~name:"list_rev_is_involutive"
-    QCheck.(list small_int)
-    (fun l -> List.rev (List.rev l) = l)
-
-(* TODO Write QC generators for types. *)
-(* let failing = *)
-(*   QCheck.Test.make ~count:10 *)
-(*     ~name:"fail_sort_id" *)
-(*     QCheck.(list small_int) *)
-(*     (fun l -> l = List.sort compare l) *)
-
 (* Run it *)
 let () =
-  let open Alcotest in
-  run "GitLab"
-    [
-      (* "quick-check",     List.map QCheck_alcotest.to_alcotest [ passing(\* ; failing *\)]; *)
-      ("events", E.test ());
-      ("user_short", US.test ());
-      ("projects", P.test ());
-      ("project_short", PS.test ());
-      ("webhooks", WH.test ());
-      ("merge_requests", MR.test ());
-    ]
+  let open Alcotest_lwt in
+  Lwt_main.run
+  @@ run "GitLab"
+       [
+         ("events", E.test ());
+         ("user_short", US.test ());
+         ("projects", P.test ());
+         ("project_short", PS.test ());
+         ("webhooks", WH.test ());
+         ("merge_requests", MR.test ());
+       ]
