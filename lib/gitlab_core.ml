@@ -75,8 +75,9 @@ struct
     open Lwt
 
     (* Each API call results in either a valid response or
-       * an HTTP error. Depending on the error status code, it may
-       * be retried within the monad, or a permanent failure returned *)
+     * an HTTP error. Depending on the error status code, it may
+     * be retried within the monad, or a permanent failure returned
+     *)
     type error =
       | Generic of (C.Response.t * string)
       | Semantic of C.Code.status_code * Gitlab_t.message
@@ -648,8 +649,7 @@ struct
 
     let merge_requests = Uri.of_string (Printf.sprintf "%s/merge_requests" api)
 
-    let projects =
-      Uri.of_string (Printf.sprintf "%s/projects" api)
+    let projects = Uri.of_string (Printf.sprintf "%s/projects" api)
 
     let project_merge_requests ~id =
       Uri.of_string (Printf.sprintf "%s/projects/%i/merge_requests" api id)
@@ -716,8 +716,7 @@ struct
   let target_type_param target_type uri =
     match target_type with
     | None -> uri
-    | Some target_type ->
-        Uri.add_query_param' uri ("target_type", target_type)
+    | Some target_type -> Uri.add_query_param' uri ("target_type", target_type)
 
   let milestone_param milestone uri =
     match milestone with
@@ -744,8 +743,7 @@ struct
   let my_reaction_param my_reaction uri =
     match my_reaction with
     | None -> uri
-    | Some my_reaction ->
-        Uri.add_query_param' uri ("my_reaction", my_reaction)
+    | Some my_reaction -> Uri.add_query_param' uri ("my_reaction", my_reaction)
 
   let scope_param scope uri =
     match scope with
@@ -772,20 +770,17 @@ struct
   let owned_param owned uri =
     match owned with
     | None -> uri
-    | Some owned ->
-      Uri.add_query_param' uri ("owned", Bool.to_string owned)
+    | Some owned -> Uri.add_query_param' uri ("owned", Bool.to_string owned)
 
   let search_param search uri =
     match search with
     | None -> uri
-    | Some search ->
-      Uri.add_query_param' uri ("search", search)
+    | Some search -> Uri.add_query_param' uri ("search", search)
 
   let with_programming_language_param lang uri =
     match lang with
     | None -> uri
-    | Some lang ->
-      Uri.add_query_param' uri ("with_programming_language", lang)
+    | Some lang -> Uri.add_query_param' uri ("with_programming_language", lang)
 
   module Event = struct
     open Lwt
@@ -835,8 +830,11 @@ struct
     open Lwt
 
     let create ~token ~name ?description () =
-      let uri = URI.projects |> description_param description |> name_param (Some name) in
-      API.post ~token ~uri ~expected_code:`Created (fun _ -> return ())
+      let uri =
+        URI.projects |> description_param description |> name_param (Some name)
+      in
+      API.post ~token ~uri ~expected_code:`Created (fun s ->
+          Lwt.return (Gitlab_j.project_short_of_string s))
 
     let merge_requests ?token ?state ?milestone ?labels ?author ?author_username
         ?my_reaction ?scope ~id () =
@@ -883,12 +881,12 @@ struct
       API.get ~token ~uri (fun body -> return (Gitlab_j.events_of_string body))
 
     let all_projects ~token ?owned ?search ?with_programming_language () =
-      let uri = URI.projects
-                |> owned_param owned
-                |> search_param search
-                |> with_programming_language_param with_programming_language
+      let uri =
+        URI.projects |> owned_param owned |> search_param search
+        |> with_programming_language_param with_programming_language
       in
-      API.get_stream ~token ~uri (fun body -> return (Gitlab_j.project_shorts_of_string body))
+      API.get_stream ~token ~uri (fun body ->
+          return (Gitlab_j.project_shorts_of_string body))
 
     module ExternalStatusCheck = struct
       let list_for_merge_request ~token ~project_id ~merge_request_iid () =

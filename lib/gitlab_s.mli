@@ -381,7 +381,7 @@ module type Gitlab = sig
       name:string ->
       ?description:string ->
       unit ->
-      unit Response.t Monad.t
+      Gitlab_t.project_short Response.t Monad.t
     (** [create ~token ~name ?description ()] Creates a new project owned by the authenticated user.
 
         See {{:https://docs.gitlab.com/ee/api/projects.html#create-project}Create project}.
@@ -460,7 +460,13 @@ module type Gitlab = sig
         See {{:https://docs.gitlab.com/ee/api/events.html#list-a-projects-visible-events}List a projects visible events}.
     *)
 
-    val all_projects : token:Token.t -> ?owned:bool -> ?search:string -> ?with_programming_language:string -> unit -> Gitlab_t.project_short Stream.t
+    val all_projects :
+      token:Token.t ->
+      ?owned:bool ->
+      ?search:string ->
+      ?with_programming_language:string ->
+      unit ->
+      Gitlab_t.project_short Stream.t
     (** [all_projects ~token ()] Get a list of all visible projects across GitLab for the authenticated user.
 
         See {{:https://docs.gitlab.com/ee/api/projects.html#list-all-projects}List all projects}.
