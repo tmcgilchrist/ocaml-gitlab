@@ -11,4 +11,6 @@ let from_file () =
       let user = Otoml.(find toml get_string [ "gitlab.com"; "user" ])
       and token' = Otoml.(find toml get_string [ "gitlab.com"; "token" ]) in
       { token = Gitlab.Token.of_string token'; user }
-  | Error err -> raise (Config err)
+  | Error err ->
+      Printf.eprintf "Missing lab configuration file at ~/.config/lab";
+      raise (Config err)

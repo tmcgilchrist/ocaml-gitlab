@@ -46,6 +46,10 @@ module CommandLine = struct
       required
       & opt (some string) None
       & info [ "d"; "description" ] ~docv:"PROJECT_DESCRIPTION" ~doc)
+
+  let json =
+    let doc = "Print output as formatted json" in
+    Arg.(value & opt bool false & info [ "json" ] ~doc)
 end
 
 (* Non-zero exit with error message *)
@@ -66,21 +70,25 @@ let user_cmd =
   (Term.(pure user_list $ CommandLine.owner_id $ pure ()), Term.info "user-list")
 
 let user_name_cmd =
-  let user_list name () =
+  let user_list name json () =
     let cmd name =
       let open Gitlab in
       let open Monad in
       User.by_name ~name () >>~ fun users ->
       return
-      @@ List.iter
-           (fun user ->
-             printf "%s:%i\n" user.Gitlab_t.user_short_username
-               user.Gitlab_t.user_short_id)
-           users
+      @@
+      if json then
+        printf "%s" (Yojson.Basic.prettify (Gitlab_j.string_of_users users))
+      else
+        List.iter
+          (fun user ->
+            printf "%s:%i\n" user.Gitlab_t.user_short_username
+              user.Gitlab_t.user_short_id)
+          users
     in
     Lwt_main.run @@ Gitlab.Monad.run (cmd name)
   in
-  ( Term.(pure user_list $ CommandLine.owner_name $ pure ()),
+  ( Term.(pure user_list $ CommandLine.owner_name $ CommandLine.json $ pure ()),
     Term.info "user-name" )
 
 let user_projects_cmd =
@@ -104,6 +112,7 @@ let user_events_cmd config =
     let cmd =
       let open Gitlab in
       let open Monad in
+      let config = config () in
       User.events ~token:config.token ~id () >>~ fun events ->
       return @@ printf "%s\n" (Gitlab_j.string_of_events events)
     in
@@ -117,6 +126,7 @@ let merge_requests_cmd config =
     let cmd =
       let open Gitlab in
       let open Monad in
+      let config = config () in
       let* mr = return (User.merge_requests ~token:config.token ()) in
       Stream.iter
         (fun merge_request ->
@@ -134,6 +144,7 @@ let status_checks_cmd config =
     let cmd =
       let open Gitlab in
       let open Monad in
+      let config = config () in
       Project.ExternalStatusCheck.checks ~token:config.token ~project_id ()
       >>~ fun x ->
       return
@@ -155,6 +166,7 @@ let project_create_cmd config =
     let cmd =
       let open Gitlab in
       let open Monad in
+      let config = config () in
       Project.create ~token:config.token ~name ~description () >>~ fun p ->
       return
       @@ printf "%s\n"
@@ -200,15 +212,16 @@ let default_cmd =
     Term.info "lab" ~version:"0.1" ~doc ~man )
 
 let cmds =
-  let config = Config.from_file () in
+  let config = Config.from_file in
   [
     user_cmd;
     user_name_cmd;
     user_projects_cmd;
+    api_cmd;
+
     merge_requests_cmd config;
     status_checks_cmd config;
     user_events_cmd config;
-    api_cmd;
     project_create_cmd config;
   ]
 
