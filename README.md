@@ -12,16 +12,17 @@ TODO
    * [x] Add basic cli mdx test
    * [X] Add Steaming responses / pagination support
    * [ ] Add test for authenticated queries
-   * [ ] Parameterise gitlab url to support various gitlab hosting arrangements
-   * [ ] documentation introduction on how to use the library
+   * [X] Parameterise gitlab url to support various gitlab hosting arrangements
+   * [X] documentation introduction on how to use the library
    * [ ] Functor across HTTP libraries, Cohttp / httpaf ???
 
 Support for ocurrent
 
-   * [ ] Webhooks integration for delivering Merge Request open, merge to master
-   * [x] Support events serialisation, add tests for de-serialising events
+   * [X] Webhooks integration for delivering Merge Request open, merge to master
+   * [X] Support events serialisation, add tests for de-serialising events
    * [ ] CRUD for Merge requests
-   * [ ] Authenticated user support via tokens / oauth ???
+   * [ ] Authenticated user support via tokens
+   * [ ] Authenticated user support via oauth
 
 
 Pre-requisites

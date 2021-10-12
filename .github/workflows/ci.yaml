@@ -14,7 +14,8 @@ jobs:
         os:
           - macos-latest
           - ubuntu-latest
-          - windows-latest
+          # TODO Disabled due to go/jd dependency.
+          # - windows-latest
 
         ocaml-compiler:
           - 4.08.x

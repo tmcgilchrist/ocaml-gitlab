@@ -339,7 +339,7 @@ module type Gitlab = sig
         See {{:https://docs.gitlab.com/14.0/ee/api/users.html#for-user}List Users}.
      *)
 
-    val projects : id:string -> unit -> Gitlab_t.projects Response.t Monad.t
+    val projects : id:string -> unit -> Gitlab_t.projects_short Response.t Monad.t
     (** [projects ~id ()] list user projects for user [id].
 
         See {{:https://docs.gitlab.com/14.0/ee/api/projects.html#list-user-projects}List User Projects}.
@@ -409,7 +409,7 @@ module type Gitlab = sig
       project_id:int ->
       merge_request_iid:string ->
       unit ->
-      Gitlab_j.merge_request Response.t Monad.t
+      Gitlab_t.merge_request Response.t Monad.t
     (** [merge_request ?token ~project_id ~merge_request_iid ()] shows information about a single merge request.
 
         See {{:https://docs.gitlab.com/14.0/ee/api/merge_requests.html#get-single-mr}Get single merge request}.
@@ -420,7 +420,7 @@ module type Gitlab = sig
       project_id:int ->
       merge_request_iid:string ->
       unit ->
-      Gitlab_j.users Response.t Monad.t
+      Gitlab_t.users Response.t Monad.t
     (** [merge_request_participants ?token ~project_id ~merge_request_iid ()] gets a list of merge request participants.
 
         See {{:https://docs.gitlab.com/14.0/ee/api/merge_requests.html#get-single-mr-participants}Get a list of merge request participants}.
@@ -431,7 +431,7 @@ module type Gitlab = sig
       project_id:int ->
       merge_request_iid:string ->
       unit ->
-      Gitlab_j.commits Response.t Monad.t
+      Gitlab_t.commits Response.t Monad.t
     (** [merge_request_commits ?token ~project_id ~merge_request_iid ()] gets a list of merge request commits.
 
        See {{:https://docs.gitlab.com/14.0/ee/api/merge_requests.html#get-single-mr-commits}Get single merge request commits}.
@@ -442,7 +442,7 @@ module type Gitlab = sig
       project_id:int ->
       merge_request_iid:string ->
       unit ->
-      Gitlab_j.changes Response.t Monad.t
+      Gitlab_t.changes Response.t Monad.t
     (** [merge_request_changes ?token ~project_id ~merge_request_iid ()] shows information about the merge request including its files and changes.
 
        See {{:https://docs.gitlab.com/ee/api/merge_requests.html#get-single-mr-changes}Get single MR changes}.
@@ -502,7 +502,7 @@ module type Gitlab = sig
         token:Token.t ->
         project_id:int ->
         unit ->
-        Gitlab_j.external_status_checks Response.t Monad.t
+        Gitlab_t.external_status_checks Response.t Monad.t
       (** [checks ~project_id ] request project's external status checks.
 
           See {{:https://docs.gitlab.com/ee/api/status_checks.html#get-project-external-status-checks}Get project external status checks}.
@@ -515,7 +515,7 @@ module type Gitlab = sig
         external_url:string ->
         ?protected_branch_ids:int list ->
         unit ->
-        Gitlab_j.external_status_check Response.t Monad.t
+        Gitlab_t.external_status_check Response.t Monad.t
       (** [create ] create a new external status check for a project.
 
             See {{:https://docs.gitlab.com/ee/api/status_checks.html#create-external-status-check}Create external status check}.
@@ -546,6 +546,92 @@ module type Gitlab = sig
 
             See {{:https://docs.gitlab.com/ee/api/status_checks.html#update-external-status-check}Update external status check}.
         *)
+    end
+
+    (** [Commit] operates on a repository's {{:https://docs.gitlab.com/ee/api/commits.html}commits}. *)
+    module Commit : sig
+      val commits :
+        token:Token.t ->
+        project_id:int ->
+        ?ref_name:string ->
+        ?since:string ->
+        ?until:string ->
+        ?path:string ->
+        ?all:bool ->
+        unit ->
+        Gitlab_t.commit Stream.t
+
+      (** [commits ?token ~project_id ()] list all commits for a project.
+
+          See {{:https://docs.gitlab.com/ee/api/commits.html#list-repository-commits}List repository commits}.
+      *)
+
+      val commit :
+        token:Token.t ->
+        project_id:int ->
+        sha:string ->
+        ?stats:bool ->
+        unit ->
+        Gitlab_t.commit Response.t Monad.t
+      (** [commit ?token ~project_id ~sha] get a specified commit by the commit hash or name of a branch or tag.
+
+          See {{:https://docs.gitlab.com/ee/api/commits.html#get-a-single-commit}Get a single commit}.
+      *)
+
+      val comments :
+        token:Token.t ->
+        project_id:int ->
+        sha:string ->
+        unit ->
+        Gitlab_t.commit_comment Stream.t
+      (** [comments ?token ~project_id ~sha] get comments of a commit.
+
+          See {{:https://docs.gitlab.com/ee/api/commits.html#get-the-comments-of-a-commit}Get the comments of a commit}.
+      *)
+
+      val comment :
+        token:Token.t ->
+        project_id:int ->
+        sha:string ->
+        note:string ->
+        ?path:string ->
+        ?line:int ->
+        ?line_type:Gitlab_t.line_type ->
+        unit ->
+        Gitlab_t.commit_commented Response.t Monad.t
+      (** [comment ~token ~project_id ~sha ~note] adds a comment to a commit.
+
+          See {{:https://docs.gitlab.com/ee/api/commits.html#post-comment-to-commit}Post comment to a commit}.
+      *)
+
+      val statuses :
+        token:Token.t ->
+        project_id:int ->
+        sha:string ->
+        ?ref_name:string ->
+        ?stage:string ->
+        ?name:string ->
+        ?all:bool ->
+        unit ->
+        Gitlab_t.commit_status Stream.t
+      (** [statuses ~token ~project_id ~sha] lists the statuses of a commit.
+
+          See {{:https://docs.gitlab.com/ee/api/commits.html#list-the-statuses-of-a-commit}List the statuses of a commit in a project}.
+      *)
+
+      val status :
+        token:Token.t ->
+        project_id:int ->
+        sha:string ->
+        state:Gitlab_t.commit_status_status ->
+        ?ref_name:string ->
+        ?name:string ->
+        ?target_url:string ->
+        ?description:string ->
+        ?coverage:float ->
+        ?pipeline_id:int ->
+        unit ->
+        Gitlab_t.commit_status Response.t Monad.t
     end
   end
 

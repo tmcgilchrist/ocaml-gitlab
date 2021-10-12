@@ -253,8 +253,6 @@
     "discussion_locked": null,
     "should_remove_source_branch": null,
     "force_remove_source_branch": null,
-    "allow_collaboration": null,
-    "allow_maintainer_to_push": null,
     "reference": "!7",
     "references": {
       "short": "!7",
@@ -320,8 +318,6 @@
     "discussion_locked": null,
     "should_remove_source_branch": null,
     "force_remove_source_branch": null,
-    "allow_collaboration": null,
-    "allow_maintainer_to_push": null,
     "reference": "!6",
     "references": {
       "short": "!6",
@@ -387,8 +383,6 @@
     "discussion_locked": null,
     "should_remove_source_branch": null,
     "force_remove_source_branch": null,
-    "allow_collaboration": null,
-    "allow_maintainer_to_push": null,
     "reference": "!4",
     "references": {
       "short": "!4",
@@ -454,8 +448,6 @@
     "discussion_locked": null,
     "should_remove_source_branch": null,
     "force_remove_source_branch": null,
-    "allow_collaboration": null,
-    "allow_maintainer_to_push": null,
     "reference": "!3",
     "references": {
       "short": "!3",

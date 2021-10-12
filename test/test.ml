@@ -24,11 +24,11 @@ let check_diff dir s =
   let diff = Printf.sprintf "jd -set %s %s" expected output in
   let diff_out, diff_in = Unix.open_process diff in
   let diff_output = read_ic diff_out in
-  match Unix.close_process (diff_out, diff_in) with
-  | Unix.WEXITED 0 -> ()
-  | Unix.WEXITED x ->
+  match Unix.close_process (diff_out, diff_in), String.length diff_output with
+  | Unix.WEXITED 0, 0 -> ()
+  | Unix.WEXITED x, _ ->
       Alcotest.fail ("diff failed " ^ string_of_int x ^ ":\n" ^ diff_output)
-  | _ -> Alcotest.fail "diff failed unexpectedly"
+  | _, _ -> Alcotest.fail ("diff failed :\n" ^ diff_output)
 
 module type TestableJson = sig
   type t
@@ -78,15 +78,14 @@ module Gitlab_j_user_short : TestableJson = struct
 end
 
 module Gitlab_j_projects : TestableJson = struct
-  type t = Gitlab_j.projects
+  type t = Gitlab_j.projects_full
 
   let name = "projects"
 
-  let of_string = Gitlab_j.projects_of_string
+  let of_string = Gitlab_j.projects_full_of_string
 
   let pp v =
-    Yojson.Basic.pretty_to_string
-    @@ Yojson.Basic.from_string (Gitlab_j.string_of_projects v)
+    Yojson.Basic.prettify (Gitlab_j.string_of_projects_full v)
 end
 
 module Gitlab_j_project_short : TestableJson = struct
@@ -125,6 +124,19 @@ module Gitlab_j_merge_requests : TestableJson = struct
     @@ Yojson.Basic.from_string (Gitlab_j.string_of_merge_requests v)
 end
 
+module Gitlab_j_commit_statuses : TestableJson = struct
+  type t = Gitlab_j.commit_statuses
+
+  let name = "commit_statuses"
+
+  let of_string = Gitlab_j.commit_statuses_of_string
+
+  let pp v =
+    Yojson.Basic.pretty_to_string
+    @@ Yojson.Basic.from_string (Gitlab_j.string_of_commit_statuses v)
+end
+
+
 (* instances under test *)
 module E = Make (Gitlab_j_events)
 module US = Make (Gitlab_j_user_short)
@@ -132,6 +144,7 @@ module P = Make (Gitlab_j_projects)
 module PS = Make (Gitlab_j_project_short)
 module WH = Make (Gitlab_j_webhooks)
 module MR = Make (Gitlab_j_merge_requests)
+module CS = Make (Gitlab_j_commit_statuses)
 
 (* Run it *)
 let () =
@@ -139,10 +152,11 @@ let () =
   Lwt_main.run
   @@ run "GitLab"
        [
+         ("commit_statuses", CS.test ());
          ("events", E.test ());
-         ("user_short", US.test ());
-         ("projects", P.test ());
-         ("project_short", PS.test ());
-         ("webhooks", WH.test ());
          ("merge_requests", MR.test ());
+         ("project_short", PS.test ());
+         ("projects", P.test ());
+         ("user_short", US.test ());
+         ("webhooks", WH.test ());
        ]
