@@ -218,7 +218,6 @@ let cmds =
     user_name_cmd;
     user_projects_cmd;
     api_cmd;
-
     merge_requests_cmd config;
     status_checks_cmd config;
     user_events_cmd config;

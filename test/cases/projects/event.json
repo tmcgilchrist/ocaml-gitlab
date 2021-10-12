@@ -1,13 +1,10 @@
 [
   {
     "id": 29798678,
-    "description": "Test ocaml-gitlab",
     "name": "ocaml-gitlab",
+    "description": "Test ocaml-gitlab",
     "name_with_namespace": "Tim McGilchrist / ocaml-gitlab",
-    "path": "ocaml-gitlab",
-    "path_with_namespace": "tmcgilchrist/ocaml-gitlab",
     "created_at": "2021-09-22T04:59:04.272Z",
-    "default_branch": "main",
     "tag_list": [],
     "topics": [],
     "ssh_url_to_repo": "git@gitlab.com:tmcgilchrist/ocaml-gitlab.git",
@@ -17,6 +14,7 @@
     "avatar_url": null,
     "forks_count": 0,
     "star_count": 0,
+    "default_branch": "main",
     "last_activity_at": "2021-09-22T23:45:06.053Z",
     "namespace": {
       "id": 578093,
@@ -28,6 +26,10 @@
       "avatar_url": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
       "web_url": "https://gitlab.com/tmcgilchrist"
     },
+    "visibility": "public",
+    "path": "ocaml-gitlab",
+    "path_with_namespace": "tmcgilchrist/ocaml-gitlab",
+    "issues_enabled": true,
     "container_registry_image_prefix": "registry.gitlab.com/tmcgilchrist/ocaml-gitlab",
     "_links": {
       "self": "https://gitlab.com/api/v4/projects/29798678",
@@ -41,7 +43,6 @@
     "packages_enabled": true,
     "empty_repo": false,
     "archived": false,
-    "visibility": "public",
     "owner": {
       "id": 490393,
       "name": "Tim McGilchrist",
@@ -60,7 +61,6 @@
       "name_regex_keep": null,
       "next_run_at": "2021-09-23T04:59:04.291Z"
     },
-    "issues_enabled": true,
     "merge_requests_enabled": true,
     "wiki_enabled": true,
     "jobs_enabled": true,

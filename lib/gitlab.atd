@@ -70,6 +70,9 @@ type namespace = {
   path: string;
   kind: string;
   full_path: string;
+  parent_id: int nullable;
+  avatar_url: string;
+  web_url: string;
 } <ocaml field_prefix="namespace_">
 
 type merge_method = [
@@ -131,47 +134,106 @@ type project_shorts = project_short list
 
 type project_full = {
   inherit project_short;
-  default_branch: string;
-  visibility: visibility;
+  ?runners_token: string nullable;
+  ?statistics: statistics nullable;
+  allow_merge_on_skipped_pipeline: bool nullable;
+  analytics_access_level: string;
+  approvals_before_merge: int;
+  archived: bool;
+  auto_cancel_pending_pipelines: string;
+  auto_devops_deploy_strategy: string;
+  auto_devops_enabled: bool;
+  autoclose_referenced_issues: bool;
+  build_coverage_regex: string nullable;
+  build_timeout: int;
+  builds_access_level: string;
+  can_create_merge_request_in: bool;
+  ci_config_path: string nullable;
+  ci_default_git_depth: int nullable;
+  ci_forward_deployment_enabled: bool nullable;
+  ci_job_token_scope_enabled: bool;
+  compliance_frameworks: string list;
+  ?container_expiration_policy: container_expiration_policy option;
+  container_registry_access_level: string;
+  container_registry_enabled: bool;
+  container_registry_image_prefix: string;
+  creator_id: int;
+  emails_disabled: string nullable;
+  empty_repo: bool;
+  external_authorization_classification_label: string;
+  ?forked_from_project: project_short option;
+  forking_access_level: string;
+  import_status: string;
+  issues_access_level: string;
+  issues_enabled: bool;
+  issues_template: string nullable;
+  jobs_enabled: bool;
+  keep_latest_artifact: bool;
+  lfs_enabled: bool;
+  links <json name="_links">: links;
+  marked_for_deletion_at: string nullable;
+  marked_for_deletion_on: string nullable;
+  merge_method: merge_method;
+  merge_pipelines_enabled: bool;
+  merge_requests_access_level: string;
+  merge_requests_enabled: bool;
+  merge_requests_template: string nullable;
+  merge_trains_enabled: bool;
+  mirror: bool;
+  only_allow_merge_if_all_discussions_are_resolved: bool nullable;
+  only_allow_merge_if_pipeline_succeeds: bool;
+  open_issues_count: int;
+  operations_access_level: string;
+  owner: user_short;
+  packages_enabled: bool nullable;
+  pages_access_level: string;
   path: string;
   path_with_namespace: string;
-  issues_enabled: bool;
-  open_issues_count: int;
-  merge_requests_enabled: bool;
-  jobs_enabled: bool;
-  wiki_enabled: bool;
-  snippets_enabled: bool;
-  can_create_merge_request_in: bool;
-  resolve_outdated_diff_discussions: bool;
-  container_registry_enabled: bool;
-  creator_id: int;
-  import_status: string;
-  archived: bool;
-  avatar_url: string;
-  shared_runners_enabled: bool;
-  runners_token: string;
-  ci_default_git_depth: int;
-  ci_forward_deployment_enabled: bool;
+  permissions: permissions;
   public_jobs: bool;
-  shared_with_groups: string list;
-  only_allow_merge_if_pipeline_succeeds: bool;
-  allow_merge_on_skipped_pipeline: bool;
-  restrict_user_defined_variables: bool;
-  only_allow_merge_if_all_discussions_are_resolved: bool;
-  remove_source_branch_after_merge: bool;
+  printing_merge_request_link_enabled: bool;
+  remove_source_branch_after_merge: bool nullable;
+  repository_access_level: string;
   request_access_enabled: bool;
-  merge_method: merge_method;
+  requirements_enabled: bool;
+  resolve_outdated_diff_discussions: bool nullable;
+  restrict_user_defined_variables: bool nullable;
+  security_and_compliance_enabled: bool;
+  service_desk_address: string nullable;
+  service_desk_enabled: bool nullable;
+  shared_runners_enabled: bool;
+  shared_with_groups: string list;
+  snippets_enabled: bool;
+  snippets_access_level: string;
   squash_option: string;
-  autoclose_referenced_issues: bool;
   suggestion_commit_message: string nullable;
-  marked_for_deletion_at: string;
-  marked_for_deletion_on: string;
-  statistics: statistics;
-  container_registry_image_prefix: string;
-  links: links;
+  visibility: visibility;
+  wiki_access_level: string;
+  wiki_enabled: bool;
 } <ocaml field_prefix="project_full_">
 
-type projects = project_short list
+type projects_short = project_short list
+type projects_full = project_full list
+
+type project_access = {
+  access_level: int;
+  notification_level: int;
+} <ocaml field_prefix="project_access_">
+
+type permissions = {
+  group_access: string nullable;
+  project_access: project_access;
+} <ocaml field_prefix="permissions_">
+
+type container_expiration_policy = {
+  cadence: string;
+  enabled: bool;
+  keep_n: int;
+  name_regex: string;
+  name_regex_keep: string nullable;
+  next_run_at: string;
+  older_than: string;
+} <ocaml field_prefix="container_expiration_policy_">
 
 type state = [
   | Opened <json name="opened">
@@ -239,6 +301,11 @@ type merge_request = {
   downvotes: int;
   author: user_short;
   assignee: user_short nullable;
+  approvals_before_merge: string nullable;
+  ?allow_collaboration: bool option nullable;
+  ?allow_maintainer_to_push: bool option nullable;
+  blocking_discussions_resolved: bool;
+  has_conflicts: bool;
   assignees: user_short list;
   reviewers: user_short list;
   source_project_id: int;
@@ -256,9 +323,8 @@ type merge_request = {
   discussion_locked: bool nullable;
   should_remove_source_branch: bool nullable;
   force_remove_source_branch: bool nullable;
-  ?allow_collaboration: bool option;
-  ?allow_maintainer_to_push: bool option;
   web_url: string;
+  reference: string;
   references: references;
   time_stats: time_stats;
   squash: bool;
@@ -278,6 +344,53 @@ type commit = {
 } <ocaml field_prefix="commit_">
 
 type commits = commit list
+
+type commit_comment = {
+  note: string;
+  author: user_short;
+} <ocaml field_prefix="commit_comment_">
+
+type commit_comments = commit_comment list
+
+type commit_status = {
+  id: int;
+  sha: string;
+  ref: string;
+  status: string;
+  name: string;
+  target_url: string nullable;
+  description: string nullable;
+  created_at: string;
+  started_at: string nullable;
+  finished_at: string;
+  allow_failure: bool;
+  coverage: string nullable;
+  author: user_short;
+} <ocaml field_prefix="commit_status_">
+
+type commit_statuses = commit_status list
+
+type commit_status_status = [
+ | Pending <json name="pending">
+ | Running <json name="running">
+ | Success <json name="success">
+ | Failed <json name="failed">
+ | Cancelled <json name="cancelled">
+] <ocaml field_prefix="commit_status_status_">
+
+type line_type = [
+  | New <json name="new">
+  | Old <json name="old">
+]
+
+type commit_commented = {
+  author: user_short;
+  created_at: string;
+  line_type: line_type;
+  path: string;
+  line: int;
+  note: string;
+} <ocaml field_prefix="commit_commented_">
 
 type change = {
   old_path: string;
@@ -399,13 +512,13 @@ type project_webhook = {
   description: string nullable;
   web_url: string;
   avatar_url: string nullable;
+  ci_config_path: string nullable;
   git_ssh_url: string;
   git_http_url: string;
   namespace: string;
   path_with_namespace: string;
   visibility_level: int;
   default_branch: string;
-  ?ci_config_path: string option;
   ?homepage: string option;
   ?url: string option;
   ?ssh_url: string option;
@@ -426,6 +539,7 @@ type merge_request_attributes = {
   last_commit: commit_short_webhook;
   merge_commit_sha: string nullable;
   merge_error: string nullable;
+  merge_params: merge_params;
   merge_status: merge_status;
   merge_user_id: int nullable;
   merge_when_pipeline_succeeds: bool;
@@ -445,10 +559,15 @@ type merge_request_attributes = {
   work_in_progress: bool;
   total_time_spent: int;
   time_change: int;
+  time_estimate: int;
   human_total_time_spent: int nullable;
   human_time_change: int nullable;
   human_time_estimate: int nullable;
 } <ocaml field_prefix="merge_request_attributes_">
+
+type merge_params =  {
+  force_remove_source_branch: string;
+}  <ocaml field_prefix="merge_params_">
 
 type label = {
   id: int;
@@ -510,6 +629,7 @@ type push_webhook = {
   ref: string;
   checkout_sha: string;
   message: string nullable;
+  event_name: string;
   user_id: int;
   user_name: string;
   user_username: string;
@@ -524,6 +644,7 @@ type push_webhook = {
 } <ocaml field_prefix="push_webhook_">
 
 type merge_request_webhook = {
+  event_type: string;
   user: user_short;
   project: project_webhook;
   attributes<json name="object_attributes">: merge_request_attributes;
@@ -541,14 +662,12 @@ type issue_attributes = {
   confidential: bool;
   created_at: string;
   description: string;
- (*
-  discussion_locked: NULL;
-  due_date: NULL;
-  duplicated_to_id:NULL;
-  human_time_change:NULL;
-  human_time_estimate:NULL;
-  human_total_time_spent:NULL;
-  *)
+  discussion_locked: string nullable;
+  due_date: string nullable;
+  duplicated_to_id:string nullable;
+  human_time_change:string nullable;
+  human_time_estimate:string nullable;
+  human_total_time_spent:string nullable;
   id: int;
   iid: int;
   labels: string list;
@@ -572,6 +691,7 @@ type issue_attributes = {
 } <ocaml field_prefix="issue_attributes_">
 
 type issue_webhook = {
+  event_type: string;
   user: user_short;
   project: project_webhook;
   attributes <json name="object_attributes">: issue_attributes;
@@ -609,6 +729,7 @@ type note_attributes = {
 } <ocaml field_prefix="note_attrbutes_">
 
 type note_webhook = {
+  event_type: string;
   user: user_short;
   project: project_webhook;
   attributes <json name="object_attributes">: note_attributes;
@@ -747,7 +868,7 @@ type event_action_name = [
   | Pushed <json name="pushed">
   | PushedTo <json name="pushed to">
   | PushedNew <json name="pushed new">
-  | Reopened <json name="reopend">
+  | Reopened <json name="reopened">
   | Updated <json name="updated">
 ]
 
@@ -769,7 +890,6 @@ type note = {
   resolvable: bool;
   confidential: bool;
   noteable_iid: int;
-  (* commands_changes: {} *)
 } <ocaml field_prefix="note_">
 
 type branch = {
