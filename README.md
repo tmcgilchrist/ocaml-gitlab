@@ -1,10 +1,8 @@
 Gitlab bindings for OCaml
 ==========
-[![GitHub CI][github-shield]][github-ci]
+[![GitHub CI][github-shield]][github-ci] [![docs][docs-shield]][docs]
 
-Native OCaml bindings to Gitlab REST API v4 see https://docs.gitlab.com/ee/api/README.html
-
-Also see https://hackage.haskell.org/package/gitlab-haskell for the Haskell version.
+Native OCaml bindings to [Gitlab REST API v4].
 
 TODO
 
@@ -52,3 +50,8 @@ Run `lab -h` for more information about cli options.
 
  [github-shield]: https://github.com/tmcgilchrist/ocaml-gitlab/actions/workflows/ci.yaml/badge.svg
  [github-ci]: https://github.com/tmcgilchrist/ocaml-gitlab/actions/workflows/ci.yaml
+ 
+ [docs-shield]:https://img.shields.io/badge/doc-online-blue.svg
+ [docs]: https://tmcgilchrist.github.io/ocaml-gitlab/gitlab/index.html
+
+ [Gitlab REST API v4]: https://docs.gitlab.com/ee/api/README.html
