@@ -1,5 +1,6 @@
 Gitlab bindings for OCaml
 ==========
+[![GitHub CI][github-shield]][github-ci]
 
 Native OCaml bindings to Gitlab REST API v4 see https://docs.gitlab.com/ee/api/README.html
 
@@ -47,3 +48,7 @@ GITLAB_DEBUG=[true|false] for printing debug information like what HTTP requests
 GITLAB_URL to configure the GitLab instance to connect to. This defaults to `https://gitlab.com/api/v4` on the public `https://github.com` site.
 
 Run `lab -h` for more information about cli options.
+
+
+ [github-shield]: https://github.com/tmcgilchrist/ocaml-gitlab/actions/workflows/ci.yaml/badge.svg
+ [github-ci]: https://github.com/tmcgilchrist/ocaml-gitlab/actions/workflows/ci.yaml
