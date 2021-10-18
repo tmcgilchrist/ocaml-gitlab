@@ -14,14 +14,16 @@ TODO
    * [X] Parameterise gitlab url to support various gitlab hosting arrangements
    * [X] documentation introduction on how to use the library
    * [ ] Functor across HTTP libraries, Cohttp / httpaf ???
+   * [ ] Improved documentation on Github_t types
 
 Support for ocurrent
 
    * [X] Webhooks integration for delivering Merge Request open, merge to master
    * [X] Support events serialisation, add tests for de-serialising events
-   * [ ] CRUD for Merge requests
+   * [X] CRUD for Merge requests
    * [ ] Authenticated user support via tokens
    * [ ] Authenticated user support via oauth
+
 
 
 Pre-requisites
@@ -50,7 +52,7 @@ Run `lab -h` for more information about cli options.
 
  [github-shield]: https://github.com/tmcgilchrist/ocaml-gitlab/actions/workflows/ci.yaml/badge.svg
  [github-ci]: https://github.com/tmcgilchrist/ocaml-gitlab/actions/workflows/ci.yaml
- 
+
  [docs-shield]:https://img.shields.io/badge/doc-online-blue.svg
  [docs]: https://tmcgilchrist.github.io/ocaml-gitlab/gitlab/index.html
 

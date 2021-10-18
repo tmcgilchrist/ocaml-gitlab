@@ -339,7 +339,7 @@ type commit = {
   title: string;
   author_name: string;
   author_email: string;
-  created_at: string option;
+  created_at: string;
   message: string;
 } <ocaml field_prefix="commit_">
 
