@@ -387,6 +387,29 @@ module type Gitlab = sig
         See {{:https://docs.gitlab.com/ee/api/projects.html#create-project}Create project}.
     *)
 
+    val by_name :
+      ?token:Token.t ->
+      owner:string ->
+      name:string ->
+      unit ->
+      Gitlab_t.projects_short Response.t Monad.t
+    (** [by_name ~owner ~name ()] retrieves projects owned by [owner] with a name like [name].
+        Depending on the [name] used this will return 1 or more matches. Supply a [token] to access private projects.
+
+        There is no direct fetch by name API in GitLab.
+    *)
+
+    val by_id :
+      ?token:Token.t ->
+      project_id:int ->
+      unit ->
+      Gitlab_t.project_short option Response.t Monad.t
+    (** [by_id ~project_id] retrieve the project for [project_id], returns [None] if the project doesn't
+        exist. Supply a [token] to access private projects.
+
+        See {{:https://docs.gitlab.com/ee/api/projects.html#get-single-project}Get a single project}.
+    *)
+
     val merge_requests :
       ?token:Token.t ->
       ?state:Gitlab_t.state ->
@@ -551,7 +574,7 @@ module type Gitlab = sig
     (** [Commit] operates on a repository's {{:https://docs.gitlab.com/ee/api/commits.html}commits}. *)
     module Commit : sig
       val commits :
-        token:Token.t ->
+        ?token:Token.t ->
         project_id:int ->
         ?ref_name:string ->
         ?since:string ->
@@ -567,7 +590,7 @@ module type Gitlab = sig
       *)
 
       val commit :
-        token:Token.t ->
+        ?token:Token.t ->
         project_id:int ->
         sha:string ->
         ?stats:bool ->
@@ -579,7 +602,7 @@ module type Gitlab = sig
       *)
 
       val comments :
-        token:Token.t ->
+        ?token:Token.t ->
         project_id:int ->
         sha:string ->
         unit ->
@@ -590,7 +613,7 @@ module type Gitlab = sig
       *)
 
       val comment :
-        token:Token.t ->
+        ?token:Token.t ->
         project_id:int ->
         sha:string ->
         note:string ->
@@ -605,7 +628,7 @@ module type Gitlab = sig
       *)
 
       val statuses :
-        token:Token.t ->
+        ?token:Token.t ->
         project_id:int ->
         sha:string ->
         ?ref_name:string ->
@@ -620,7 +643,7 @@ module type Gitlab = sig
       *)
 
       val status :
-        token:Token.t ->
+        ?token:Token.t ->
         project_id:int ->
         sha:string ->
         state:Gitlab_t.commit_status_status ->

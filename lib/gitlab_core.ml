@@ -674,6 +674,8 @@ struct
 
     let projects = Uri.of_string (Printf.sprintf "%s/projects" api)
 
+    let projects_by_id project_id = Uri.of_string (Printf.sprintf "%s/projects/%i" api project_id)
+
     let project_merge_requests ~id =
       Uri.of_string (Printf.sprintf "%s/projects/%i/merge_requests" api id)
 
@@ -934,6 +936,16 @@ struct
       API.post ~token ~uri ~expected_code:`Created (fun s ->
           Lwt.return (Gitlab_j.project_short_of_string s))
 
+    let by_name ?token ~owner ~name () =
+      let uri = URI.user_projects owner
+                |> fun uri -> Uri.add_query_param' uri ("search", name) in
+      API.get ?token ~uri (fun body -> return @@ Gitlab_j.projects_short_of_string body)
+
+    let by_id ?token ~project_id () =
+      let uri = URI.projects_by_id project_id in
+      let fail_handlers = [API.code_handler ~expected_code:`Not_found (fun x -> return None)] in
+      API.get ?token ~uri ~fail_handlers (fun body -> return @@ Some (Gitlab_j.project_short_of_string body))
+
     let merge_requests ?token ?state ?milestone ?labels ?author ?author_username
         ?my_reaction ?scope ~id () =
       let uri =
@@ -987,41 +999,41 @@ struct
           return (Gitlab_j.project_shorts_of_string body))
 
     module Commit = struct
-      let commits ~token ~project_id ?ref_name ?since ?until ?path ?all () =
+      let commits ?token ~project_id ?ref_name ?since ?until ?path ?all () =
         let uri =
           URI.project_commits project_id
           |> ref_name_param ref_name |> since_param since |> until_param until
           |> path_param path |> all_param all
         in
-        API.get_stream ~token ~uri (fun body ->
+        API.get_stream ?token ~uri (fun body ->
             return (Gitlab_j.commits_of_string body))
 
-      let commit ~token ~project_id ~sha ?stats () =
+      let commit ?token ~project_id ~sha ?stats () =
         let uri = URI.project_commit project_id sha |> stats_param stats in
-        API.get ~token ~uri (fun body ->
+        API.get ?token ~uri (fun body ->
             return (Gitlab_j.commit_of_string body))
 
-      let comments ~token ~project_id ~sha () =
+      let comments ?token ~project_id ~sha () =
         let uri = URI.project_comments project_id sha in
-        API.get_stream ~token ~uri (fun body ->
+        API.get_stream ?token ~uri (fun body ->
             return (Gitlab_j.commit_comments_of_string body))
 
-      let comment ~token ~project_id ~sha ~note ?path ?line ?line_type () =
+      let comment ?token ~project_id ~sha ~note ?path ?line ?line_type () =
         let uri =
           URI.project_comments project_id sha
           |> note_param note |> path_param path |> line_param line
           |> line_type_param line_type
         in
-        API.post ~token ~uri ~expected_code:`Created (fun body ->
+        API.post ?token ~uri ~expected_code:`Created (fun body ->
             Lwt.return (Gitlab_j.commit_commented_of_string body))
 
-      let statuses ~token ~project_id ~sha ?ref_name ?stage ?name ?all () =
+      let statuses ?token ~project_id ~sha ?ref_name ?stage ?name ?all () =
         let uri =
           URI.project_commit_statuses project_id sha
           |> ref_param ref_name |> stage_param stage |> name_param name
           |> all_param all
         in
-        API.get_stream ~token ~uri (fun body ->
+        API.get_stream ?token ~uri (fun body ->
             return (Gitlab_j.commit_statuses_of_string body))
 
       let status ~token ~project_id ~sha ~state ?ref_name ?name ?target_url
@@ -1034,7 +1046,7 @@ struct
           |> coverage_param coverage
           |> pipeline_id_param pipeline_id
         in
-        API.post ~token ~uri ~expected_code:`Created (fun body ->
+        API.post ?token ~uri ~expected_code:`Created (fun body ->
             Lwt.return (Gitlab_j.commit_status_of_string body))
     end
 
