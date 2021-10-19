@@ -848,18 +848,20 @@ type push_data = {
   action: string;
   ref_type: string;
   commit_from: string nullable;
-  commit_to: string;
-  ref: string;
-  commit_title: string;
-  ref_count: string nullable;
+  commit_to: string nullable;
+  ref: string nullable;
+  commit_title: string nullable;
+  ref_count: int nullable;
 } <ocaml field_prefix="push_data_">
 
 type event_action_name = [
+  | Accepted <json name="accepted">
   | Approved <json name="approved">
   | Closed <json name="closed">
   | CommentedOn <json name="commented on">
   | Created <json name="created">
   | Destroyed <json name="destroyed">
+  | Deleted <json name="deleted">
   | Expired <json name="expired">
   | Joined <json name="joined">
   | Left <json name="left">
