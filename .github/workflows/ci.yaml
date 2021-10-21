@@ -23,6 +23,7 @@ jobs:
           - 4.10.x
           - 4.11.x
           - 4.12.x
+          - 4.13.x
 
     runs-on: ${{ matrix.os }}
 
