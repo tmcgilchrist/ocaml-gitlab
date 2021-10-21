@@ -40,6 +40,10 @@ module CommandLine = struct
     Arg.(
       required & pos 0 (some string) None & info [] ~docv:"PROJECT_NAME" ~doc)
 
+  let commit_sha =
+    let doc = "A commit SHA or branch name (default: \"HEAD\")." in
+    Arg.(required & pos 0 (some string) None & info [] ~docv:"COMMIT" ~doc)
+
   let project_description =
     let doc = "A short description of the GitLab repository." in
     Arg.(
@@ -50,6 +54,10 @@ module CommandLine = struct
   let json =
     let doc = "Print output as formatted json" in
     Arg.(value & opt bool false & info [ "json" ] ~doc)
+
+  let verbose =
+    let doc = "Print detailed report of all status checks and their URLs." in
+    Arg.(value & opt bool false & info [ "v"; "verbose" ] ~doc)
 end
 
 (* Non-zero exit with error message *)
@@ -181,6 +189,31 @@ let project_create_cmd config =
       "project-create - Creates a new project owned by the authenticated user."
   )
 
+let ci_status_cmd config =
+  let ci_status project_id sha _verbose () =
+    let cmd =
+      let open Gitlab in
+      let open Monad in
+      let config = config () in
+      return @@ Project.Commit.statuses ~token:config.token ~project_id ~sha ()
+      >>= fun statuses ->
+      let* results = Stream.to_list statuses in
+      match List.length results > 0 with
+      | true ->
+          return
+          @@ List.iter
+               (fun status ->
+                 printf "%s\n" status.Gitlab_t.commit_status_status)
+               results
+      | false -> return @@ printf "failure\n"
+    in
+    Lwt_main.run @@ Gitlab.Monad.run cmd
+  in
+  ( Term.(
+      pure ci_status $ CommandLine.project_id $ CommandLine.commit_sha
+      $ CommandLine.verbose $ pure ()),
+    Term.info "ci-status" )
+
 let api_cmd =
   let api uri_str () =
     let cmd =
@@ -222,6 +255,7 @@ let cmds =
     status_checks_cmd config;
     user_events_cmd config;
     project_create_cmd config;
+    ci_status_cmd config;
   ]
 
 let () =
