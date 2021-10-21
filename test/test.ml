@@ -24,7 +24,7 @@ let check_diff dir s =
   let diff = Printf.sprintf "jd -set %s %s" expected output in
   let diff_out, diff_in = Unix.open_process diff in
   let diff_output = read_ic diff_out in
-  match Unix.close_process (diff_out, diff_in), String.length diff_output with
+  match (Unix.close_process (diff_out, diff_in), String.length diff_output) with
   | Unix.WEXITED 0, 0 -> ()
   | Unix.WEXITED x, _ ->
       Alcotest.fail ("diff failed " ^ string_of_int x ^ ":\n" ^ diff_output)
@@ -84,8 +84,7 @@ module Gitlab_j_projects : TestableJson = struct
 
   let of_string = Gitlab_j.projects_full_of_string
 
-  let pp v =
-    Yojson.Basic.prettify (Gitlab_j.string_of_projects_full v)
+  let pp v = Yojson.Basic.prettify (Gitlab_j.string_of_projects_full v)
 end
 
 module Gitlab_j_project_short : TestableJson = struct
@@ -135,7 +134,6 @@ module Gitlab_j_commit_statuses : TestableJson = struct
     Yojson.Basic.pretty_to_string
     @@ Yojson.Basic.from_string (Gitlab_j.string_of_commit_statuses v)
 end
-
 
 (* instances under test *)
 module E = Make (Gitlab_j_events)

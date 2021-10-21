@@ -339,7 +339,8 @@ module type Gitlab = sig
         See {{:https://docs.gitlab.com/14.0/ee/api/users.html#for-user}List Users}.
      *)
 
-    val projects : id:string -> unit -> Gitlab_t.projects_short Response.t Monad.t
+    val projects :
+      id:string -> unit -> Gitlab_t.projects_short Response.t Monad.t
     (** [projects ~id ()] list user projects for user [id].
 
         See {{:https://docs.gitlab.com/14.0/ee/api/projects.html#list-user-projects}List User Projects}.
@@ -643,7 +644,7 @@ module type Gitlab = sig
       *)
 
       val status :
-        ?token:Token.t ->
+        token:Token.t ->
         project_id:int ->
         sha:string ->
         state:Gitlab_t.commit_status_status ->

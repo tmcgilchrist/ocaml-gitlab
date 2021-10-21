@@ -674,7 +674,8 @@ struct
 
     let projects = Uri.of_string (Printf.sprintf "%s/projects" api)
 
-    let projects_by_id project_id = Uri.of_string (Printf.sprintf "%s/projects/%i" api project_id)
+    let projects_by_id project_id =
+      Uri.of_string (Printf.sprintf "%s/projects/%i" api project_id)
 
     let project_merge_requests ~id =
       Uri.of_string (Printf.sprintf "%s/projects/%i/merge_requests" api id)
@@ -937,14 +938,20 @@ struct
           Lwt.return (Gitlab_j.project_short_of_string s))
 
     let by_name ?token ~owner ~name () =
-      let uri = URI.user_projects owner
-                |> fun uri -> Uri.add_query_param' uri ("search", name) in
-      API.get ?token ~uri (fun body -> return @@ Gitlab_j.projects_short_of_string body)
+      let uri =
+        URI.user_projects ~id:owner |> fun uri ->
+        Uri.add_query_param' uri ("search", name)
+      in
+      API.get ?token ~uri (fun body ->
+          return @@ Gitlab_j.projects_short_of_string body)
 
     let by_id ?token ~project_id () =
       let uri = URI.projects_by_id project_id in
-      let fail_handlers = [API.code_handler ~expected_code:`Not_found (fun x -> return None)] in
-      API.get ?token ~uri ~fail_handlers (fun body -> return @@ Some (Gitlab_j.project_short_of_string body))
+      let fail_handlers =
+        [ API.code_handler ~expected_code:`Not_found (fun _ -> return None) ]
+      in
+      API.get ?token ~uri ~fail_handlers (fun body ->
+          return @@ Some (Gitlab_j.project_short_of_string body))
 
     let merge_requests ?token ?state ?milestone ?labels ?author ?author_username
         ?my_reaction ?scope ~id () =
@@ -1046,7 +1053,7 @@ struct
           |> coverage_param coverage
           |> pipeline_id_param pipeline_id
         in
-        API.post ?token ~uri ~expected_code:`Created (fun body ->
+        API.post ~token ~uri ~expected_code:`Created (fun body ->
             Lwt.return (Gitlab_j.commit_status_of_string body))
     end
 
