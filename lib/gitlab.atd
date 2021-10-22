@@ -362,7 +362,7 @@ type commit_status = {
   description: string nullable;
   created_at: string;
   started_at: string nullable;
-  finished_at: string;
+  finished_at: string nullable;
   allow_failure: bool;
   coverage: string nullable;
   author: user_short;

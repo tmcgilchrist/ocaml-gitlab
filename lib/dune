@@ -20,10 +20,5 @@
  (name gitlab)
  (public_name gitlab)
  (wrapped false)
- ; ; #| 27 and 32 should be enabled once
- ; ; https://github.com/janestreet/jbuilder/issues/61 is done
- ; ;|#
- ; (flags (:standard -principal -strict-sequence -g -safe-string
- ;          -w "A-E-41-42-44-48" -w "-27-32"))
  (modules gitlab_s gitlab_core gitlab_j gitlab_t gitlab_json)
  (libraries cohttp-lwt uri yojson atdgen))
