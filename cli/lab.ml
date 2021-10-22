@@ -58,6 +58,23 @@ module CommandLine = struct
   let verbose =
     let doc = "Print detailed report of all status checks and their URLs." in
     Arg.(value & opt bool false & info [ "v"; "verbose" ] ~doc)
+
+  let state =
+    let doc = "CI State" in
+    let commit_status_status =
+      Arg.enum
+        [
+          ("pending", `Pending);
+          ("running", `Running);
+          ("success", `Success);
+          ("failed", `Failed);
+          ("cancelled", `Cancelled);
+        ]
+    in
+    Arg.(
+      required
+      & pos 1 (some commit_status_status) (Some `Pending)
+      & info [] ~docv:"STATE" ~doc)
 end
 
 (* Non-zero exit with error message *)
@@ -214,6 +231,26 @@ let ci_status_cmd config =
       $ CommandLine.verbose $ pure ()),
     Term.info "ci-status" )
 
+let ci_status_set_cmd config =
+  let ci_status project_id sha state () =
+    let cmd =
+      let open Gitlab in
+      let open Monad in
+      let config = config () in
+      Project.Commit.status ~token:config.token ~project_id ~sha ~state ()
+      >>~ fun status ->
+      return
+      @@ printf "%s\n"
+           (Yojson.Basic.prettify (Gitlab_j.string_of_commit_status status))
+    in
+
+    Lwt_main.run @@ Gitlab.Monad.run cmd
+  in
+  ( Term.(
+      pure ci_status $ CommandLine.project_id $ CommandLine.commit_sha
+      $ CommandLine.state $ pure ()),
+    Term.info "set-ci-status" )
+
 let api_cmd =
   let api uri_str () =
     let cmd =
@@ -256,6 +293,7 @@ let cmds =
     user_events_cmd config;
     project_create_cmd config;
     ci_status_cmd config;
+    ci_status_set_cmd config;
   ]
 
 let () =

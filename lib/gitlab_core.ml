@@ -735,8 +735,17 @@ struct
         Uri.add_query_param' uri ("state", Gitlab_j.string_of_state state)
 
   let commit_state_param state uri =
-    Uri.add_query_param' uri
-      ("state", Gitlab_j.string_of_commit_status_status state)
+    (* TODO This pattern along with the enum in lab.ml should be generic and
+       derived off the gitlab.atd definition.
+    *)
+    let show = function
+      | `Pending -> "pending"
+      | `Running -> "running"
+      | `Success -> "success"
+      | `Failed -> "failed"
+      | `Cancelled -> "cancelled"
+    in
+    Uri.add_query_param' uri ("state", show state)
 
   let action_param action uri =
     match action with

@@ -1,4 +1,5 @@
-[{
+[
+  {
     "id": 1670148491,
     "sha": "8d97942a62c9f17dd47e23cf806221230deabaab",
     "ref": "master",
@@ -12,11 +13,34 @@
     "allow_failure": false,
     "coverage": null,
     "author": {
-        "id": 490393,
-        "name": "Tim McGilchrist",
-        "username": "tmcgilchrist",
-        "state": "active",
-        "avatar_url": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
-        "web_url": "https://gitlab.com/tmcgilchrist"
+      "id": 490393,
+      "name": "Tim McGilchrist",
+      "username": "tmcgilchrist",
+      "state": "active",
+      "avatar_url": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
+      "web_url": "https://gitlab.com/tmcgilchrist"
     }
-}]
+  },
+  {
+    "id": 1704796961,
+    "sha": "f198dcd854e21f36d12a1a54c512d87f4f7996eb",
+    "ref": "master",
+    "status": "pending",
+    "name": "default",
+    "target_url": null,
+    "description": null,
+    "created_at": "2021-10-22T06:08:11.787Z",
+    "started_at": null,
+    "finished_at": null,
+    "allow_failure": false,
+    "coverage": null,
+    "author": {
+      "id": 490393,
+      "name": "Tim McGilchrist",
+      "username": "tmcgilchrist",
+      "state": "active",
+      "avatar_url": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
+      "web_url": "https://gitlab.com/tmcgilchrist"
+    }
+  }
+]
