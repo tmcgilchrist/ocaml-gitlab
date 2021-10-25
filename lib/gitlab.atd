@@ -526,17 +526,19 @@ type project_webhook = {
 } <ocaml field_prefix="project_webhook_">
 
 type merge_request_attributes = {
-  assignee_id: int;
+  ?action: string option;
+  assignee_id: int nullable;
   assignee_ids: int list;
   author_id: int;
   created_at: string;
   description: string;
-  head_pipeline_id: string nullable;
+  head_pipeline_id: int nullable;
   id: int;
   iid: int;
   last_edited_at: string nullable;
   last_edited_by_id: string nullable;
   last_commit: commit_short_webhook;
+  ?oldrev: string option;
   merge_commit_sha: string nullable;
   merge_error: string nullable;
   merge_params: merge_params;
@@ -554,7 +556,7 @@ type merge_request_attributes = {
   target_project_id: int;
   title: string;
   updated_at: string;
-  updated_by_id: int;
+  updated_by_id: int nullable;
   url: string;
   work_in_progress: bool;
   total_time_spent: int;
@@ -650,8 +652,8 @@ type merge_request_webhook = {
   attributes<json name="object_attributes">: merge_request_attributes;
   repository: repository;
   labels: label list;
-  (* changes: ???; *)
-  assignees: user_short list;
+  ?changes: merge_request_changes option;
+  ?assignees: user_short list option;
 } <ocaml field_prefix="merge_request_webhook_">
 
 type issue_attributes = {
