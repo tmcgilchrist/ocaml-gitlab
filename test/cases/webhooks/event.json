@@ -232,6 +232,135 @@
     ]
   },
   {
+    "object_kind": "merge_request",
+    "event_type": "merge_request",
+    "user": {
+      "id": 490393,
+      "name": "Tim McGilchrist",
+      "username": "tmcgilchrist",
+      "avatar_url": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
+      "email": "timmcgil@gmail.com"
+    },
+    "project": {
+      "id": 29798678,
+      "name": "ocaml-gitlab",
+      "description": "Test ocaml-gitlab",
+      "web_url": "https://gitlab.com/tmcgilchrist/ocaml-gitlab",
+      "avatar_url": null,
+      "git_ssh_url": "git@gitlab.com:tmcgilchrist/ocaml-gitlab.git",
+      "git_http_url": "https://gitlab.com/tmcgilchrist/ocaml-gitlab.git",
+      "namespace": "Tim McGilchrist",
+      "visibility_level": 20,
+      "path_with_namespace": "tmcgilchrist/ocaml-gitlab",
+      "default_branch": "master",
+      "ci_config_path": "",
+      "homepage": "https://gitlab.com/tmcgilchrist/ocaml-gitlab",
+      "url": "git@gitlab.com:tmcgilchrist/ocaml-gitlab.git",
+      "ssh_url": "git@gitlab.com:tmcgilchrist/ocaml-gitlab.git",
+      "http_url": "https://gitlab.com/tmcgilchrist/ocaml-gitlab.git"
+    },
+    "object_attributes": {
+      "assignee_id": null,
+      "author_id": 490393,
+      "created_at": "2021-10-18 00:45:00 UTC",
+      "description": "build results.",
+      "head_pipeline_id": 393297265,
+      "id": 121619279,
+      "iid": 3,
+      "last_edited_at": null,
+      "last_edited_by_id": null,
+      "merge_commit_sha": null,
+      "merge_error": null,
+      "merge_params": {
+        "force_remove_source_branch": "1"
+      },
+      "merge_status": "unchecked",
+      "merge_user_id": null,
+      "merge_when_pipeline_succeeds": false,
+      "milestone_id": null,
+      "source_branch": "master",
+      "source_project_id": 29798678,
+      "state_id": 1,
+      "target_branch": "main",
+      "target_project_id": 29798678,
+      "time_estimate": 0,
+      "title": "Add commit API endpoints for reading build status and registering",
+      "updated_at": "2021-10-25 00:18:13 UTC",
+      "updated_by_id": null,
+      "url": "https://gitlab.com/tmcgilchrist/ocaml-gitlab/-/merge_requests/3",
+      "source": {
+        "id": 29798678,
+        "name": "ocaml-gitlab",
+        "description": "Test ocaml-gitlab",
+        "web_url": "https://gitlab.com/tmcgilchrist/ocaml-gitlab",
+        "avatar_url": null,
+        "git_ssh_url": "git@gitlab.com:tmcgilchrist/ocaml-gitlab.git",
+        "git_http_url": "https://gitlab.com/tmcgilchrist/ocaml-gitlab.git",
+        "namespace": "Tim McGilchrist",
+        "visibility_level": 20,
+        "path_with_namespace": "tmcgilchrist/ocaml-gitlab",
+        "default_branch": "master",
+        "ci_config_path": "",
+        "homepage": "https://gitlab.com/tmcgilchrist/ocaml-gitlab",
+        "url": "git@gitlab.com:tmcgilchrist/ocaml-gitlab.git",
+        "ssh_url": "git@gitlab.com:tmcgilchrist/ocaml-gitlab.git",
+        "http_url": "https://gitlab.com/tmcgilchrist/ocaml-gitlab.git"
+      },
+      "target": {
+        "id": 29798678,
+        "name": "ocaml-gitlab",
+        "description": "Test ocaml-gitlab",
+        "web_url": "https://gitlab.com/tmcgilchrist/ocaml-gitlab",
+        "avatar_url": null,
+        "git_ssh_url": "git@gitlab.com:tmcgilchrist/ocaml-gitlab.git",
+        "git_http_url": "https://gitlab.com/tmcgilchrist/ocaml-gitlab.git",
+        "namespace": "Tim McGilchrist",
+        "visibility_level": 20,
+        "path_with_namespace": "tmcgilchrist/ocaml-gitlab",
+        "default_branch": "master",
+        "ci_config_path": "",
+        "homepage": "https://gitlab.com/tmcgilchrist/ocaml-gitlab",
+        "url": "git@gitlab.com:tmcgilchrist/ocaml-gitlab.git",
+        "ssh_url": "git@gitlab.com:tmcgilchrist/ocaml-gitlab.git",
+        "http_url": "https://gitlab.com/tmcgilchrist/ocaml-gitlab.git"
+      },
+      "last_commit": {
+        "id": "dd316f520ef5505ac9d52225800252f3148c3e90",
+        "message": "Add lab cli for setting ci-status.\n",
+        "title": "Add lab cli for setting ci-status.",
+        "timestamp": "2021-10-23T15:09:17+11:00",
+        "url": "https://gitlab.com/tmcgilchrist/ocaml-gitlab/-/commit/dd316f520ef5505ac9d52225800252f3148c3e90",
+        "author": {
+          "name": "Tim McGilchrist",
+          "email": "timmcgil@gmail.com"
+        }
+      },
+      "work_in_progress": false,
+      "total_time_spent": 0,
+      "time_change": 0,
+      "human_total_time_spent": null,
+      "human_time_change": null,
+      "human_time_estimate": null,
+      "assignee_ids": [],
+      "state": "opened",
+      "action": "update",
+      "oldrev": "f198dcd854e21f36d12a1a54c512d87f4f7996eb"
+    },
+    "labels": [],
+    "changes": {
+      "updated_at": {
+        "previous": "2021-10-22 04:17:18 UTC",
+        "current": "2021-10-25 00:18:13 UTC"
+      }
+    },
+    "repository": {
+      "name": "ocaml-gitlab",
+      "url": "git@gitlab.com:tmcgilchrist/ocaml-gitlab.git",
+      "description": "Test ocaml-gitlab",
+      "homepage": "https://gitlab.com/tmcgilchrist/ocaml-gitlab"
+    }
+  },
+  {
     "object_kind": "wiki_page",
     "user": {
       "id": 490393,
@@ -420,7 +549,7 @@
         "email": "timmcgil@gmail.com"
       }
     ]
-  } ,
+  },
   {
     "object_kind": "note",
     "event_type": "note",
