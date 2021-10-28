@@ -339,8 +339,15 @@ type commit = {
   title: string;
   author_name: string;
   author_email: string;
+  authored_date: string;
+  committed_date: string;
+  committer_email: string;
+  committer_name: string;
   created_at: string;
   message: string;
+  parent_ids: string nullable;
+  trailers: string nullable;
+  web_url: string;
 } <ocaml field_prefix="commit_">
 
 type commits = commit list
@@ -903,6 +910,7 @@ type branch = {
   code_owner_approval_required: bool;
 } <ocaml field_prefix="branch_">
 
+
 type status_check_status = [
   | Approved <json name="approved">
   | Pending <json name="pending">
@@ -926,3 +934,17 @@ type external_status_check = {
 } <ocaml field_prefix="external_status_check_">
 
 type external_status_checks = external_status_check list
+
+type branch_full = {
+  name: string;
+  merged: bool;
+  protected: bool;
+  developers_can_push: bool;
+  developers_can_merge: bool;
+  can_push: bool;
+  default: bool;
+  web_url: string;
+  commit: commit;
+}  <ocaml field_prefix="branch_full_">
+
+type branches_full = branch_full list
