@@ -231,6 +231,24 @@ let ci_status_cmd config =
       $ CommandLine.verbose $ pure ()),
     Term.info "ci-status" )
 
+let project_branches_cmd config =
+  let project_branches project_id () =
+    let cmd =
+      let open Gitlab in
+      let open Monad in
+      let config = config () in
+      let* branches =
+        return @@ Project.branches ~token:config.token ~project_id ()
+      in
+      Stream.iter
+        (fun branch -> return @@ printf "%s\n" branch.Gitlab_t.branch_full_name)
+        branches
+    in
+    Lwt_main.run @@ Gitlab.Monad.run cmd
+  in
+  ( Term.(pure project_branches $ CommandLine.project_id $ pure ()),
+    Term.info "branch" )
+
 let ci_status_set_cmd config =
   let ci_status project_id sha state () =
     let cmd =
@@ -294,6 +312,7 @@ let cmds =
     project_create_cmd config;
     ci_status_cmd config;
     ci_status_set_cmd config;
+    project_branches_cmd config;
   ]
 
 let () =

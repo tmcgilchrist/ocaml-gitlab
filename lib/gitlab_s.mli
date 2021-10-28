@@ -411,6 +411,30 @@ module type Gitlab = sig
         See {{:https://docs.gitlab.com/ee/api/projects.html#get-single-project}Get a single project}.
     *)
 
+    val branches :
+      ?token:Token.t ->
+      project_id:int ->
+      ?search:string ->
+      unit ->
+      Gitlab_t.branch_full Stream.t
+    (** [branches ?token ~project_id] lists repository branches from a project, sorted by name alphabetically. 
+        Supply a [token] to access private projects.
+         
+        See {{:https://docs.gitlab.com/ee/api/branches.html#list-repository-branches}List repository branches}.
+     *)
+
+    val branch :
+      ?token:Token.t ->
+      project_id:int ->
+      name:string ->
+      unit ->
+      Gitlab_t.branch_full Response.t Monad.t
+    (** [branch ?token ~name] gets a single project repository branch.
+        Supply a [token] to access private projects.
+
+        See {{:https://docs.gitlab.com/ee/api/branches.html#get-single-repository-branch}Get a single repository branch}.
+     *)
+
     val merge_requests :
       ?token:Token.t ->
       ?state:Gitlab_t.state ->
