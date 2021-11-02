@@ -738,10 +738,16 @@ struct
 
   (* Query Parameter helpers *)
   let state_param state uri =
+    let show = function
+      | `Opened -> "opened"
+      | `Closed -> "closed"
+      | `Locked -> "locked"
+      | `Merged -> "merged"
+    in
     match state with
     | None -> uri
     | Some state ->
-        Uri.add_query_param' uri ("state", Gitlab_j.string_of_state state)
+        Uri.add_query_param' uri ("state", show state)
 
   let commit_state_param state uri =
     (* TODO This pattern along with the enum in lab.ml should be generic and
@@ -794,10 +800,15 @@ struct
     | Some my_reaction -> Uri.add_query_param' uri ("my_reaction", my_reaction)
 
   let scope_param scope uri =
+    let show = function
+      | `CreatedByMe -> "created_by_me"
+      | `AssignedToMe -> "assigned_to_me"
+      | `All -> "all"
+    in
     match scope with
     | None -> uri
     | Some scope ->
-        Uri.add_query_param' uri ("scope", Gitlab_j.string_of_scope scope)
+        Uri.add_query_param' uri ("scope", show scope)
 
   let name_param name uri =
     match name with
@@ -878,11 +889,14 @@ struct
     | Some line -> Uri.add_query_param' uri ("line", Int.to_string line)
 
   let line_type_param line_type uri =
+    let show = function
+      | `New -> "new"
+      | `Old -> "old"
+    in
     match line_type with
     | None -> uri
     | Some line_type ->
-        Uri.add_query_param' uri
-          ("line_type", Gitlab_j.string_of_line_type line_type)
+        Uri.add_query_param' uri ("line_type", show line_type)
 
   let target_url_param target_url uri =
     match target_url with
