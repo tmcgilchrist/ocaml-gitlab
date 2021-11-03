@@ -15,6 +15,7 @@ TODO
    * [X] documentation introduction on how to use the library
    * [ ] Functor across HTTP libraries, Cohttp / httpaf ???
    * [ ] Improved documentation on Github_t types
+   * [ ] Quickcheck generators for types
 
 Support for ocurrent
 

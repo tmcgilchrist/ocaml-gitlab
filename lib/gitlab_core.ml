@@ -975,7 +975,7 @@ struct
         Uri.add_query_param' uri ("search", name)
       in
       API.get ?token ~uri (fun body ->
-          return @@ Gitlab_j.projects_short_of_string body)
+          return (Gitlab_j.projects_short_of_string body))
 
     let by_id ?token ~project_id () =
       let uri = URI.projects_by_id project_id in
@@ -983,17 +983,17 @@ struct
         [ API.code_handler ~expected_code:`Not_found (fun _ -> return None) ]
       in
       API.get ?token ~uri ~fail_handlers (fun body ->
-          return @@ Some (Gitlab_j.project_short_of_string body))
+          return (Some (Gitlab_j.project_short_of_string body)))
 
     let branches ?token ~project_id ?search () =
       let uri = URI.project_branches project_id |> search_param search in
       API.get_stream ?token ~uri (fun body ->
-          return @@ Gitlab_j.branches_full_of_string body)
+          return (Gitlab_j.branches_full_of_string body))
 
     let branch ?token ~project_id ~name () =
       let uri = URI.project_branch project_id name in
       API.get ?token ~uri (fun body ->
-          return @@ Gitlab_j.branch_full_of_string body)
+          return (Gitlab_j.branch_full_of_string body))
 
     let merge_requests ?token ?state ?milestone ?labels ?author ?author_username
         ?my_reaction ?scope ~id () =
@@ -1074,7 +1074,7 @@ struct
           |> line_type_param line_type
         in
         API.post ?token ~uri ~expected_code:`Created (fun body ->
-            Lwt.return (Gitlab_j.commit_commented_of_string body))
+            return (Gitlab_j.commit_commented_of_string body))
 
       let statuses ?token ~project_id ~sha ?ref_name ?stage ?name ?all () =
         let uri =
@@ -1096,7 +1096,7 @@ struct
           |> pipeline_id_param pipeline_id
         in
         API.post ~token ~uri ~expected_code:`Created (fun body ->
-            Lwt.return (Gitlab_j.commit_status_of_string body))
+            return (Gitlab_j.commit_status_of_string body))
     end
 
     module ExternalStatusCheck = struct
@@ -1115,7 +1115,7 @@ struct
               ("external_status_check_id", external_status_check_id);
             ]
         in
-        API.post ~body:"" ~token ~uri ~expected_code:`Created (fun body ->
+        API.post ~token ~uri ~expected_code:`Created (fun body ->
             return (Gitlab_j.external_status_check_of_string body))
 
       let checks ~token ~project_id () =
@@ -1149,7 +1149,7 @@ struct
           |> external_url_param external_url
           (* |> protected_branch_ids_param protected_branch_ids *)
         in
-        API.put ~body:"" ~token ~uri ~expected_code:`Created (fun body ->
+        API.put ~token ~uri ~expected_code:`Created (fun body ->
             return (Gitlab_j.external_status_check_of_string body))
     end
   end
