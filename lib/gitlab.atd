@@ -291,10 +291,10 @@ type merge_request = {
   state: state;
   merged_by: user_short nullable;
   merged_at: string nullable;
-  closed_by: user nullable;
+  closed_by: user_short nullable;
   closed_at: string nullable;
-  created_at: string nullable;
-  updated_at: string nullable;
+  created_at: string;
+  updated_at: string;
   target_branch: string;
   source_branch: string;
   upvotes: int;
