@@ -147,6 +147,18 @@ module Gitlab_j_branches_full : TestableJson = struct
       pretty_to_string @@ from_string (Gitlab_j.string_of_branches_full v))
 end
 
+module Gitlab_j_milestones : TestableJson = struct
+  type t = Gitlab_j.milestones
+
+  let name = "milestones"
+
+  let of_string = Gitlab_j.milestones_of_string
+
+  let pp v =
+    Yojson.Basic.(
+      pretty_to_string @@ from_string (Gitlab_j.string_of_milestones v))
+end
+
 (* instances under test *)
 module E = Make (Gitlab_j_events)
 module US = Make (Gitlab_j_user_short)
@@ -156,6 +168,7 @@ module WH = Make (Gitlab_j_webhooks)
 module MR = Make (Gitlab_j_merge_requests)
 module CS = Make (Gitlab_j_commit_statuses)
 module BF = Make (Gitlab_j_branches_full)
+module M = Make (Gitlab_j_milestones)
 
 (* Run it *)
 let () =
@@ -171,4 +184,5 @@ let () =
          ("user_short", US.test ());
          ("webhooks", WH.test ());
          ("branches", BF.test ());
+         ("milestones", M.test ());
        ]

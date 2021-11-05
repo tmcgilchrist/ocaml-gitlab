@@ -712,11 +712,26 @@ struct
     let project_events ~id =
       Uri.of_string (Printf.sprintf "%s/projects/%i/events" api id)
 
+    let project_milestones ~project_id =
+      Uri.of_string (Printf.sprintf "%s/projects/%i/milestones" api project_id)
+
+    let project_milestone ~project_id ~milestone_id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/milestones/%i" api project_id
+           milestone_id)
+
     let group_projects ~id =
       Uri.of_string (Printf.sprintf "%s/groups/%s/projects" api id)
 
     let group_merge_requests ~id =
       Uri.of_string (Printf.sprintf "%s/groups/%s/merge_requests" api id)
+
+    let group_milestones ~group_id =
+      Uri.of_string (Printf.sprintf "%s/group/%i/milestones" api group_id)
+
+    let group_milestone ~group_id ~milestone_id =
+      Uri.of_string
+        (Printf.sprintf "%s/group/%i/milestones/%i" api group_id milestone_id)
 
     let external_status_checks ~id =
       Uri.of_string
@@ -749,8 +764,7 @@ struct
     in
     match state with
     | None -> uri
-    | Some state ->
-        Uri.add_query_param' uri ("state", show state)
+    | Some state -> Uri.add_query_param' uri ("state", show state)
 
   let commit_state_param state uri =
     (* TODO This pattern along with the enum in lab.ml should be generic and
@@ -810,8 +824,7 @@ struct
     in
     match scope with
     | None -> uri
-    | Some scope ->
-        Uri.add_query_param' uri ("scope", show scope)
+    | Some scope -> Uri.add_query_param' uri ("scope", show scope)
 
   let name_param name uri =
     match name with
@@ -892,14 +905,10 @@ struct
     | Some line -> Uri.add_query_param' uri ("line", Int.to_string line)
 
   let line_type_param line_type uri =
-    let show = function
-      | `New -> "new"
-      | `Old -> "old"
-    in
+    let show = function `New -> "new" | `Old -> "old" in
     match line_type with
     | None -> uri
-    | Some line_type ->
-        Uri.add_query_param' uri ("line_type", show line_type)
+    | Some line_type -> Uri.add_query_param' uri ("line_type", show line_type)
 
   let target_url_param target_url uri =
     match target_url with
@@ -917,6 +926,28 @@ struct
     | None -> uri
     | Some pipeline_id ->
         Uri.add_query_param' uri ("pipeline_id", Int.to_string pipeline_id)
+
+  let title_param title uri =
+    match title with
+    | None -> uri
+    | Some title -> Uri.add_query_param' uri ("title", title)
+
+  let milestone_state_param milestone_state uri =
+    let show = function `Active -> "active" | `Closed -> "closed" in
+    match milestone_state with
+    | None -> uri
+    | Some milestone_state ->
+        Uri.add_query_param' uri ("milestone_state", show milestone_state)
+
+  let due_date_param due_date uri =
+    match due_date with
+    | None -> uri
+    | Some due_date -> Uri.add_query_param' uri ("due_date", due_date)
+
+  let start_date_param start_date uri =
+    match start_date with
+    | None -> uri
+    | Some start_date -> Uri.add_query_param' uri ("start_date", start_date)
 
   module Event = struct
     open Lwt
@@ -1152,8 +1183,54 @@ struct
           |> external_url_param external_url
           (* |> protected_branch_ids_param protected_branch_ids *)
         in
-        API.put ~token ~uri ~expected_code:`Created (fun body ->
+        API.put ~token ~uri ~expected_code:`OK (fun body ->
             return (Gitlab_j.external_status_check_of_string body))
+    end
+
+    module Milestone = struct
+      let milestones ?token ~project_id ?state ?title ?search () =
+        let uri =
+          URI.project_milestones ~project_id
+          |> title_param title
+          |> milestone_state_param state
+          |> search_param search
+        in
+        API.get ?token ~uri (fun body ->
+            return (Gitlab_j.milestones_of_string body))
+
+      let milestone ?token ~project_id ~milestone_id () =
+        let uri = URI.project_milestone ~project_id ~milestone_id in
+        API.get ?token ~uri (fun body ->
+            return (Gitlab_j.milestone_of_string body))
+
+      let create ~token ~project_id ~title ?description ?due_date ?start_date ()
+          =
+        let uri =
+          URI.project_milestones ~project_id
+          |> title_param (Some title)
+          |> description_param description
+          |> due_date_param due_date
+          |> start_date_param start_date
+        in
+        API.post ~token ~uri ~expected_code:`Created (fun body ->
+            return (Gitlab_j.milestone_of_string body))
+
+      let update ~token ~project_id ~milestone_id ?title ?description ?due_date
+          ?start_date ?state_event () =
+        let uri =
+          URI.project_milestone ~project_id ~milestone_id
+          |> title_param title
+          |> description_param description
+          |> due_date_param due_date
+          |> start_date_param start_date
+          |> milestone_state_param state_event
+        in
+        API.put ~token ~uri ~expected_code:`OK (fun body ->
+            return (Gitlab_j.milestone_of_string body))
+
+      let delete ~token ~project_id ~milestone_id () =
+        let uri = URI.project_milestone ~project_id ~milestone_id in
+        API.delete ~token ~uri ~expected_code:`No_content (fun _ -> return ())
     end
   end
 
@@ -1164,11 +1241,10 @@ struct
       let by_name ?token ~owner ~name () =
         let uri =
           URI.group_projects ~id:owner |> fun uri ->
-                                          Uri.add_query_param' uri ("search", name)
+          Uri.add_query_param' uri ("search", name)
         in
         API.get ?token ~uri (fun body ->
             return (Gitlab_j.projects_short_of_string body))
-
     end
 
     let merge_requests ?token ?state ?milestone ?labels ?author ?author_username
@@ -1183,5 +1259,50 @@ struct
       in
       API.get_stream ?token ~uri (fun body ->
           return (Gitlab_j.merge_requests_of_string body))
+
+    module Milestone = struct
+      let milestones ?token ~group_id ?state ?title ?search () =
+        let uri =
+          URI.group_milestones ~group_id
+          |> title_param title
+          |> milestone_state_param state
+          |> search_param search
+        in
+        API.get ?token ~uri (fun body ->
+            return (Gitlab_j.milestones_of_string body))
+
+      let milestone ?token ~group_id ~milestone_id () =
+        let uri = URI.group_milestone ~group_id ~milestone_id in
+        API.get ?token ~uri (fun body ->
+            return (Gitlab_j.milestone_of_string body))
+
+      let create ~token ~group_id ~title ?description ?due_date ?start_date () =
+        let uri =
+          URI.group_milestones ~group_id
+          |> title_param (Some title)
+          |> description_param description
+          |> due_date_param due_date
+          |> start_date_param start_date
+        in
+        API.post ~token ~uri ~expected_code:`Created (fun body ->
+            return (Gitlab_j.milestone_of_string body))
+
+      let update ~token ~group_id ~milestone_id ?title ?description ?due_date
+          ?start_date ?state_event () =
+        let uri =
+          URI.group_milestone ~group_id ~milestone_id
+          |> title_param title
+          |> description_param description
+          |> due_date_param due_date
+          |> start_date_param start_date
+          |> milestone_state_param state_event
+        in
+        API.put ~token ~uri ~expected_code:`OK (fun body ->
+            return (Gitlab_j.milestone_of_string body))
+
+      let delete ~token ~group_id ~milestone_id () =
+        let uri = URI.group_milestone ~group_id ~milestone_id in
+        API.delete ~token ~uri ~expected_code:`No_content (fun _ -> return ())
+    end
   end
 end

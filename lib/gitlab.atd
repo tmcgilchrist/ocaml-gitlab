@@ -243,26 +243,35 @@ type state = [
 ]
 
 type merge_status = [
- | Unchecked <json name="unchecked">
- | Checking <json name="checking">
- | CanBeMerged <json name="can_be_merged">
- | CannotBeMerged <json name="cannot_be_merged">
- | CannotBeMergedRecheck <json name="cannot_be_merged_recheck">
+  | Unchecked <json name="unchecked">
+  | Checking <json name="checking">
+  | CanBeMerged <json name="can_be_merged">
+  | CannotBeMerged <json name="cannot_be_merged">
+  | CannotBeMergedRecheck <json name="cannot_be_merged_recheck">
+]
+
+type milestone_state = [
+  | Active <json name="active">
+  | Closed <json name="closed">
 ]
 
 type milestone = {
   id: int;
   iid: int;
-  project_id: int;
+  ?project_id: int option;
+  ?group_id: int option;
   title: string;
   description: string;
-  state: state;
+  state: milestone_state;
   created_at: string;
   updated_at: string;
-  due_date: string;
-  start_date: string;
+  due_date: string nullable;
+  start_date: string nullable;
+  expired: bool nullable;
   web_url: string;
 } <ocaml field_prefix="milestone_">
+
+type milestones = milestone list
 
 type references = {
   short: string;

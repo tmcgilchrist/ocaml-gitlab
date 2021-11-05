@@ -114,7 +114,7 @@ module type Gitlab = sig
   (** ['a handler] is the type of response handlers which consist of
       an activation predicate (fst) and a parse function (snd). *)
 
-  (** Each request to GitLan is made to a specific [Endpoint] in
+  (** Each request to GitLab is made to a specific [Endpoint] in
       GitLab's REST-like API. *)
   module Endpoint : sig
     (** Some endpoints expose resources which change over time and
@@ -680,12 +680,86 @@ module type Gitlab = sig
         ?pipeline_id:int ->
         unit ->
         Gitlab_t.commit_status Response.t Monad.t
+      (** [status ~token ~project_id ~sha ~state] adds or updates a build status of a commit.
+
+
+          See {{:https://docs.gitlab.com/ee/api/commits.html#post-the-build-status-to-a-commit}Post the build status to a commit}.
+       *)
+    end
+
+    (** [Milestone] operates on a [Project]'s milestones.
+        There is a separate Group [Milestone] module.
+     *)
+    module Milestone : sig
+      val milestones :
+        ?token:Token.t ->
+        project_id:int ->
+        ?state:Gitlab_t.milestone_state ->
+        ?title:string ->
+        ?search:string ->
+        unit ->
+        Gitlab_t.milestones Response.t Monad.t
+      (** [milestones ~project_id] returns a list of project milestones.
+
+         See {{:https://docs.gitlab.com/ee/api/milestones.html#list-project-milestones}List project milestones}.
+       *)
+
+      val milestone :
+        ?token:Token.t ->
+        project_id:int ->
+        milestone_id:int ->
+        unit ->
+        Gitlab_t.milestone Response.t Monad.t
+      (** [milestone ~project_id ~milestone_id] get a single project milestone.
+
+         See {{:https://docs.gitlab.com/ee/api/milestones.html#get-single-milestone}Get a single milestone}.
+       *)
+
+      val create :
+        token:Token.t ->
+        project_id:int ->
+        title:string ->
+        ?description:string ->
+        ?due_date:string ->
+        ?start_date:string ->
+        unit ->
+        Gitlab_t.milestone Response.t Monad.t
+      (** [create ~project_id ~title] create a project milestone.
+
+          See {{:https://docs.gitlab.com/ee/api/milestones.html#create-new-milestone}Create a new milestone}.
+       *)
+
+      val update :
+        token:Token.t ->
+        project_id:int ->
+        milestone_id:int ->
+        ?title:string ->
+        ?description:string ->
+        ?due_date:string ->
+        ?start_date:string ->
+        ?state_event:Gitlab_t.milestone_state ->
+        unit ->
+        Gitlab_t.milestone Response.t Monad.t
+      (** [update ~project_id ~milestone_id] update an existing milestone.
+
+          See {{:https://docs.gitlab.com/ee/api/milestones.html#edit-milestone}Edit a milestone}.
+       *)
+
+      val delete :
+        token:Token.t ->
+        project_id:int ->
+        milestone_id:int ->
+        unit ->
+        unit Response.t Monad.t
+      (** [delete ~project_id ~milestone_id] delete a project milestone.
+
+          See {{:https://docs.gitlab.com/ee/api/milestones.html#delete-project-milestone}Delete a milestone}.
+        *)
     end
   end
 
   (** The [Group] module provides access to {{:https://docs.gitlab.com/ee/api/groups.html}Group API}. *)
   module Group : sig
-
     module Project : sig
       val by_name :
         ?token:Token.t ->
@@ -693,7 +767,7 @@ module type Gitlab = sig
         name:string ->
         unit ->
         Gitlab_t.projects_short Response.t Monad.t
-    (** [by_name ~group ~name ()] retrieves projects owned by [group] with a name like [name].
+      (** [by_name ~group ~name ()] retrieves projects owned by [group] with a name like [name].
         Depending on the [name] used this will return 1 or more matches. Supply a [token] to access private projects.
 
         There is no direct fetch by name API in GitLab.
@@ -716,6 +790,74 @@ module type Gitlab = sig
 
         See {{:https://docs.gitlab.com/14.0/ee/api/merge_requests.html#list-group-merge-requests}List group merge requests}.
      *)
+
+    (** [Milestone] operates on a [Group]'s milestones. *)
+    module Milestone : sig
+      val milestones :
+        ?token:Token.t ->
+        group_id:int ->
+        ?state:Gitlab_t.milestone_state ->
+        ?title:string ->
+        ?search:string ->
+        unit ->
+        Gitlab_t.milestones Response.t Monad.t
+      (** [milestones ~group_id] returns a list of group milestones.
+
+         See {{:https://docs.gitlab.com/ee/api/milestones.html#list-group-milestones}List group milestones}.
+       *)
+
+      val milestone :
+        ?token:Token.t ->
+        group_id:int ->
+        milestone_id:int ->
+        unit ->
+        Gitlab_t.milestone Response.t Monad.t
+      (** [milestone ~group_id ~milestone_id] get a single group milestone.
+
+         See {{:https://docs.gitlab.com/ee/api/milestones.html#get-single-milestone}Get a single milestone}.
+       *)
+
+      val create :
+        token:Token.t ->
+        group_id:int ->
+        title:string ->
+        ?description:string ->
+        ?due_date:string ->
+        ?start_date:string ->
+        unit ->
+        Gitlab_t.milestone Response.t Monad.t
+      (** [create ~group_id ~title] create a group milestone.
+
+          See {{:https://docs.gitlab.com/ee/api/milestones.html#create-new-milestone}Create a new milestone}.
+       *)
+
+      val update :
+        token:Token.t ->
+        group_id:int ->
+        milestone_id:int ->
+        ?title:string ->
+        ?description:string ->
+        ?due_date:string ->
+        ?start_date:string ->
+        ?state_event:Gitlab_t.milestone_state ->
+        unit ->
+        Gitlab_t.milestone Response.t Monad.t
+      (** [update ~group_id ~milestone_id] update an existing milestone.
+
+          See {{:https://docs.gitlab.com/ee/api/milestones.html#edit-milestone}Edit a milestone}.
+       *)
+
+      val delete :
+        token:Token.t ->
+        group_id:int ->
+        milestone_id:int ->
+        unit ->
+        unit Response.t Monad.t
+      (** [delete ~group_id ~milestone_id] delete a group milestone.
+
+          See {{:https://docs.gitlab.com/ee/api/milestones.html#delete-group-milestone}Delete a milestone}.
+        *)
+    end
   end
 end
 
