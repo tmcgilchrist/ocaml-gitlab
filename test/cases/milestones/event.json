@@ -1,0 +1,30 @@
+[
+  {
+    "id": 2154673,
+    "iid": 1,
+    "project_id": 26742744,
+    "title": "Full TypeScript Support",
+    "description": "- [x] Implementation\r\n  - [x] Implement Typescript back-end\r\n  - [x] Implement Typescript compiler module\r\n  - [x] Implement Typescript front-end API\r\n- [x] Internal Testing\r\n  - [x] Test Typescript back-end\r\n  - [x] Test that generated Typescript compiles\r\n  - [x] Test Typescript front-end\r\n- [ ] Review\r\n  - [ ] Review design of Typescript back-end\r\n  - [ ] Review quality of generated code\r\n  - [ ] Review design of Typescript front-end API\r\n- [ ] External Testing\r\n  - [ ] Implement property-based testing against `tezos-codec`\r\n- [ ] Fixup\r\n  - [ ] Ensure that Typescript implementation passes external testing\r\n  - [ ] Adopt suggested changes to back-end, generated middle-end, and front-end API design\r\n- [ ] Documentation\r\n  - [ ] Ensure that back-end is well-documented\r\n  - [ ] Ensure that front-end API is well-documented\r\n- [ ] Publication\r\n  - [ ] Deploy hand-written and machine-generated libraries as a typescript package\r\n  - [ ] Publicize the availability of both packaged library and the compiler project",
+    "state": "active",
+    "created_at": "2021-07-20T19:03:50.371Z",
+    "updated_at": "2021-07-20T19:03:50.371Z",
+    "due_date": null,
+    "start_date": null,
+    "expired": null,
+    "web_url": "https://gitlab.com/tezos/tezos-codec-compiler/-/milestones/1"
+  },
+  {
+    "id": 12,
+    "iid": 3,
+    "group_id": 16,
+    "title": "10.0",
+    "description": "Version",
+    "state": "active",
+    "updated_at": "2013-10-02T09:24:18Z",
+    "created_at": "2013-10-02T09:24:18Z",
+    "due_date": "2013-11-29",
+    "start_date": "2013-11-10",
+    "expired": false,
+    "web_url": "https://gitlab.com/groups/gitlab-org/-/milestones/42"
+  }
+]

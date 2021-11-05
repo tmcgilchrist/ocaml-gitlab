@@ -15,8 +15,7 @@
       "name": "Tim McGilchrist",
       "username": "tmcgilchrist",
       "state": "active",
-      "avatar_url":
-        "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
+      "avatar_url": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
       "web_url": "https://gitlab.com/tmcgilchrist"
     },
     "closed_at": "2021-11-02T05:32:30.783Z",
@@ -30,8 +29,7 @@
       "name": "Tim McGilchrist",
       "username": "tmcgilchrist",
       "state": "active",
-      "avatar_url":
-        "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
+      "avatar_url": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
       "web_url": "https://gitlab.com/tmcgilchrist"
     },
     "assignees": [],
@@ -57,8 +55,7 @@
       "relative": "!1",
       "full": "tmcgilchrist/ocaml-changes!1"
     },
-    "web_url":
-      "https://gitlab.com/tmcgilchrist/ocaml-changes/-/merge_requests/1",
+    "web_url": "https://gitlab.com/tmcgilchrist/ocaml-changes/-/merge_requests/1",
     "time_stats": {
       "time_estimate": 0,
       "total_time_spent": 0,
@@ -66,7 +63,10 @@
       "human_total_time_spent": null
     },
     "squash": false,
-    "task_completion_status": { "count": 0, "completed_count": 0 },
+    "task_completion_status": {
+      "count": 0,
+      "completed_count": 0
+    },
     "has_conflicts": false,
     "blocking_discussions_resolved": true,
     "approvals_before_merge": null
@@ -535,6 +535,102 @@
       "full": "queertypes/freer!3"
     },
     "web_url": "https://gitlab.com/queertypes/freer/-/merge_requests/3",
+    "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+    },
+    "squash": false,
+    "task_completion_status": {
+      "count": 0,
+      "completed_count": 0
+    },
+    "has_conflicts": false,
+    "blocking_discussions_resolved": true,
+    "approvals_before_merge": null
+  },
+  {
+    "id": 110460582,
+    "iid": 2,
+    "project_id": 26742744,
+    "title": "Compiler: improve generation of test suites",
+    "description": "Add compiler stage for the automatic generation of TypeScript `fast-check`-backeed property-based testing to ensure that schema type encoders and decoders roundtrip properly. This MR is a pre-requisite for `octez`-compliance testing of the codec.\n\nThis change only applies to the TypeScript backend, but does include modifications to non-TypeScript-specific modules.",
+    "state": "opened",
+    "created_at": "2021-07-30T17:20:40.684Z",
+    "updated_at": "2021-07-30T17:20:40.684Z",
+    "merged_by": null,
+    "merged_at": null,
+    "closed_by": null,
+    "closed_at": null,
+    "target_branch": "master",
+    "source_branch": "test-generation",
+    "user_notes_count": 0,
+    "upvotes": 0,
+    "downvotes": 0,
+    "author": {
+      "id": 8726676,
+      "name": "Peter Duchovni",
+      "username": "archaephyrryx",
+      "state": "active",
+      "avatar_url": "https://secure.gravatar.com/avatar/edd8a2971ad526f9392f672129b42258?s=80&d=identicon",
+      "web_url": "https://gitlab.com/archaephyrryx"
+    },
+    "assignees": [
+      {
+        "id": 8726676,
+        "name": "Peter Duchovni",
+        "username": "archaephyrryx",
+        "state": "active",
+        "avatar_url": "https://secure.gravatar.com/avatar/edd8a2971ad526f9392f672129b42258?s=80&d=identicon",
+        "web_url": "https://gitlab.com/archaephyrryx"
+      }
+    ],
+    "assignee": {
+      "id": 8726676,
+      "name": "Peter Duchovni",
+      "username": "archaephyrryx",
+      "state": "active",
+      "avatar_url": "https://secure.gravatar.com/avatar/edd8a2971ad526f9392f672129b42258?s=80&d=identicon",
+      "web_url": "https://gitlab.com/archaephyrryx"
+    },
+    "reviewers": [],
+    "source_project_id": 26742744,
+    "target_project_id": 26742744,
+    "labels": [
+      "testing"
+    ],
+    "draft": false,
+    "work_in_progress": false,
+    "milestone": {
+      "id": 2154673,
+      "iid": 1,
+      "project_id": 26742744,
+      "title": "Full TypeScript Support",
+      "description": "- [x] Implementation\r\n  - [x] Implement Typescript back-end\r\n  - [x] Implement Typescript compiler module\r\n  - [x] Implement Typescript front-end API\r\n- [x] Internal Testing\r\n  - [x] Test Typescript back-end\r\n  - [x] Test that generated Typescript compiles\r\n  - [x] Test Typescript front-end\r\n- [ ] Review\r\n  - [ ] Review design of Typescript back-end\r\n  - [ ] Review quality of generated code\r\n  - [ ] Review design of Typescript front-end API\r\n- [ ] External Testing\r\n  - [ ] Implement property-based testing against `tezos-codec`\r\n- [ ] Fixup\r\n  - [ ] Ensure that Typescript implementation passes external testing\r\n  - [ ] Adopt suggested changes to back-end, generated middle-end, and front-end API design\r\n- [ ] Documentation\r\n  - [ ] Ensure that back-end is well-documented\r\n  - [ ] Ensure that front-end API is well-documented\r\n- [ ] Publication\r\n  - [ ] Deploy hand-written and machine-generated libraries as a typescript package\r\n  - [ ] Publicize the availability of both packaged library and the compiler project",
+      "state": "active",
+      "created_at": "2021-07-20T19:03:50.371Z",
+      "updated_at": "2021-07-20T19:03:50.371Z",
+      "due_date": null,
+      "start_date": null,
+      "expired": null,
+      "web_url": "https://gitlab.com/tezos/tezos-codec-compiler/-/milestones/1"
+    },
+    "merge_when_pipeline_succeeds": false,
+    "merge_status": "can_be_merged",
+    "sha": "37a39e528e000a2313b6875ebe970f35e2bc2b42",
+    "merge_commit_sha": null,
+    "squash_commit_sha": null,
+    "discussion_locked": null,
+    "should_remove_source_branch": null,
+    "force_remove_source_branch": true,
+    "reference": "!2",
+    "references": {
+      "short": "!2",
+      "relative": "!2",
+      "full": "tezos/tezos-codec-compiler!2"
+    },
+    "web_url": "https://gitlab.com/tezos/tezos-codec-compiler/-/merge_requests/2",
     "time_stats": {
       "time_estimate": 0,
       "total_time_spent": 0,
