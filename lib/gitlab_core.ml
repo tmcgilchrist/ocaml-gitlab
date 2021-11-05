@@ -712,6 +712,9 @@ struct
     let project_events ~id =
       Uri.of_string (Printf.sprintf "%s/projects/%i/events" api id)
 
+    let group_projects ~id =
+      Uri.of_string (Printf.sprintf "%s/groups/%s/projects" api id)
+
     let group_merge_requests ~id =
       Uri.of_string (Printf.sprintf "%s/groups/%s/merge_requests" api id)
 
@@ -1156,6 +1159,17 @@ struct
 
   module Group = struct
     open Lwt
+
+    module Project = struct
+      let by_name ?token ~owner ~name () =
+        let uri =
+          URI.group_projects ~id:owner |> fun uri ->
+                                          Uri.add_query_param' uri ("search", name)
+        in
+        API.get ?token ~uri (fun body ->
+            return (Gitlab_j.projects_short_of_string body))
+
+    end
 
     let merge_requests ?token ?state ?milestone ?labels ?author ?author_username
         ?my_reaction ?scope ~id () =

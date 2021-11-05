@@ -417,9 +417,9 @@ module type Gitlab = sig
       ?search:string ->
       unit ->
       Gitlab_t.branch_full Stream.t
-    (** [branches ?token ~project_id] lists repository branches from a project, sorted by name alphabetically. 
+    (** [branches ?token ~project_id] lists repository branches from a project, sorted by name alphabetically.
         Supply a [token] to access private projects.
-         
+
         See {{:https://docs.gitlab.com/ee/api/branches.html#list-repository-branches}List repository branches}.
      *)
 
@@ -683,8 +683,23 @@ module type Gitlab = sig
     end
   end
 
-  (** The [Group] module provies access to {{:https://docs.gitlab.com/ee/api/groups.html}Group API}. *)
+  (** The [Group] module provides access to {{:https://docs.gitlab.com/ee/api/groups.html}Group API}. *)
   module Group : sig
+
+    module Project : sig
+      val by_name :
+        ?token:Token.t ->
+        owner:string ->
+        name:string ->
+        unit ->
+        Gitlab_t.projects_short Response.t Monad.t
+    (** [by_name ~group ~name ()] retrieves projects owned by [group] with a name like [name].
+        Depending on the [name] used this will return 1 or more matches. Supply a [token] to access private projects.
+
+        There is no direct fetch by name API in GitLab.
+     *)
+    end
+
     val merge_requests :
       ?token:Token.t ->
       ?state:Gitlab_t.state ->
