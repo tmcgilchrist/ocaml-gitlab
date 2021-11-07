@@ -311,8 +311,8 @@ type merge_request = {
   author: user_short;
   assignee: user_short nullable;
   approvals_before_merge: string nullable;
-  ?allow_collaboration: bool option nullable;
-  ?allow_maintainer_to_push: bool option nullable;
+  ?allow_collaboration: bool nullable;
+  ?allow_maintainer_to_push: bool nullable;
   blocking_discussions_resolved: bool;
   has_conflicts: bool;
   assignees: user_short list;
@@ -354,8 +354,8 @@ type commit = {
   committer_name: string;
   created_at: string;
   message: string;
-  parent_ids: string nullable;
-  trailers: string nullable;
+  parent_ids: string list nullable;
+  (*trailers: string nullable;*)
   web_url: string;
 } <ocaml field_prefix="commit_">
 

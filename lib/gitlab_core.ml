@@ -1019,16 +1019,6 @@ struct
       API.get ?token ~uri ~fail_handlers (fun body ->
           return (Some (Gitlab_j.project_short_of_string body)))
 
-    let branches ?token ~project_id ?search () =
-      let uri = URI.project_branches project_id |> search_param search in
-      API.get_stream ?token ~uri (fun body ->
-          return (Gitlab_j.branches_full_of_string body))
-
-    let branch ?token ~project_id ~name () =
-      let uri = URI.project_branch project_id name in
-      API.get ?token ~uri (fun body ->
-          return (Gitlab_j.branch_full_of_string body))
-
     let merge_requests ?token ?state ?milestone ?labels ?author ?author_username
         ?my_reaction ?scope ~id () =
       let uri =
@@ -1131,6 +1121,34 @@ struct
         in
         API.post ~token ~uri ~expected_code:`Created (fun body ->
             return (Gitlab_j.commit_status_of_string body))
+    end
+
+    module Branch = struct
+      let branches ?token ~project_id ?search () =
+        let uri = URI.project_branches project_id |> search_param search in
+        API.get_stream ?token ~uri (fun body ->
+            return (Gitlab_j.branches_full_of_string body))
+
+      let branch ?token ~project_id ~branch () =
+        let uri = URI.project_branch project_id branch in
+        API.get ?token ~uri (fun body ->
+            return (Gitlab_j.branch_full_of_string body))
+
+      let create ~token ~project_id ~branch ~ref () =
+        let uri =
+          URI.project_branches project_id |> fun x ->
+          Uri.add_query_params' x [ ("branch", branch); ("ref", ref) ]
+        in
+        API.post ~token ~uri ~expected_code:`Created (fun body ->
+            return (Gitlab_j.branch_full_of_string body))
+
+      let delete ~token ~project_id ~branch () =
+        let uri = URI.project_branch project_id branch in
+        API.delete ~token ~uri ~expected_code:`No_content (fun _ -> return ())
+
+      let delete_merged ~token ~project_id () =
+        let uri = URI.project_branches project_id in
+        API.delete ~token ~uri ~expected_code:`No_content (fun _ -> return ())
     end
 
     module ExternalStatusCheck = struct

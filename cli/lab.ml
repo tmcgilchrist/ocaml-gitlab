@@ -238,7 +238,7 @@ let project_branches_cmd config =
       let open Monad in
       let config = config () in
       let* branches =
-        return @@ Project.branches ~token:config.token ~project_id ()
+        return @@ Project.Branch.branches ~token:config.token ~project_id ()
       in
       Stream.iter
         (fun branch -> return @@ printf "%s\n" branch.Gitlab_t.branch_full_name)

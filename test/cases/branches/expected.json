@@ -14,7 +14,6 @@
       "committer_name": "Tim McGilchrist",
       "committer_email": "timmcgil@gmail.com",
       "committed_date": "2021-10-22T02:48:37.000+00:00",
-      "trailers": null,
       "web_url": "https://gitlab.com/tmcgilchrist/ocaml-gitlab/-/commit/fe4356a4b732a05eaa6f91d8b2e30bb528c61cfe"
     },
     "merged": false,
@@ -40,7 +39,6 @@
       "committer_name": "Tim McGilchrist",
       "committer_email": "timmcgil@gmail.com",
       "committed_date": "2021-09-30T06:27:56.000+00:00",
-      "trailers": null,
       "web_url": "https://gitlab.com/tmcgilchrist/ocaml-gitlab/-/commit/45349c998d97bfa69379d6ce2ed606f1f261786c"
     },
     "merged": false,
@@ -66,7 +64,6 @@
       "committer_name": "Tim McGilchrist",
       "committer_email": "timmcgil@gmail.com",
       "committed_date": "2021-10-23T04:09:17.000+00:00",
-      "trailers": null,
       "web_url": "https://gitlab.com/tmcgilchrist/ocaml-gitlab/-/commit/dd316f520ef5505ac9d52225800252f3148c3e90"
     },
     "merged": false,
