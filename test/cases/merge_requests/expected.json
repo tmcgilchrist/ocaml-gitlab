@@ -49,6 +49,8 @@
     "merge_commit_sha": null,
     "squash_commit_sha": null,
     "discussion_locked": null,
+    "allow_collaboration": true,
+    "allow_maintainer_to_push": true,
     "should_remove_source_branch": null,
     "force_remove_source_branch": true,
     "reference": "!1",

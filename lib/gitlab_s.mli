@@ -411,29 +411,61 @@ module type Gitlab = sig
         See {{:https://docs.gitlab.com/ee/api/projects.html#get-single-project}Get a single project}.
     *)
 
-    val branches :
-      ?token:Token.t ->
-      project_id:int ->
-      ?search:string ->
-      unit ->
-      Gitlab_t.branch_full Stream.t
-    (** [branches ?token ~project_id] lists repository branches from a project, sorted by name alphabetically.
+    module Branch : sig
+      val branches :
+        ?token:Token.t ->
+        project_id:int ->
+        ?search:string ->
+        unit ->
+        Gitlab_t.branch_full Stream.t
+      (** [branches ?token ~project_id] lists repository branches from a project, sorted by name alphabetically.
         Supply a [token] to access private projects.
 
         See {{:https://docs.gitlab.com/ee/api/branches.html#list-repository-branches}List repository branches}.
-     *)
+       *)
 
-    val branch :
-      ?token:Token.t ->
-      project_id:int ->
-      name:string ->
-      unit ->
-      Gitlab_t.branch_full Response.t Monad.t
-    (** [branch ?token ~name] gets a single project repository branch.
+      val branch :
+        ?token:Token.t ->
+        project_id:int ->
+        branch:string ->
+        unit ->
+        Gitlab_t.branch_full Response.t Monad.t
+      (** [branch ?token ~name] gets a single project repository branch.
         Supply a [token] to access private projects.
 
         See {{:https://docs.gitlab.com/ee/api/branches.html#get-single-repository-branch}Get a single repository branch}.
-     *)
+       *)
+
+      val create :
+        token:Token.t ->
+        project_id:int ->
+        branch:string ->
+        ref:string ->
+        unit ->
+        Gitlab_t.branch_full Response.t Monad.t
+      (** [create ~token ~branch ~ref] Create a new branch in the repository.
+
+        See {{:https://docs.gitlab.com/ee/api/branches.html#create-repository-branch}Create repository branch}.
+       *)
+
+      val delete :
+        token:Token.t ->
+        project_id:int ->
+        branch:string ->
+        unit ->
+        unit Response.t Monad.t
+      (** [delete ~token ~branch] Delete a branch in the repository.
+
+        See {{:https://docs.gitlab.com/ee/api/branches.html#delete-repository-branch}Delete repository branch}.
+       *)
+
+      val delete_merged :
+        token:Token.t -> project_id:int -> unit -> unit Response.t Monad.t
+      (** [delete ~token ~branch] Delete a branch in the repository.
+
+        See {{:https://docs.gitlab.com/ee/api/branches.html#delete-merged-branches}Delete merged repository branches}.
+       *)
+    end
 
     val merge_requests :
       ?token:Token.t ->

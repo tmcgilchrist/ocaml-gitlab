@@ -49,6 +49,8 @@
     "discussion_locked": null,
     "should_remove_source_branch": null,
     "force_remove_source_branch": true,
+    "allow_collaboration": true,
+    "allow_maintainer_to_push": true,
     "reference": "!1",
     "references": {
       "short": "!1",

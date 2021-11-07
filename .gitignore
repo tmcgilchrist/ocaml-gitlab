@@ -26,3 +26,4 @@ _opam/
 
 # direnv setup
 .envrc
+/_opam
