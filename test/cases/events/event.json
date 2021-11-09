@@ -355,5 +355,47 @@
       "web_url": "https://gitlab.com/patrickferris"
     },
     "author_username": "patrickferris"
+  },
+  {
+    "id": 1554587781,
+    "project_id": 30561150,
+    "action_name": "commented on",
+    "target_id": 728166612,
+    "target_iid": 728166612,
+    "target_type": "Note",
+    "author_id": 9920770,
+    "target_title": "Needs more tests",
+    "created_at": "2021-11-09T15:45:08.247Z",
+    "author": {
+      "id": 9920770,
+      "username": "patrickferris",
+      "name": "Patrick Ferris",
+      "state": "active",
+      "avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/9920770/avatar.png",
+      "web_url": "https://gitlab.com/patrickferris"
+    },
+    "note": {
+      "id": 728166612,
+      "type": null,
+      "body": "Another comment for good measure !",
+      "attachment": null,
+      "author": {
+        "id": 9920770,
+        "username": "patrickferris",
+        "name": "Patrick Ferris",
+        "state": "active",
+        "avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/9920770/avatar.png",
+        "web_url": "https://gitlab.com/patrickferris"
+      },
+      "created_at": "2021-11-09T15:45:08.016Z",
+      "updated_at": "2021-11-09T15:45:08.016Z",
+      "system": false,
+      "noteable_id": 95644992,
+      "noteable_type": "Issue",
+      "resolvable": false,
+      "confidential": false,
+      "noteable_iid": 2
+    },
+    "author_username": "patrickferris"
   }
 ]

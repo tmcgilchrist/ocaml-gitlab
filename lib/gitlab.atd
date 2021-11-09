@@ -894,6 +894,7 @@ type event_action_name = [
 
 type noteable_type = [
   | MergeRequest <json name="MergeRequest">
+  | Issue <json name="Issue">
 ]
 
 type note = {
