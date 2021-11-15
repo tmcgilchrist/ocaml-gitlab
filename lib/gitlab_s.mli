@@ -1,5 +1,7 @@
 module type Gitlab = sig
-  type rate = Core
+
+  type rate_limit = { limit : int; remaining : int; reset : float }
+  type rates = { core : rate_limit option }
 
   (** Functions corresponding to direct API requests return
       {!Response.t} values inside of {!Monad.t} values so that more
@@ -94,6 +96,7 @@ module type Gitlab = sig
     val ( and* ) : 'a t -> 'b t -> ('a * 'b) t
   end
 
+  (** TODO Fill in a proper implementation of this! *)
   module Token : sig
     type t
     (** [t] is the abstract type of a token. *)
@@ -203,7 +206,6 @@ module type Gitlab = sig
         [parse]. *)
 
     val get :
-      ?rate:rate ->
       ?fail_handlers:'a parse handler list ->
       ?expected_code:Cohttp.Code.status_code ->
       ?headers:Cohttp.Header.t ->
@@ -225,7 +227,6 @@ module type Gitlab = sig
         in response headers. *)
 
     val get_stream :
-      ?rate:rate ->
       ?fail_handlers:'a Stream.parse handler list ->
       ?expected_code:Cohttp.Code.status_code ->
       ?headers:Cohttp.Header.t ->
@@ -242,7 +243,6 @@ module type Gitlab = sig
         parameters, see {!get}. *)
 
     val post :
-      ?rate:rate ->
       ?fail_handlers:'a parse handler list ->
       expected_code:Cohttp.Code.status_code ->
       ?headers:Cohttp.Header.t ->
@@ -257,7 +257,6 @@ module type Gitlab = sig
         parameters, see {!get}. *)
 
     val delete :
-      ?rate:rate ->
       ?fail_handlers:'a parse handler list ->
       ?expected_code:Cohttp.Code.status_code ->
       ?headers:Cohttp.Header.t ->
@@ -271,7 +270,6 @@ module type Gitlab = sig
         parameters, see {!get}. *)
 
     val patch :
-      ?rate:rate ->
       ?fail_handlers:'a parse handler list ->
       expected_code:Cohttp.Code.status_code ->
       ?headers:Cohttp.Header.t ->
@@ -286,7 +284,6 @@ module type Gitlab = sig
         parameters, see {!get}. *)
 
     val put :
-      ?rate:rate ->
       ?fail_handlers:'a parse handler list ->
       expected_code:Cohttp.Code.status_code ->
       ?headers:Cohttp.Header.t ->
@@ -310,6 +307,20 @@ module type Gitlab = sig
         function enables the creation of large, generic monadic
         compositions that do not have to be parameterized by
         authentication token. *)
+
+    val get_rate : ?token:Token.t -> unit -> rates Monad.t
+    (** [get_rate ()] is the cached rate limit information. *)
+
+    val get_rate_limit : ?token:Token.t -> unit -> int option Monad.t
+    (** [get_rate_limit ()] is the cached total request quota for the current token. *)
+
+    val get_rate_remaining : ?token:Token.t -> unit -> int option Monad.t
+    (** [get_rate_remaining ()] is the  cached remaining request quota for the current token. *)
+
+    val get_rate_reset : ?token:Token.t -> unit -> float option Monad.t
+    (** [get_rate_reset ()] is the cached, UNIX
+        epoch expiry time (s) when the remaining request quota will be
+        reset to the total request quota for the current token. *)
 
     val string_of_message : Gitlab_t.message -> string
     (** [string_of_message message] is the English language error

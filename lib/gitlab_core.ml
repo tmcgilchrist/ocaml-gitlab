@@ -15,7 +15,13 @@ struct
         | true -> prerr_endline (">>> GitLab: " ^ s))
       fmt
 
-  type rate = Core
+  type rate_limit = { limit : int; remaining : int; reset : float }
+
+  type rates = { core : rate_limit option }
+
+  let empty_rates = { core = None }
+
+  let rate_table : (string option, rates) Hashtbl.t = Hashtbl.create 4
 
   let string_of_message message =
     message.Gitlab_t.message_message
@@ -369,6 +375,29 @@ struct
                 return Monad.(error (Semantic (status, message)))
             | _ -> return Monad.(error (Generic (envelope, body)))))
 
+    let update_rate_table ?token response =
+      let headers = C.Response.headers response in
+      match
+        ( C.Header.get headers "x-ratelimit-limit",
+          C.Header.get headers "x-ratelimit-remaining",
+          C.Header.get headers "x-ratelimit-reset" )
+      with
+      | Some limit_s, Some remaining_s, Some reset_s ->
+          let rate_limit = int_of_string limit_s in
+          let rate_remaining = int_of_string remaining_s in
+          let rate_reset = float_of_string reset_s in
+          let new_rate =
+            Some
+              {
+                limit = rate_limit;
+                remaining = rate_remaining;
+                reset = rate_reset;
+              }
+          in
+          let new_rates = { core = new_rate } in
+          Hashtbl.replace rate_table token new_rates
+      | _ -> ()
+
     (* Force chunked-encoding
      * to be disabled (to satisfy Github, which returns 411 Length Required
      * to a chunked-encoding POST request). *)
@@ -383,7 +412,7 @@ struct
       | `Moved_permanently -> Response.Permanent target
       | _ -> Response.Temporary target
 
-    let rec request ?(redirects = []) ~rate ~token resp_handlers req =
+    let rec request ?(redirects = []) ~token resp_handlers req =
       Lwt.(
         if List.length redirects > max_redirects then
           Lwt.fail
@@ -398,28 +427,23 @@ struct
                    } ))
         else
           lwt_req req >>= fun (resp, body) ->
+          update_rate_table ?token resp;
           let response_code = C.Response.status resp in
           log "Response code %s\n%!" (C.Code.string_of_status response_code);
           match response_code with
           | `Found | `Temporary_redirect | `Moved_permanently -> (
               match C.Header.get (C.Response.headers resp) "location" with
-              | None ->
-                  Lwt.fail
-                    (Message
-                       ( `Expectation_failed,
-                         Gitlab_t.
-                           {
-                             message_message =
-                               "ocaml-gitlab got redirect without location";
-                             message_errors = [];
-                           } ))
+              | None -> Lwt.fail (Message ( `Expectation_failed, Gitlab_t.{
+                  message_message = "ocaml-gitlab got redirect without location";
+                  message_errors = [];
+                } ))
               | Some location_s ->
                   let location = Uri.of_string location_s in
                   let target = Uri.resolve "" req.Monad.uri location in
                   let redirect = make_redirect target response_code in
                   let redirects = redirect :: redirects in
                   let req = { req with Monad.uri = target } in
-                  request ~redirects ~rate ~token resp_handlers req)
+                  request ~redirects ~token resp_handlers req)
           | _ ->
               CLB.to_string body >>= fun body ->
               handle_response (List.rev redirects) (resp, body) resp_handlers)
@@ -434,7 +458,7 @@ struct
       | Some token -> C.Header.add_opt headers "PRIVATE-TOKEN" token
       | None -> C.Header.init ()
 
-    let idempotent meth ?(rate = Core) ?headers ?token ?params ~fail_handlers
+    let idempotent meth ?headers ?token ?params ~fail_handlers
         ~expected_code ~uri fn state =
       Lwt.return
         ( state,
@@ -446,12 +470,12 @@ struct
                 headers = realize_headers ~token ~headers;
                 body = "";
               })
-            (request ~rate ~token
+            (request ~token
                (code_handler ~expected_code fn :: fail_handlers)) )
 
     let just_body (_, (body : string)) : string Lwt.t = Lwt.return body
 
-    let effectful meth ?(rate = Core) ?headers ?body ?token ?params
+    let effectful meth ?headers ?body ?token ?params
         ~fail_handlers ~expected_code ~uri fn =
       let body = match body with None -> "" | Some b -> b in
       let fn x = Lwt.(just_body x >>= fn) in
@@ -466,17 +490,17 @@ struct
             Monad.(
               request ?token ?params
                 { meth; uri; headers = realize_headers ~token ~headers; body })
-              (request ~rate ~token
+              (request ~token
                  (code_handler ~expected_code fn :: fail_handlers)) )
 
     let map_fail_handlers f fhs = List.map (fun (p, fn) -> (p, f fn)) fhs
 
-    let get ?rate ?(fail_handlers = []) ?(expected_code = `OK) ?headers ?token
+    let get ?(fail_handlers = []) ?(expected_code = `OK) ?headers ?token
         ?params ~uri fn =
       let fail_handlers =
         map_fail_handlers Lwt.(fun f x -> just_body x >>= f) fail_handlers
       in
-      idempotent `GET ?rate ~fail_handlers ~expected_code ?headers ?token
+      idempotent `GET ~fail_handlers ~expected_code ?headers ?token
         ?params ~uri
         Lwt.(fun x -> just_body x >>= fn)
 
@@ -522,10 +546,10 @@ struct
         fn body >>= fun buffer ->
         return { Stream.restart; buffer; refill; endpoint })
 
-    let rec restart_stream ?rate ~fail_handlers ~expected_code ?headers ?token
+    let rec restart_stream ~fail_handlers ~expected_code ?headers ?token
         ?params fn endpoint =
       let restart =
-        restart_stream ?rate ~fail_handlers ~expected_code ?headers ?token
+        restart_stream ~fail_handlers ~expected_code ?headers ?token
           ?params fn
       in
       let first_request ~uri f =
@@ -554,33 +578,33 @@ struct
         in
         Monad.(
           Endpoint.wait_to_poll uri >>= fun () ->
-          idempotent ?rate `GET ~headers ?token ?params ~fail_handlers
+          idempotent `GET ~headers ?token ?params ~fail_handlers
             ~expected_code ~uri f)
       in
       let request ~uri f =
         let fail_handlers = stream_fail_handlers restart fail_handlers in
         Monad.map Response.value
-          (idempotent ?rate `GET ?headers ?token ?params ~fail_handlers
+          (idempotent `GET ?headers ?token ?params ~fail_handlers
              ~expected_code ~uri f)
       in
       let uri = endpoint.Endpoint.uri in
       Monad.map Response.value
         (first_request ~uri (stream_next restart request uri fn endpoint))
 
-    let get_stream (type a) ?rate
+    let get_stream (type a)
         ?(fail_handlers : a Stream.parse handler list = [])
         ?(expected_code : Cohttp.Code.status_code = `OK)
         ?(headers : Cohttp.Header.t option) ?(token : string option)
         ?(params : (string * string) list option) ~(uri : Uri.t)
         (fn : a Stream.parse) =
       let restart =
-        restart_stream ?rate ~fail_handlers ~expected_code ?headers ?token
+        restart_stream ~fail_handlers ~expected_code ?headers ?token
           ?params fn
       in
       let request ~uri f =
         let fail_handlers = stream_fail_handlers restart fail_handlers in
         Monad.map Response.value
-          (idempotent ?rate `GET ?headers ?token ?params ~fail_handlers
+          (idempotent `GET ?headers ?token ?params ~fail_handlers
              ~expected_code ~uri f)
       in
       let endpoint = Endpoint.{ empty with uri } in
@@ -590,27 +614,27 @@ struct
       in
       { Stream.restart; buffer = []; refill; endpoint }
 
-    let post ?rate ?(fail_handlers = []) ~expected_code =
-      effectful `POST ?rate ~fail_handlers ~expected_code
+    let post ?(fail_handlers = []) ~expected_code =
+      effectful `POST ~fail_handlers ~expected_code
 
-    let patch ?rate ?(fail_handlers = []) ~expected_code =
-      effectful `PATCH ?rate ~fail_handlers ~expected_code
+    let patch ?(fail_handlers = []) ~expected_code =
+      effectful `PATCH ~fail_handlers ~expected_code
 
-    let put ?rate ?(fail_handlers = []) ~expected_code ?headers ?body =
+    let put ?(fail_handlers = []) ~expected_code ?headers ?body =
       let headers =
         match (headers, body) with
         | None, None -> Some (C.Header.init_with "content-length" "0")
         | Some h, None -> Some (C.Header.add h "content-length" "0")
         | _, Some _ -> headers
       in
-      effectful `PUT ?rate ~fail_handlers ~expected_code ?headers ?body
+      effectful `PUT ~fail_handlers ~expected_code ?headers ?body
 
-    let delete ?rate ?(fail_handlers = []) ?(expected_code = `No_content)
+    let delete ?(fail_handlers = []) ?(expected_code = `No_content)
         ?headers ?token ?params ~uri fn =
       let fail_handlers =
         map_fail_handlers Lwt.(fun f x -> just_body x >>= f) fail_handlers
       in
-      idempotent `DELETE ?rate ~fail_handlers ~expected_code ?headers ?token
+      idempotent `DELETE ~fail_handlers ~expected_code ?headers ?token
         ?params ~uri
         Lwt.(fun x -> just_body x >>= fn)
 
@@ -620,6 +644,26 @@ struct
 
     let set_token token state =
       Monad.(Lwt.return ({ state with token = Some token }, Response ()))
+
+    let get_rate ?token () =
+      try Monad.return (Hashtbl.find rate_table token)
+      with Not_found ->
+        Monad.return empty_rates
+
+    let get_rate_limit ?token () = Monad.(
+        get_rate ?token ()
+        >>= fun {core}  -> return (Option.map (fun x -> x.limit) core)
+      )
+
+    let get_rate_remaining ?token () = Monad.(
+        get_rate ?token ()
+        >>= fun {core}  -> return (Option.map (fun x -> x.remaining) core)
+      )
+
+    let get_rate_reset ?token () = Monad.(
+        get_rate ?token ()
+        >>= fun {core}  -> return (Option.map (fun x -> x.reset) core)
+      )
 
     let string_of_message = Monad.string_of_message
   end
