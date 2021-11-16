@@ -4,34 +4,37 @@ Gitlab bindings for OCaml
 
 Native OCaml bindings to [Gitlab REST API v4].
 
-TODO
-
-   * [x] Make basic skeleton for library with ATD and a simple endpoint
-   * [x] Add CI
-   * [x] Add basic cli mdx test
-   * [X] Add Steaming responses / pagination support
-   * [ ] Add test for authenticated queries
-   * [X] Parameterise gitlab url to support various gitlab hosting arrangements
-   * [X] documentation introduction on how to use the library
-   * [ ] Functor across HTTP libraries, Cohttp / httpaf ???
-   * [ ] Improved documentation on Github_t types
-   * [ ] Quickcheck generators for types
-
-Support for ocurrent
-
-   * [X] Webhooks integration for delivering Merge Request open, merge to master
-   * [X] Support events serialisation, add tests for de-serialising events
-   * [X] CRUD for Merge requests
-   * [ ] Authenticated user support via tokens
-   * [ ] Authenticated user support via oauth
-
-
+The API coverage is incomplete (currently we support many of the Commit, Project, User and Event
+APIs) but if you find something missing please create an Issue or PR.
 
 Pre-requisites
 ----------
 
- * opam / ocaml
- * jd for diffing json (github.com/josephburnett/jd)
+ * Plain opam / ocaml for building.
+ * jd for diffing json (github.com/josephburnett/jd) in tests
+
+Configuration
+----------
+
+Gitlab can be hosted in multiple places and configurations. By default the library uses
+the public `gitlab.com` site with it's API endpoint of `https://gitlab.com/api/v4`. This
+can be changed with:
+
+    GITLAB_URL # to configure the GitLab instance to connect to.
+
+or programatically by overriding the `Env` module.
+
+
+Debugging
+----------
+Two environment variables will cause more debugging to be output:
+
+    GITLAB_DEBUG=1   # API calls output to stderr
+    COHTTP_DEBUG=1   # even more HTTP-level debugging
+
+If using the bindings from the toplevel, you can also set `Gitlab.log_active`
+to `true` to get the same effect as setting the `GITLAB_DEBUG` environment
+variable.
 
 Lab Cli
 ----------
@@ -45,11 +48,8 @@ dune exec -- lab <arguments>
 
 If you opam install lab then the executable is available as `lab`.
 
-GITLAB_DEBUG=[true|false] for printing debug information like what HTTP requests and responses occur.
-GITLAB_URL to configure the GitLab instance to connect to. This defaults to `https://gitlab.com/api/v4` on the public `https://github.com` site.
 
 Run `lab -h` for more information about cli options.
-
 
  [github-shield]: https://github.com/tmcgilchrist/ocaml-gitlab/actions/workflows/ci.yaml/badge.svg
  [github-ci]: https://github.com/tmcgilchrist/ocaml-gitlab/actions/workflows/ci.yaml
