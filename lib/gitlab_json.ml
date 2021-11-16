@@ -1,5 +1,5 @@
 (*
-   Adapters used by atdgen to turn Github's representation of variants
+   Adapters used by atdgen to turn GitLab's representation of variants
    into an ATD-compatible representation.
 *)
 module Adapter = struct
