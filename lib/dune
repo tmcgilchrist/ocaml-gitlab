@@ -21,5 +21,6 @@
  (public_name gitlab)
  (wrapped false)
  (modules gitlab_s gitlab_core gitlab_j gitlab_t gitlab_json)
- (preprocess (staged_pps ppx_import ppx_deriving_yojson))
+ (preprocess
+  (staged_pps ppx_import ppx_deriving_yojson))
  (libraries cohttp-lwt uri yojson atdgen))

@@ -65,7 +65,7 @@ module type Gitlab = sig
 
     val ( >>~ ) : 'a Response.t t -> ('a -> 'b t) -> 'b t
     (** [m >>~ f] is [m >|= {!Response.value} >>= f]. *)
- 
+
     val ( >|~ ) : 'a Response.t t -> ('a -> 'b) -> 'b t
     (** [m >|~ f] is [m >|= {!Response.value} >|= f]. *)
 
@@ -99,7 +99,12 @@ module type Gitlab = sig
     val ( and* ) : 'a t -> 'b t -> ('a * 'b) t
   end
 
-  (** TODO Fill in a proper implementation of this! *)
+  (** Authentication Token for accessing GitLab APIs.
+
+      Of the several ways provided in GitLab, we currently support:
+      {ul {- Personal Access Tokens}
+          {- Project Access Tokens}}
+   *)
   module Token : sig
     type t
     (** [t] is the abstract type of a token. *)
@@ -396,7 +401,6 @@ module type Gitlab = sig
             {- Authenticate with Git using HTTP Basic Authentication.}}
      *)
     module PersonalAccessToken : sig
-
       val tokens :
         token:Token.t ->
         ?user_id:int ->
@@ -406,22 +410,19 @@ module type Gitlab = sig
           See {{:https://docs.gitlab.com/ee/api/personal_access_tokens.html#list-personal-access-tokens}List personal access tokens}.
        *)
 
-      val revoke :
-        token:Token.t ->
-        id:int ->
-        unit ->
-        unit Response.t Monad.t
+      val revoke : token:Token.t -> id:int -> unit -> unit Response.t Monad.t
       (** [revoke_person_access_tokens ~token ~id] Revoke a personal access token.
           See {{:https://docs.gitlab.com/ee/api/personal_access_tokens.html#revoke-a-personal-access-token}Revoke a personal access token}.
        *)
 
-
       type scope = [%import: Gitlab_t.scope] [@@deriving to_yojson]
+
       type new_token = {
-          name: string;
-          expires_at: string;
-          scopes: scope list;
-        } [@@deriving to_yojson]
+        name : string;
+        expires_at : string;
+        scopes : scope list;
+      }
+      [@@deriving to_yojson]
 
       val create :
         token:Token.t ->
@@ -429,7 +430,7 @@ module type Gitlab = sig
         new_token ->
         unit ->
         Gitlab_t.personal_access_token Response.t Monad.t
-    (** Create a personal access token for [~user_id]. See {{:https://docs.gitlab.com/ee/api/users.html#create-a-personal-access-token}Create a personal access token}.
+      (** Create a personal access token for [~user_id]. See {{:https://docs.gitlab.com/ee/api/users.html#create-a-personal-access-token}Create a personal access token}.
        *)
     end
   end
@@ -845,6 +846,52 @@ module type Gitlab = sig
 
           See {{:https://docs.gitlab.com/ee/api/milestones.html#delete-project-milestone}Delete a milestone}.
         *)
+    end
+
+    (** Project access tokens for {! Project} authentication.
+
+        They may be used to:
+
+        {ul {- Authenticate with the GitLab API.}
+            {- Authenticate with Git using HTTP Basic Authentication.}}
+         *)
+    module ProjectAccessToken : sig
+      val tokens :
+        token:Token.t ->
+        project_id:int ->
+        unit ->
+        Gitlab_t.project_access_tokens Response.t Monad.t
+      (** [tokens ~token ?project_id ()] get the Project Access Tokens for [~project_id].
+          See {{:https://docs.gitlab.com/ee/api/resource_access_tokens.html#list-project-access-tokens}List project access tokens}.
+       *)
+
+      val revoke :
+        token:Token.t ->
+        project_id:int ->
+        id:int ->
+        unit ->
+        unit Response.t Monad.t
+      (** [revoke ~token ~id] Revoke a project access token.
+          See {{:https://docs.gitlab.com/ee/api/resource_access_tokens.html#revoke-a-project-access-token}Revoke a project access token}.
+       *)
+
+      type scope = [%import: Gitlab_t.scope] [@@deriving to_yojson]
+
+      type new_token = {
+        name : string;
+        expires_at : string;
+        scopes : scope list;
+      }
+      [@@deriving to_yojson]
+
+      val create :
+        token:Token.t ->
+        project_id:int ->
+        new_token ->
+        unit ->
+        Gitlab_t.project_access_token Response.t Monad.t
+      (** Create a project access token for [~project_id]. See {{:https://docs.gitlab.com/ee/api/resource_access_tokens.html#create-a-project-access-token}Create a project access token}.
+       *)
     end
   end
 
