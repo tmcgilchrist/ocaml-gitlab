@@ -401,7 +401,7 @@ struct
       | _ -> ()
 
     (* Force chunked-encoding
-     * to be disabled (to satisfy Github, which returns 411 Length Required
+     * to be disabled (to satisfy GitLab, which returns 411 Length Required
      * to a chunked-encoding POST request). *)
     let lwt_req { Monad.uri; meth; headers; body } =
       log "Requesting %s" (Uri.to_string uri);
@@ -423,7 +423,7 @@ struct
                  Gitlab_t.
                    {
                      message_message =
-                       Printf.sprintf "ocaml-github exceeded max redirects %d"
+                       Printf.sprintf "ocaml-gitlab exceeded max redirects %d"
                          max_redirects;
                      message_errors = [];
                    } ))
@@ -670,13 +670,6 @@ struct
   end
 
   module Token = struct
-    (* Project and Personal Access Tokens similar to GitHub tokens with allowing access
-       to the API and being restricted to certain scopes.
-       TODO Can they be created programatically? YES!!!
-       https://docs.gitlab.com/ee/api/personal_access_tokens.html
-
-       https://docs.gitlab.com/ee/api/resource_access_tokens.html
-    *)
     type t = string
 
     let of_string x = x
