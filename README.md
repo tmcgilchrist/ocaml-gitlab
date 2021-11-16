@@ -40,7 +40,7 @@ A command line client is provided called `lab` in the style of a similarly named
 tool `hub` for GitHub. From source you can run as:
 
 ``` shell
-dune exec cli/lab.exe -- <arguments>
+dune exec -- lab <arguments>
 ```
 
 If you opam install lab then the executable is available as `lab`.
@@ -58,18 +58,3 @@ Run `lab -h` for more information about cli options.
  [docs]: https://tmcgilchrist.github.io/ocaml-gitlab/gitlab/index.html
 
  [Gitlab REST API v4]: https://docs.gitlab.com/ee/api/README.html
-
-
-Issues
-----------
-
-``` ocaml
-    let module Show = struct
-      type t = [%import: Gitlab_t.commit_status_status] [@@deriving show]
-    end in
-    Uri.add_query_param' uri
-      ("state", show state)
-```
-
-Gives me a string of ``Pending` what I really need is a plain string version of this
-like `Gitlab_j.string_of_commit_status_status` without the quotes.
