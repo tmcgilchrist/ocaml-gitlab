@@ -18,7 +18,7 @@ module CommandLine = struct
       & info [ "n"; "owner-name" ] ~docv:"OWNER_NAME" ~doc)
 
   let api =
-    let doc = " The GitLab API endpoint to send the HTTP request to" in
+    let doc = "The GitLab API endpoint to send the HTTP request to." in
     Arg.(required & pos 0 (some string) None & info [] ~docv:"ENDPOINT" ~doc)
 
   let merge_request_id =
@@ -92,7 +92,8 @@ let user_cmd =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  (Term.(pure user_list $ CommandLine.owner_id $ pure ()), Term.info "user-list")
+  (Term.(pure user_list $ CommandLine.owner_id $ pure ()),
+   Term.info "user-list - Display user name and id")
 
 let user_name_cmd =
   let user_list name json () =
@@ -114,7 +115,7 @@ let user_name_cmd =
     Lwt_main.run @@ Gitlab.Monad.run (cmd name)
   in
   ( Term.(pure user_list $ CommandLine.owner_name $ CommandLine.json $ pure ()),
-    Term.info "user-name" )
+    Term.info "user-name - Display users by name and id" )
 
 let user_projects_cmd =
   let user_projects_list id () =
@@ -130,7 +131,7 @@ let user_projects_cmd =
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
   ( Term.(pure user_projects_list $ CommandLine.owner_id $ pure ()),
-    Term.info "user-projects" )
+    Term.info "user-projects - List public projects owned by the user" )
 
 let user_events_cmd config =
   let user_projects_list id () =
@@ -144,7 +145,7 @@ let user_events_cmd config =
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
   ( Term.(pure user_projects_list $ CommandLine.owner_id $ pure ()),
-    Term.info "user-events" )
+    Term.info "user-events - List all user events" )
 
 let merge_requests_cmd config =
   let merge_requests_list () =
@@ -162,7 +163,8 @@ let merge_requests_cmd config =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  (Term.(pure merge_requests_list $ pure ()), Term.info "merge-requests")
+  (Term.(pure merge_requests_list $ pure ()),
+   Term.info "merge-requests - List user's merge requests")
 
 let status_checks_cmd config =
   let status_checks project_id () =
@@ -184,7 +186,7 @@ let status_checks_cmd config =
   in
   let exits = Term.default_exits in
   ( Term.(pure status_checks $ CommandLine.project_id $ pure ()),
-    Term.info "status-checks" ~exits )
+    Term.info "status-checks - List external status checks" ~exits )
 
 let project_create_cmd config =
   let project_create name description () =
@@ -229,7 +231,7 @@ let ci_status_cmd config =
   ( Term.(
       pure ci_status $ CommandLine.project_id $ CommandLine.commit_sha
       $ CommandLine.verbose $ pure ()),
-    Term.info "ci-status" )
+    Term.info "ci-status - List build status of a commit" )
 
 let project_branches_cmd config =
   let project_branches project_id () =
@@ -247,7 +249,7 @@ let project_branches_cmd config =
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
   ( Term.(pure project_branches $ CommandLine.project_id $ pure ()),
-    Term.info "branch" )
+    Term.info "branch - List branches for a project" )
 
 let ci_status_set_cmd config =
   let ci_status project_id sha state () =
@@ -267,7 +269,7 @@ let ci_status_set_cmd config =
   ( Term.(
       pure ci_status $ CommandLine.project_id $ CommandLine.commit_sha
       $ CommandLine.state $ pure ()),
-    Term.info "set-ci-status" )
+    Term.info "set-ci-status - Set or update the build status of a commit" )
 
 let api_cmd =
   let api uri_str () =
@@ -280,7 +282,7 @@ let api_cmd =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  (Term.(pure api $ CommandLine.api $ pure ()), Term.info "api")
+  (Term.(pure api $ CommandLine.api $ pure ()), Term.info "api - Low-level GitLab API request interface")
 
 let default_cmd =
   let doc = "make git easier with GitLab" in
