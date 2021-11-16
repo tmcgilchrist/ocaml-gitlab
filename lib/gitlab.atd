@@ -983,3 +983,16 @@ type personal_access_token = {
 } <ocaml field_prefix="personal_access_token_">
 
 type personal_access_tokens = personal_access_token list
+
+type project_access_token = {
+  id: int;
+  name: string;
+  revoked: bool;
+  created_at: string;
+  scopes: scope list;
+  user_id: int;
+  active: bool;
+  expires_at: string nullable;
+} <ocaml field_prefix="project_access_token_">
+
+type project_access_tokens = project_access_token list

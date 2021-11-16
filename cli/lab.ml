@@ -92,8 +92,8 @@ let user_cmd =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  (Term.(pure user_list $ CommandLine.owner_id $ pure ()),
-   Term.info "user-list - Display user name and id")
+  ( Term.(pure user_list $ CommandLine.owner_id $ pure ()),
+    Term.info "user-list - Display user name and id" )
 
 let user_name_cmd =
   let user_list name json () =
@@ -121,7 +121,9 @@ let user_projects_cmd =
       let open Gitlab in
       let open Monad in
       User.projects ~id () >|~ fun projects ->
-      List.iter (fun project -> printf "%s\n" project.Gitlab_t.project_short_name) projects
+      List.iter
+        (fun project -> printf "%s\n" project.Gitlab_t.project_short_name)
+        projects
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
@@ -158,8 +160,8 @@ let merge_requests_cmd config =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  (Term.(pure merge_requests_list $ pure ()),
-   Term.info "merge-requests - List user's merge requests")
+  ( Term.(pure merge_requests_list $ pure ()),
+    Term.info "merge-requests - List user's merge requests" )
 
 let status_checks_cmd config =
   let status_checks project_id () =
@@ -168,12 +170,13 @@ let status_checks_cmd config =
       let open Monad in
       let config = config () in
       Project.ExternalStatusCheck.checks ~token:config.token ~project_id ()
-      >|~ fun x -> List.iter
-           (fun check ->
-             printf "%s\t%s\t%i\n" check.Gitlab_t.external_status_check_name
-               check.Gitlab_t.external_status_check_external_url
-               check.Gitlab_t.external_status_check_id)
-           x
+      >|~ fun x ->
+      List.iter
+        (fun check ->
+          printf "%s\t%s\t%i\n" check.Gitlab_t.external_status_check_name
+            check.Gitlab_t.external_status_check_external_url
+            check.Gitlab_t.external_status_check_id)
+        x
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
@@ -208,11 +211,12 @@ let ci_status_cmd config =
       return @@ Project.Commit.statuses ~token:config.token ~project_id ~sha ()
       >>= fun statuses ->
       let* results = Stream.to_list statuses in
-      return @@  match List.length results > 0 with
+      return
+      @@
+      match List.length results > 0 with
       | true ->
           List.iter
-            (fun status ->
-              printf "%s\n" status.Gitlab_t.commit_status_status)
+            (fun status -> printf "%s\n" status.Gitlab_t.commit_status_status)
             results
       | false -> printf "failure\n"
     in
@@ -229,7 +233,8 @@ let project_branches_cmd config =
       let open Gitlab in
       let open Monad in
       let config = config () in
-      let* branches = return @@ Project.Branch.branches ~token:config.token ~project_id ()
+      let* branches =
+        return @@ Project.Branch.branches ~token:config.token ~project_id ()
       in
       Stream.iter
         (fun branch -> return @@ printf "%s\n" branch.Gitlab_t.branch_full_name)
@@ -247,8 +252,9 @@ let ci_status_set_cmd config =
       let open Monad in
       let config = config () in
       Project.Commit.status ~token:config.token ~project_id ~sha ~state ()
-      >|~ fun status -> printf "%s\n"
-           (Yojson.Basic.prettify (Gitlab_j.string_of_commit_status status))
+      >|~ fun status ->
+      printf "%s\n"
+        (Yojson.Basic.prettify (Gitlab_j.string_of_commit_status status))
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
@@ -268,7 +274,8 @@ let api_cmd =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  (Term.(pure api $ CommandLine.api $ pure ()), Term.info "api - Low-level GitLab API request interface")
+  ( Term.(pure api $ CommandLine.api $ pure ()),
+    Term.info "api - Low-level GitLab API request interface" )
 
 let default_cmd =
   let doc = "make git easier with GitLab" in

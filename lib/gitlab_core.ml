@@ -190,6 +190,7 @@ struct
     let ( and+ ) m n = both m n
 
     let ( >>~ ) m f = m >|= Response.value >>= f
+
     let ( >|~ ) m f = m >|= Response.value >|= f
 
     let ( *> ) p1 p2 = p1 >>= fun _ -> p2
@@ -676,7 +677,7 @@ struct
        https://docs.gitlab.com/ee/api/personal_access_tokens.html
 
        https://docs.gitlab.com/ee/api/resource_access_tokens.html
-     *)
+    *)
     type t = string
 
     let of_string x = x
@@ -705,10 +706,19 @@ struct
       Uri.of_string (Printf.sprintf "%s/personal_access_tokens" api)
 
     let personal_access_token user_id =
-      Uri.of_string (Printf.sprintf "%s/users/%i/personal_access_tokens" api user_id)
+      Uri.of_string
+        (Printf.sprintf "%s/users/%i/personal_access_tokens" api user_id)
 
     let personal_access_token_revoke id =
       Uri.of_string (Printf.sprintf "%s/personal_access_tokens/%i" api id)
+
+    let project_access_tokens project_id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/access_tokens" api project_id)
+
+    let project_access_token_revoke project_id id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/access_tokens/%i" api project_id id)
 
     let project_commits project_id =
       Uri.of_string
@@ -1059,17 +1069,19 @@ struct
       API.get ~token ~uri (fun body -> return (Gitlab_j.events_of_string body))
 
     module PersonalAccessToken = struct
-
       type scope = [%import: Gitlab_t.scope] [@@deriving to_yojson]
+
       type new_token = {
-          name: string;
-          expires_at: string;
-          scopes: scope list;
-        } [@@deriving to_yojson]
+        name : string;
+        expires_at : string;
+        scopes : scope list;
+      }
+      [@@deriving to_yojson]
 
       let tokens ~token ?user_id () =
         let uri = URI.personal_access_tokens |> user_id_param user_id in
-        API.get ~token ~uri (fun body -> return (Gitlab_j.personal_access_tokens_of_string body))
+        API.get ~token ~uri (fun body ->
+            return (Gitlab_j.personal_access_tokens_of_string body))
 
       let revoke ~token ~id () =
         let uri = URI.personal_access_token_revoke id in
@@ -1339,6 +1351,32 @@ struct
       let delete ~token ~project_id ~milestone_id () =
         let uri = URI.project_milestone ~project_id ~milestone_id in
         API.delete ~token ~uri ~expected_code:`No_content (fun _ -> return ())
+    end
+
+    module ProjectAccessToken = struct
+      type scope = [%import: Gitlab_t.scope] [@@deriving to_yojson]
+
+      type new_token = {
+        name : string;
+        expires_at : string;
+        scopes : scope list;
+      }
+      [@@deriving to_yojson]
+
+      let tokens ~token ~project_id () =
+        let uri = URI.project_access_tokens project_id in
+        API.get ~token ~uri (fun body ->
+            return (Gitlab_j.project_access_tokens_of_string body))
+
+      let revoke ~token ~project_id ~id () =
+        let uri = URI.project_access_token_revoke project_id id in
+        API.delete ~token ~uri ~expected_code:`No_content (fun _ -> return ())
+
+      let create ~token ~project_id new_token () =
+        let uri = URI.personal_access_token project_id in
+        let body = Yojson.Safe.to_string @@ new_token_to_yojson new_token in
+        API.post ~token ~uri ~body ~expected_code:`Created (fun s ->
+            Lwt.return (Gitlab_j.project_access_token_of_string s))
     end
   end
 
