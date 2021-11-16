@@ -190,6 +190,7 @@ struct
     let ( and+ ) m n = both m n
 
     let ( >>~ ) m f = m >|= Response.value >>= f
+    let ( >|~ ) m f = m >|= Response.value >|= f
 
     let ( *> ) p1 p2 = p1 >>= fun _ -> p2
 
@@ -669,6 +670,13 @@ struct
   end
 
   module Token = struct
+    (* Project and Personal Access Tokens similar to GitHub tokens with allowing access
+       to the API and being restricted to certain scopes.
+       TODO Can they be created programatically? YES!!!
+       https://docs.gitlab.com/ee/api/personal_access_tokens.html
+
+       https://docs.gitlab.com/ee/api/resource_access_tokens.html
+     *)
     type t = string
 
     let of_string x = x
@@ -692,6 +700,15 @@ struct
       Uri.of_string (Printf.sprintf "%s/users/%s/projects" api id)
 
     let merge_requests = Uri.of_string (Printf.sprintf "%s/merge_requests" api)
+
+    let personal_access_tokens =
+      Uri.of_string (Printf.sprintf "%s/personal_access_tokens" api)
+
+    let personal_access_token user_id =
+      Uri.of_string (Printf.sprintf "%s/users/%i/personal_access_tokens" api user_id)
+
+    let personal_access_token_revoke id =
+      Uri.of_string (Printf.sprintf "%s/personal_access_tokens/%i" api id)
 
     let project_commits project_id =
       Uri.of_string
@@ -993,6 +1010,11 @@ struct
     | None -> uri
     | Some start_date -> Uri.add_query_param' uri ("start_date", start_date)
 
+  let user_id_param user_id uri =
+    match user_id with
+    | None -> uri
+    | Some user_id -> Uri.add_query_param' uri ("user_id", Int.to_string user_id)
+
   module Event = struct
     open Lwt
 
@@ -1035,6 +1057,30 @@ struct
         |> target_type_param target_type
       in
       API.get ~token ~uri (fun body -> return (Gitlab_j.events_of_string body))
+
+    module PersonalAccessToken = struct
+
+      type scope = [%import: Gitlab_t.scope] [@@deriving to_yojson]
+      type new_token = {
+          name: string;
+          expires_at: string;
+          scopes: scope list;
+        } [@@deriving to_yojson]
+
+      let tokens ~token ?user_id () =
+        let uri = URI.personal_access_tokens |> user_id_param user_id in
+        API.get ~token ~uri (fun body -> return (Gitlab_j.personal_access_tokens_of_string body))
+
+      let revoke ~token ~id () =
+        let uri = URI.personal_access_token_revoke id in
+        API.delete ~token ~uri ~expected_code:`No_content (fun _ -> return ())
+
+      let create ~token ~user_id new_token () =
+        let uri = URI.personal_access_token user_id in
+        let body = Yojson.Safe.to_string @@ new_token_to_yojson new_token in
+        API.post ~token ~uri ~body ~expected_code:`Created (fun s ->
+            Lwt.return (Gitlab_j.personal_access_token_of_string s))
+    end
   end
 
   module Project = struct

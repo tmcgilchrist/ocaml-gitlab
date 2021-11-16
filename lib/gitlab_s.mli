@@ -65,6 +65,9 @@ module type Gitlab = sig
 
     val ( >>~ ) : 'a Response.t t -> ('a -> 'b t) -> 'b t
     (** [m >>~ f] is [m >|= {!Response.value} >>= f]. *)
+ 
+    val ( >|~ ) : 'a Response.t t -> ('a -> 'b) -> 'b t
+    (** [m >|~ f] is [m >|= {!Response.value} >|= f]. *)
 
     val catch : (unit -> 'a t) -> (exn -> 'a t) -> 'a t
     (** [catch try with] is the result of trying [try]. If [try]
@@ -365,7 +368,7 @@ module type Gitlab = sig
       ?author:string ->
       ?author_username:string ->
       ?my_reaction:string ->
-      ?scope:Gitlab_t.scope ->
+      ?scope:Gitlab_t.merge_request_scope ->
       unit ->
       Gitlab_t.merge_request Stream.t
     (** [merge_requests ()] list all merge requests the authenticated user has access to.
@@ -383,7 +386,52 @@ module type Gitlab = sig
     (** [events ~token ~id] get the contribution events for the specified user.
 
         See {{:https://docs.gitlab.com/ee/api/events.html#get-user-contribution-events}Get user contribution events}.
-    *)
+     *)
+
+    (** Personal access tokens for {! User} authentication.
+
+        They may be used to:
+
+        {ul {- Authenticate with the GitLab API.}
+            {- Authenticate with Git using HTTP Basic Authentication.}}
+     *)
+    module PersonalAccessToken : sig
+
+      val tokens :
+        token:Token.t ->
+        ?user_id:int ->
+        unit ->
+        Gitlab_t.personal_access_tokens Response.t Monad.t
+      (** [person_access_tokens ~token ?user_id ()] get the Personal Access Tokens for the current user. Administrators can use the [~user_id] parameter to filter by user.
+          See {{:https://docs.gitlab.com/ee/api/personal_access_tokens.html#list-personal-access-tokens}List personal access tokens}.
+       *)
+
+      val revoke :
+        token:Token.t ->
+        id:int ->
+        unit ->
+        unit Response.t Monad.t
+      (** [revoke_person_access_tokens ~token ~id] Revoke a personal access token.
+          See {{:https://docs.gitlab.com/ee/api/personal_access_tokens.html#revoke-a-personal-access-token}Revoke a personal access token}.
+       *)
+
+
+      type scope = [%import: Gitlab_t.scope] [@@deriving to_yojson]
+      type new_token = {
+          name: string;
+          expires_at: string;
+          scopes: scope list;
+        } [@@deriving to_yojson]
+
+      val create :
+        token:Token.t ->
+        user_id:int ->
+        new_token ->
+        unit ->
+        Gitlab_t.personal_access_token Response.t Monad.t
+    (** Create a personal access token for [~user_id]. See {{:https://docs.gitlab.com/ee/api/users.html#create-a-personal-access-token}Create a personal access token}.
+       *)
+    end
   end
 
   (** The [Project] module provides access to {{:https://docs.gitlab.com/ee/api/projects.html}Project API}. *)
@@ -486,7 +534,7 @@ module type Gitlab = sig
       ?author:string ->
       ?author_username:string ->
       ?my_reaction:string ->
-      ?scope:Gitlab_t.scope ->
+      ?scope:Gitlab_t.merge_request_scope ->
       id:int ->
       unit ->
       Gitlab_t.merge_request Stream.t
@@ -723,8 +771,7 @@ module type Gitlab = sig
         ?pipeline_id:int ->
         unit ->
         Gitlab_t.commit_status Response.t Monad.t
-      (** [status ~token ~project_id ~sha ~state] adds or updates a build status of a commit.
-
+      (** [status ~token ~project_id ~sha ~state] adds or updates the build status of a commit.
 
           See {{:https://docs.gitlab.com/ee/api/commits.html#post-the-build-status-to-a-commit}Post the build status to a commit}.
        *)
@@ -825,7 +872,7 @@ module type Gitlab = sig
       ?author:string ->
       ?author_username:string ->
       ?my_reaction:string ->
-      ?scope:Gitlab_t.scope ->
+      ?scope:Gitlab_t.merge_request_scope ->
       id:string ->
       unit ->
       Gitlab_t.merge_request Stream.t

@@ -15,7 +15,7 @@ type error_detail = {
   detail: string option
 }
 
-type scope = [
+type merge_request_scope = [
   | CreatedByMe <json name="created_by_me">
   | AssignedToMe <json name="assigned_to_me">
   | All <json name="all">
@@ -960,3 +960,26 @@ type branch_full = {
 }  <ocaml field_prefix="branch_full_">
 
 type branches_full = branch_full list
+
+type scope = [
+  | Api <json name="api">
+  | ReadApi <json name="read_api">
+  | ReadUser <json name="read_user">
+  | ReadRegistry <json name="read_registry">
+  | WriteRegistry <json name="write_registry">
+  | ReadRepository <json name="read_repository">
+  | WriteRepository <json name="write_repository">
+]
+
+type personal_access_token = {
+  id: int;
+  name: string;
+  revoked: bool;
+  created_at: string;
+  scopes: scope list;
+  user_id: int;
+  active: bool;
+  expires_at: string nullable;
+} <ocaml field_prefix="personal_access_token_">
+
+type personal_access_tokens = personal_access_token list
