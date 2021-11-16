@@ -455,10 +455,11 @@ struct
       ((fun (res, _) -> C.Response.status res = expected_code), handler)
 
     (* Add the correct mime-type header and the authentication token. *)
-    let realize_headers ~token ~headers =
+    let realize_headers ~token ?(media_type = "application/json") headers =
+      let headers = C.Header.add_opt headers "accept" media_type in
       match token with
-      | Some token -> C.Header.add_opt headers "PRIVATE-TOKEN" token
-      | None -> C.Header.init ()
+      | None -> headers
+      | Some token -> C.Header.add headers "Authorization" ("Bearer " ^ token)
 
     let idempotent meth ?headers ?token ?params ~fail_handlers
         ~expected_code ~uri fn state =
@@ -466,12 +467,7 @@ struct
         ( state,
           Monad.(
             request ?token ?params
-              {
-                meth;
-                uri;
-                headers = realize_headers ~token ~headers;
-                body = "";
-              })
+              { meth; uri; headers = realize_headers ~token headers; body = "" })
             (request ~token
                (code_handler ~expected_code fn :: fail_handlers)) )
 
@@ -491,7 +487,7 @@ struct
           ( state,
             Monad.(
               request ?token ?params
-                { meth; uri; headers = realize_headers ~token ~headers; body })
+                { meth; uri; headers = realize_headers ~token headers; body })
               (request ~token
                  (code_handler ~expected_code fn :: fail_handlers)) )
 
@@ -616,8 +612,11 @@ struct
       in
       { Stream.restart; buffer = []; refill; endpoint }
 
-    let post ?(fail_handlers = []) ~expected_code =
-      effectful `POST ~fail_handlers ~expected_code
+    let post ?(fail_handlers = []) ~expected_code ?headers =
+      let headers =
+        C.Header.add_opt headers "Content-Type" "application/json"
+      in
+      effectful `POST ~headers ~fail_handlers ~expected_code
 
     let patch ?(fail_handlers = []) ~expected_code =
       effectful `PATCH ~fail_handlers ~expected_code
@@ -827,6 +826,9 @@ struct
 
   (* Query Parameter helpers *)
   let state_param state uri =
+    (* TODO This pattern along with the enum in lab.ml should be generic and
+       derived off the gitlab.atd definition.
+    *)
     let show = function
       | `Opened -> "opened"
       | `Closed -> "closed"
@@ -836,19 +838,6 @@ struct
     match state with
     | None -> uri
     | Some state -> Uri.add_query_param' uri ("state", show state)
-
-  let commit_state_param state uri =
-    (* TODO This pattern along with the enum in lab.ml should be generic and
-       derived off the gitlab.atd definition.
-    *)
-    let show = function
-      | `Pending -> "pending"
-      | `Running -> "running"
-      | `Success -> "success"
-      | `Failed -> "failed"
-      | `Cancelled -> "cancelled"
-    in
-    Uri.add_query_param' uri ("state", show state)
 
   let action_param action uri =
     match action with
@@ -968,36 +957,6 @@ struct
     | None -> uri
     | Some stats -> Uri.add_query_param' uri ("stats", Bool.to_string stats)
 
-  let note_param note uri = Uri.add_query_param' uri ("note", note)
-
-  let line_param line uri =
-    match line with
-    | None -> uri
-    | Some line -> Uri.add_query_param' uri ("line", Int.to_string line)
-
-  let line_type_param line_type uri =
-    let show = function `New -> "new" | `Old -> "old" in
-    match line_type with
-    | None -> uri
-    | Some line_type -> Uri.add_query_param' uri ("line_type", show line_type)
-
-  let target_url_param target_url uri =
-    match target_url with
-    | None -> uri
-    | Some target_url -> Uri.add_query_param' uri ("target_url", target_url)
-
-  let coverage_param coverage uri =
-    match coverage with
-    | None -> uri
-    | Some coverage ->
-        Uri.add_query_param' uri ("coverage", Float.to_string coverage)
-
-  let pipeline_id_param pipeline_id uri =
-    match pipeline_id with
-    | None -> uri
-    | Some pipeline_id ->
-        Uri.add_query_param' uri ("pipeline_id", Int.to_string pipeline_id)
-
   let title_param title uri =
     match title with
     | None -> uri
@@ -1069,15 +1028,6 @@ struct
       API.get ~token ~uri (fun body -> return (Gitlab_j.events_of_string body))
 
     module PersonalAccessToken = struct
-      type scope = [%import: Gitlab_t.scope] [@@deriving to_yojson]
-
-      type new_token = {
-        name : string;
-        expires_at : string;
-        scopes : scope list;
-      }
-      [@@deriving to_yojson]
-
       let tokens ~token ?user_id () =
         let uri = URI.personal_access_tokens |> user_id_param user_id in
         API.get ~token ~uri (fun body ->
@@ -1089,7 +1039,7 @@ struct
 
       let create ~token ~user_id new_token () =
         let uri = URI.personal_access_token user_id in
-        let body = Yojson.Safe.to_string @@ new_token_to_yojson new_token in
+        let body = Gitlab_j.string_of_new_token new_token in
         API.post ~token ~uri ~body ~expected_code:`Created (fun s ->
             Lwt.return (Gitlab_j.personal_access_token_of_string s))
     end
@@ -1193,13 +1143,10 @@ struct
         API.get_stream ?token ~uri (fun body ->
             return (Gitlab_j.commit_comments_of_string body))
 
-      let comment ?token ~project_id ~sha ~note ?path ?line ?line_type () =
-        let uri =
-          URI.project_comments project_id sha
-          |> note_param note |> path_param path |> line_param line
-          |> line_type_param line_type
-        in
-        API.post ?token ~uri ~expected_code:`Created (fun body ->
+      let comment ?token ~project_id ~sha comment () =
+        let uri = URI.project_comments project_id sha in
+        let body = Gitlab_j.string_of_new_comment comment in
+        API.post ?token ~uri ~body ~expected_code:`Created (fun body ->
             return (Gitlab_j.commit_commented_of_string body))
 
       let statuses ?token ~project_id ~sha ?ref_name ?stage ?name ?all () =
@@ -1211,17 +1158,10 @@ struct
         API.get_stream ?token ~uri (fun body ->
             return (Gitlab_j.commit_statuses_of_string body))
 
-      let status ~token ~project_id ~sha ~state ?ref_name ?name ?target_url
-          ?description ?coverage ?pipeline_id () =
-        let uri =
-          URI.project_commit_status project_id sha
-          |> commit_state_param state |> ref_param ref_name |> name_param name
-          |> target_url_param target_url
-          |> description_param description
-          |> coverage_param coverage
-          |> pipeline_id_param pipeline_id
-        in
-        API.post ~token ~uri ~expected_code:`Created (fun body ->
+      let status ~token ~project_id ~sha status () =
+        let uri = URI.project_commit_status project_id sha in
+        let body = Gitlab_j.string_of_new_status status in
+        API.post ~token ~uri ~body ~expected_code:`Created (fun body ->
             return (Gitlab_j.commit_status_of_string body))
     end
 
@@ -1323,16 +1263,10 @@ struct
         API.get ?token ~uri (fun body ->
             return (Gitlab_j.milestone_of_string body))
 
-      let create ~token ~project_id ~title ?description ?due_date ?start_date ()
-          =
-        let uri =
-          URI.project_milestones ~project_id
-          |> title_param (Some title)
-          |> description_param description
-          |> due_date_param due_date
-          |> start_date_param start_date
-        in
-        API.post ~token ~uri ~expected_code:`Created (fun body ->
+      let create ~token ~project_id milestone () =
+        let uri = URI.project_milestones ~project_id in
+        let body = Gitlab_j.string_of_new_milestone milestone in
+        API.post ~token ~uri ~body ~expected_code:`Created (fun body ->
             return (Gitlab_j.milestone_of_string body))
 
       let update ~token ~project_id ~milestone_id ?title ?description ?due_date
@@ -1354,15 +1288,6 @@ struct
     end
 
     module ProjectAccessToken = struct
-      type scope = [%import: Gitlab_t.scope] [@@deriving to_yojson]
-
-      type new_token = {
-        name : string;
-        expires_at : string;
-        scopes : scope list;
-      }
-      [@@deriving to_yojson]
-
       let tokens ~token ~project_id () =
         let uri = URI.project_access_tokens project_id in
         API.get ~token ~uri (fun body ->
@@ -1374,7 +1299,7 @@ struct
 
       let create ~token ~project_id new_token () =
         let uri = URI.personal_access_token project_id in
-        let body = Yojson.Safe.to_string @@ new_token_to_yojson new_token in
+        let body = Gitlab_j.string_of_new_token new_token in
         API.post ~token ~uri ~body ~expected_code:`Created (fun s ->
             Lwt.return (Gitlab_j.project_access_token_of_string s))
     end
@@ -1422,15 +1347,10 @@ struct
         API.get ?token ~uri (fun body ->
             return (Gitlab_j.milestone_of_string body))
 
-      let create ~token ~group_id ~title ?description ?due_date ?start_date () =
-        let uri =
-          URI.group_milestones ~group_id
-          |> title_param (Some title)
-          |> description_param description
-          |> due_date_param due_date
-          |> start_date_param start_date
-        in
-        API.post ~token ~uri ~expected_code:`Created (fun body ->
+      let create ~token ~group_id milestone () =
+        let uri = URI.group_milestones ~group_id in
+        let body = Gitlab_j.string_of_new_milestone milestone in
+        API.post ~token ~uri ~body ~expected_code:`Created (fun body ->
             return (Gitlab_j.milestone_of_string body))
 
       let update ~token ~group_id ~milestone_id ?title ?description ?due_date

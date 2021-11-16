@@ -251,7 +251,18 @@ let ci_status_set_cmd config =
       let open Gitlab in
       let open Monad in
       let config = config () in
-      Project.Commit.status ~token:config.token ~project_id ~sha ~state ()
+      let new_status =
+        {
+          Gitlab_t.state;
+          ref_name = None;
+          name = None;
+          target_url = None;
+          pipeline_id = None;
+          coverage = None;
+          description = None;
+        }
+      in
+      Project.Commit.status ~token:config.token ~project_id ~sha new_status ()
       >|~ fun status ->
       printf "%s\n"
         (Yojson.Basic.prettify (Gitlab_j.string_of_commit_status status))

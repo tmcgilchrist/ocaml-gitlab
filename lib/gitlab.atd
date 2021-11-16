@@ -996,3 +996,39 @@ type project_access_token = {
 } <ocaml field_prefix="project_access_token_">
 
 type project_access_tokens = project_access_token list
+
+
+(** Types for creating new resources via API. 
+    This reuses the enum serialisation code.
+  *)  
+type new_token = {
+  name : string;
+  expires_at : string;
+  scopes : scope list;
+}
+
+type new_status = {
+  state : commit_status_status;
+  ?ref_name : string nullable;
+  ?name : string nullable;
+  ?target_url : string nullable;
+  ?description : string nullable;
+  ?coverage : int nullable;
+  ?pipeline_id : int nullable;
+}
+
+type new_comment = {
+  note : string;
+  ?path : string nullable;
+  ?line : int nullable;
+  ?line_type : line_type nullable;
+}
+
+type new_milestone = {
+  title: string;
+  ?description: string nullable;
+  ?due_date: string nullable;
+  ?start_date: string nullable;
+}
+
+

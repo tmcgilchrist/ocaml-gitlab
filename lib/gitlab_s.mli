@@ -1,6 +1,6 @@
 module type Gitlab = sig
-
   type rate_limit = { limit : int; remaining : int; reset : float }
+
   type rates = { core : rate_limit option }
 
   (** Functions corresponding to direct API requests return
@@ -415,19 +415,10 @@ module type Gitlab = sig
           See {{:https://docs.gitlab.com/ee/api/personal_access_tokens.html#revoke-a-personal-access-token}Revoke a personal access token}.
        *)
 
-      type scope = [%import: Gitlab_t.scope] [@@deriving to_yojson]
-
-      type new_token = {
-        name : string;
-        expires_at : string;
-        scopes : scope list;
-      }
-      [@@deriving to_yojson]
-
       val create :
         token:Token.t ->
         user_id:int ->
-        new_token ->
+        Gitlab_t.new_token ->
         unit ->
         Gitlab_t.personal_access_token Response.t Monad.t
       (** Create a personal access token for [~user_id]. See {{:https://docs.gitlab.com/ee/api/users.html#create-a-personal-access-token}Create a personal access token}.
@@ -733,13 +724,10 @@ module type Gitlab = sig
         ?token:Token.t ->
         project_id:int ->
         sha:string ->
-        note:string ->
-        ?path:string ->
-        ?line:int ->
-        ?line_type:Gitlab_t.line_type ->
+        Gitlab_t.new_comment ->
         unit ->
         Gitlab_t.commit_commented Response.t Monad.t
-      (** [comment ~token ~project_id ~sha ~note] adds a comment to a commit.
+      (** [comment ~token ~project_id ~sha ~new_comment] adds a comment to a commit.
 
           See {{:https://docs.gitlab.com/ee/api/commits.html#post-comment-to-commit}Post comment to a commit}.
       *)
@@ -763,13 +751,7 @@ module type Gitlab = sig
         token:Token.t ->
         project_id:int ->
         sha:string ->
-        state:Gitlab_t.commit_status_status ->
-        ?ref_name:string ->
-        ?name:string ->
-        ?target_url:string ->
-        ?description:string ->
-        ?coverage:float ->
-        ?pipeline_id:int ->
+        Gitlab_t.new_status ->
         unit ->
         Gitlab_t.commit_status Response.t Monad.t
       (** [status ~token ~project_id ~sha ~state] adds or updates the build status of a commit.
@@ -809,10 +791,7 @@ module type Gitlab = sig
       val create :
         token:Token.t ->
         project_id:int ->
-        title:string ->
-        ?description:string ->
-        ?due_date:string ->
-        ?start_date:string ->
+        Gitlab_t.new_milestone ->
         unit ->
         Gitlab_t.milestone Response.t Monad.t
       (** [create ~project_id ~title] create a project milestone.
@@ -875,19 +854,10 @@ module type Gitlab = sig
           See {{:https://docs.gitlab.com/ee/api/resource_access_tokens.html#revoke-a-project-access-token}Revoke a project access token}.
        *)
 
-      type scope = [%import: Gitlab_t.scope] [@@deriving to_yojson]
-
-      type new_token = {
-        name : string;
-        expires_at : string;
-        scopes : scope list;
-      }
-      [@@deriving to_yojson]
-
       val create :
         token:Token.t ->
         project_id:int ->
-        new_token ->
+        Gitlab_t.new_token ->
         unit ->
         Gitlab_t.project_access_token Response.t Monad.t
       (** Create a project access token for [~project_id]. See {{:https://docs.gitlab.com/ee/api/resource_access_tokens.html#create-a-project-access-token}Create a project access token}.
@@ -957,10 +927,7 @@ module type Gitlab = sig
       val create :
         token:Token.t ->
         group_id:int ->
-        title:string ->
-        ?description:string ->
-        ?due_date:string ->
-        ?start_date:string ->
+        Gitlab_t.new_milestone ->
         unit ->
         Gitlab_t.milestone Response.t Monad.t
       (** [create ~group_id ~title] create a group milestone.
