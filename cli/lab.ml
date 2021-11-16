@@ -100,9 +100,7 @@ let user_name_cmd =
     let cmd name =
       let open Gitlab in
       let open Monad in
-      User.by_name ~name () >>~ fun users ->
-      return
-      @@
+      User.by_name ~name () >|~ fun users ->
       if json then
         printf "%s" (Yojson.Basic.prettify (Gitlab_j.string_of_users users))
       else
@@ -122,11 +120,8 @@ let user_projects_cmd =
     let cmd =
       let open Gitlab in
       let open Monad in
-      User.projects ~id () >>~ fun projects ->
-      return
-      @@ List.iter
-           (fun project -> printf "%s\n" project.Gitlab_t.project_short_name)
-           projects
+      User.projects ~id () >|~ fun projects ->
+      List.iter (fun project -> printf "%s\n" project.Gitlab_t.project_short_name) projects
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
@@ -139,8 +134,8 @@ let user_events_cmd config =
       let open Gitlab in
       let open Monad in
       let config = config () in
-      User.events ~token:config.token ~id () >>~ fun events ->
-      return @@ printf "%s\n" (Gitlab_j.string_of_events events)
+      User.events ~token:config.token ~id () >|~ fun events ->
+      printf "%s\n" (Yojson.Basic.prettify @@ Gitlab_j.string_of_events events)
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
@@ -173,9 +168,7 @@ let status_checks_cmd config =
       let open Monad in
       let config = config () in
       Project.ExternalStatusCheck.checks ~token:config.token ~project_id ()
-      >>~ fun x ->
-      return
-      @@ List.iter
+      >|~ fun x -> List.iter
            (fun check ->
              printf "%s\t%s\t%i\n" check.Gitlab_t.external_status_check_name
                check.Gitlab_t.external_status_check_external_url
@@ -194,10 +187,8 @@ let project_create_cmd config =
       let open Gitlab in
       let open Monad in
       let config = config () in
-      Project.create ~token:config.token ~name ~description () >>~ fun p ->
-      return
-      @@ printf "%s\n"
-           (Yojson.Basic.prettify (Gitlab_j.string_of_project_short p))
+      Project.create ~token:config.token ~name ~description () >|~ fun p ->
+      printf "%s\n" (Yojson.Basic.prettify (Gitlab_j.string_of_project_short p))
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
@@ -217,14 +208,13 @@ let ci_status_cmd config =
       return @@ Project.Commit.statuses ~token:config.token ~project_id ~sha ()
       >>= fun statuses ->
       let* results = Stream.to_list statuses in
-      match List.length results > 0 with
+      return @@  match List.length results > 0 with
       | true ->
-          return
-          @@ List.iter
-               (fun status ->
-                 printf "%s\n" status.Gitlab_t.commit_status_status)
-               results
-      | false -> return @@ printf "failure\n"
+          List.iter
+            (fun status ->
+              printf "%s\n" status.Gitlab_t.commit_status_status)
+            results
+      | false -> printf "failure\n"
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
@@ -239,8 +229,7 @@ let project_branches_cmd config =
       let open Gitlab in
       let open Monad in
       let config = config () in
-      let* branches =
-        return @@ Project.Branch.branches ~token:config.token ~project_id ()
+      let* branches = return @@ Project.Branch.branches ~token:config.token ~project_id ()
       in
       Stream.iter
         (fun branch -> return @@ printf "%s\n" branch.Gitlab_t.branch_full_name)
@@ -258,12 +247,9 @@ let ci_status_set_cmd config =
       let open Monad in
       let config = config () in
       Project.Commit.status ~token:config.token ~project_id ~sha ~state ()
-      >>~ fun status ->
-      return
-      @@ printf "%s\n"
+      >|~ fun status -> printf "%s\n"
            (Yojson.Basic.prettify (Gitlab_j.string_of_commit_status status))
     in
-
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
   ( Term.(
@@ -278,7 +264,7 @@ let api_cmd =
       let open Monad in
       let uri = Uri.of_string uri_str in
       API.get ~uri (fun body -> Lwt.return (Yojson.Basic.from_string body))
-      >>~ fun json -> return @@ printf "%s" (Yojson.Basic.pretty_to_string json)
+      >|~ fun json -> printf "%s" (Yojson.Basic.pretty_to_string json)
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in

@@ -18,6 +18,9 @@
   (cohttp-lwt (>= 4.0))
   (atdgen (>= 2.0.0))
   (yojson (>= 1.7.0))
+  ppx_deriving
+  ppx_import
+  ppx_deriving_yojson
   stringext)
  (synopsis "GitLab APIv4 OCaml library")
  (description "This library provides an OCaml interface to the
