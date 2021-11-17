@@ -41,21 +41,11 @@ JavaScript via [js_of_ocaml](http://ocsigen.org/js_of_ocaml)."))
   (alcotest-lwt :with-test)
   (qcheck :with-test)
   (qcheck-alcotest :with-test)
-
   base-unix)
  (synopsis "GitLab APIv4 OCaml library")
  (description "This library provides an OCaml interface to the
 [Gitlab APIv4](https://docs.gitlab.com/ee/api/) (JSON).
 This package installs the Unix (Lwt) version."))
-
-(package
- (name lab)
- (depends
-  (ocaml (>= 4.08.0))
-  (mdx :with-test)
-  (cmdliner (>= 0.9.8))
-  (otoml (>= 0.9.0)))
- (synopsis "GitLab cli"))
 
 (package
  (name gitlab-jsoo)
@@ -69,3 +59,14 @@ This package installs the Unix (Lwt) version."))
  (description "This library provides an OCaml interface to the
 [Gitlab APIv4](https://docs.gitlab.com/ee/api/) (JSON).
 This library installs the JavaScript version, which uses [js_of_ocaml](http://ocsigen.org/js_of_ocaml)."))
+
+(package
+ (name lab)
+ (depends
+  (ocaml (>= 4.08.0))
+  (mdx :with-test)
+  (cmdliner (>= 0.9.8))
+  (gitlab-unix (= :version))
+  (otoml (>= 0.9.0)))
+ (synopsis "GitLab cli")
+ (description "Experimental GitLab cli in the style of GitHub's gh and hub commands."))
