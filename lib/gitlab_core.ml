@@ -435,10 +435,16 @@ struct
           match response_code with
           | `Found | `Temporary_redirect | `Moved_permanently -> (
               match C.Header.get (C.Response.headers resp) "location" with
-              | None -> Lwt.fail (Message ( `Expectation_failed, Gitlab_t.{
-                  message_message = "ocaml-gitlab got redirect without location";
-                  message_errors = [];
-                } ))
+              | None ->
+                  Lwt.fail
+                    (Message
+                       ( `Expectation_failed,
+                         Gitlab_t.
+                           {
+                             message_message =
+                               "ocaml-gitlab got redirect without location";
+                             message_errors = [];
+                           } ))
               | Some location_s ->
                   let location = Uri.of_string location_s in
                   let target = Uri.resolve "" req.Monad.uri location in
@@ -461,20 +467,20 @@ struct
       | None -> headers
       | Some token -> C.Header.add headers "Authorization" ("Bearer " ^ token)
 
-    let idempotent meth ?headers ?token ?params ~fail_handlers
-        ~expected_code ~uri fn state =
+    let idempotent meth ?headers ?token ?params ~fail_handlers ~expected_code
+        ~uri fn state =
       Lwt.return
         ( state,
           Monad.(
             request ?token ?params
               { meth; uri; headers = realize_headers ~token headers; body = "" })
-            (request ~token
-               (code_handler ~expected_code fn :: fail_handlers)) )
+            (request ~token (code_handler ~expected_code fn :: fail_handlers))
+        )
 
     let just_body (_, (body : string)) : string Lwt.t = Lwt.return body
 
-    let effectful meth ?headers ?body ?token ?params
-        ~fail_handlers ~expected_code ~uri fn =
+    let effectful meth ?headers ?body ?token ?params ~fail_handlers
+        ~expected_code ~uri fn =
       let body = match body with None -> "" | Some b -> b in
       let fn x = Lwt.(just_body x >>= fn) in
       let fail_handlers =
@@ -488,18 +494,17 @@ struct
             Monad.(
               request ?token ?params
                 { meth; uri; headers = realize_headers ~token headers; body })
-              (request ~token
-                 (code_handler ~expected_code fn :: fail_handlers)) )
+              (request ~token (code_handler ~expected_code fn :: fail_handlers))
+          )
 
     let map_fail_handlers f fhs = List.map (fun (p, fn) -> (p, f fn)) fhs
 
-    let get ?(fail_handlers = []) ?(expected_code = `OK) ?headers ?token
-        ?params ~uri fn =
+    let get ?(fail_handlers = []) ?(expected_code = `OK) ?headers ?token ?params
+        ~uri fn =
       let fail_handlers =
         map_fail_handlers Lwt.(fun f x -> just_body x >>= f) fail_handlers
       in
-      idempotent `GET ~fail_handlers ~expected_code ?headers ?token
-        ?params ~uri
+      idempotent `GET ~fail_handlers ~expected_code ?headers ?token ?params ~uri
         Lwt.(fun x -> just_body x >>= fn)
 
     let rec next_link base =
@@ -544,11 +549,10 @@ struct
         fn body >>= fun buffer ->
         return { Stream.restart; buffer; refill; endpoint })
 
-    let rec restart_stream ~fail_handlers ~expected_code ?headers ?token
-        ?params fn endpoint =
+    let rec restart_stream ~fail_handlers ~expected_code ?headers ?token ?params
+        fn endpoint =
       let restart =
-        restart_stream ~fail_handlers ~expected_code ?headers ?token
-          ?params fn
+        restart_stream ~fail_handlers ~expected_code ?headers ?token ?params fn
       in
       let first_request ~uri f =
         let not_mod_handler =
@@ -576,34 +580,32 @@ struct
         in
         Monad.(
           Endpoint.wait_to_poll uri >>= fun () ->
-          idempotent `GET ~headers ?token ?params ~fail_handlers
-            ~expected_code ~uri f)
+          idempotent `GET ~headers ?token ?params ~fail_handlers ~expected_code
+            ~uri f)
       in
       let request ~uri f =
         let fail_handlers = stream_fail_handlers restart fail_handlers in
         Monad.map Response.value
-          (idempotent `GET ?headers ?token ?params ~fail_handlers
-             ~expected_code ~uri f)
+          (idempotent `GET ?headers ?token ?params ~fail_handlers ~expected_code
+             ~uri f)
       in
       let uri = endpoint.Endpoint.uri in
       Monad.map Response.value
         (first_request ~uri (stream_next restart request uri fn endpoint))
 
-    let get_stream (type a)
-        ?(fail_handlers : a Stream.parse handler list = [])
+    let get_stream (type a) ?(fail_handlers : a Stream.parse handler list = [])
         ?(expected_code : Cohttp.Code.status_code = `OK)
         ?(headers : Cohttp.Header.t option) ?(token : string option)
         ?(params : (string * string) list option) ~(uri : Uri.t)
         (fn : a Stream.parse) =
       let restart =
-        restart_stream ~fail_handlers ~expected_code ?headers ?token
-          ?params fn
+        restart_stream ~fail_handlers ~expected_code ?headers ?token ?params fn
       in
       let request ~uri f =
         let fail_handlers = stream_fail_handlers restart fail_handlers in
         Monad.map Response.value
-          (idempotent `GET ?headers ?token ?params ~fail_handlers
-             ~expected_code ~uri f)
+          (idempotent `GET ?headers ?token ?params ~fail_handlers ~expected_code
+             ~uri f)
       in
       let endpoint = Endpoint.{ empty with uri } in
       let refill =
@@ -630,13 +632,13 @@ struct
       in
       effectful `PUT ~fail_handlers ~expected_code ?headers ?body
 
-    let delete ?(fail_handlers = []) ?(expected_code = `No_content)
-        ?headers ?token ?params ~uri fn =
+    let delete ?(fail_handlers = []) ?(expected_code = `No_content) ?headers
+        ?token ?params ~uri fn =
       let fail_handlers =
         map_fail_handlers Lwt.(fun f x -> just_body x >>= f) fail_handlers
       in
-      idempotent `DELETE ~fail_handlers ~expected_code ?headers ?token
-        ?params ~uri
+      idempotent `DELETE ~fail_handlers ~expected_code ?headers ?token ?params
+        ~uri
         Lwt.(fun x -> just_body x >>= fn)
 
     let set_user_agent user_agent state =
@@ -648,23 +650,22 @@ struct
 
     let get_rate ?token () =
       try Monad.return (Hashtbl.find rate_table token)
-      with Not_found ->
-        Monad.return empty_rates
+      with Not_found -> Monad.return empty_rates
 
-    let get_rate_limit ?token () = Monad.(
-        get_rate ?token ()
-        >>= fun {core}  -> return (Option.map (fun x -> x.limit) core)
-      )
+    let get_rate_limit ?token () =
+      Monad.(
+        get_rate ?token () >>= fun { core } ->
+        return (Option.map (fun x -> x.limit) core))
 
-    let get_rate_remaining ?token () = Monad.(
-        get_rate ?token ()
-        >>= fun {core}  -> return (Option.map (fun x -> x.remaining) core)
-      )
+    let get_rate_remaining ?token () =
+      Monad.(
+        get_rate ?token () >>= fun { core } ->
+        return (Option.map (fun x -> x.remaining) core))
 
-    let get_rate_reset ?token () = Monad.(
-        get_rate ?token ()
-        >>= fun {core}  -> return (Option.map (fun x -> x.reset) core)
-      )
+    let get_rate_reset ?token () =
+      Monad.(
+        get_rate ?token () >>= fun { core } ->
+        return (Option.map (fun x -> x.reset) core))
 
     let string_of_message = Monad.string_of_message
   end
@@ -832,15 +833,45 @@ struct
     | None -> uri
     | Some state -> Uri.add_query_param' uri ("state", show state)
 
-  let action_param action uri =
+  let action_param (action : Gitlab_t.event_action_name option) uri =
+    let show = function
+      | `Accepted -> "accepted"
+      | `Approved -> "approved"
+      | `Closed -> "closed"
+      | `CommentedOn -> "commented on"
+      | `Created -> "created"
+      | `Destroyed -> "destroyed"
+      | `Deleted -> "deleted"
+      | `Expired -> "expired"
+      | `Joined -> "joined"
+      | `Left -> "left"
+      | `Merged -> "merged"
+      | `Opened -> "opened"
+      | `Pushed -> "pushed"
+      | `PushedTo -> "pushed to"
+      | `PushedNew -> "pushed new"
+      | `Reopened -> "reopened"
+      | `Updated -> "updated"
+    in
     match action with
     | None -> uri
-    | Some action -> Uri.add_query_param' uri ("action", action)
+    | Some action -> Uri.add_query_param' uri ("action", show action)
 
-  let target_type_param target_type uri =
+  let target_type_param (target_type : Gitlab_t.event_target_type option) uri =
+    let show = function
+      | `Issue -> "issue"
+      | `Milestone -> "milestone"
+      | `MergeRequest -> "merge_request"
+      | `Note -> "note"
+      | `Project -> "project"
+      | `Snippet -> "snippet"
+      | `User -> "user"
+      | `WikiPage -> "WikiPage::Meta"
+    in
     match target_type with
     | None -> uri
-    | Some target_type -> Uri.add_query_param' uri ("target_type", target_type)
+    | Some target_type ->
+        Uri.add_query_param' uri ("target_type", show target_type)
 
   let milestone_param milestone uri =
     match milestone with
@@ -977,11 +1008,37 @@ struct
     | None -> uri
     | Some user_id -> Uri.add_query_param' uri ("user_id", Int.to_string user_id)
 
+  let before_param before uri =
+    match before with
+    | None -> uri
+    | Some before -> Uri.add_query_param' uri ("before", before)
+
+  let after_param after uri =
+    match after with
+    | None -> uri
+    | Some after -> Uri.add_query_param' uri ("after", after)
+
+  let sort_param (sort : Gitlab_t.sort option) uri =
+    let show = function `Asc -> "asc" | `Desc -> "desc" in
+    match sort with
+    | None -> uri
+    | Some sort -> Uri.add_query_param' uri ("sort", show sort)
+
+  let event_scope_param scope uri =
+    match scope with
+    | None -> uri
+    | Some scope -> Uri.add_query_param' uri ("scope", scope)
+
   module Event = struct
     open Lwt
 
-    let all ~token () =
-      let uri = URI.events in
+    let all ~token ?before ?after ?scope ?sort ?target_type ?action () =
+      let uri =
+        URI.events |> before_param before |> after_param after
+        |> event_scope_param scope |> sort_param sort
+        |> target_type_param target_type
+        |> action_param action
+      in
       API.get ~token ~uri (fun body -> return (Gitlab_j.events_of_string body))
   end
 

@@ -336,7 +336,16 @@ module type Gitlab = sig
   end
 
   module Event : sig
-    val all : token:Token.t -> unit -> Gitlab_t.events Response.t Monad.t
+    val all :
+      token:Token.t ->
+      ?before:string ->
+      ?after:string ->
+      ?scope:string ->
+      ?sort:Gitlab_t.sort ->
+      ?target_type:Gitlab_t.event_target_type ->
+      ?action:Gitlab_t.event_action_name ->
+      unit ->
+      Gitlab_t.events Response.t Monad.t
     (** [all ~token] get a list of events for the authenticated user.
 
         See {{:https://docs.gitlab.com/ee/api/events.html#list-currently-authenticated-users-events}List currently authenticated user’s events}
@@ -384,8 +393,8 @@ module type Gitlab = sig
     val events :
       token:Token.t ->
       id:string ->
-      ?action:string ->
-      ?target_type:string ->
+      ?action:Gitlab_t.event_action_name ->
+      ?target_type:Gitlab_t.event_target_type ->
       unit ->
       Gitlab_t.events Response.t Monad.t
     (** [events ~token ~id] get the contribution events for the specified user.
@@ -582,8 +591,8 @@ module type Gitlab = sig
     val events :
       token:Token.t ->
       project_id:int ->
-      ?action:string ->
-      ?target_type:string ->
+      ?action:Gitlab_t.event_action_name ->
+      ?target_type:Gitlab_t.event_target_type ->
       unit ->
       Gitlab_t.events Response.t Monad.t
     (** [events ~project_id] get visible events for a project.

@@ -15,6 +15,11 @@ type error_detail = {
   detail: string option
 }
 
+type sort = [
+  | Asc <json name="asc">
+  | Desc <json name="desc">
+]
+
 type merge_request_scope = [
   | CreatedByMe <json name="created_by_me">
   | AssignedToMe <json name="assigned_to_me">
@@ -855,6 +860,7 @@ type event_target_type = [
   | User <json name="User">
   | WikiPage <json name="WikiPage::Meta">
 ]
+
 type wiki_page = {
   format: string;
   slug: string;
