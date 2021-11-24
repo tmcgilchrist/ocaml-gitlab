@@ -53,8 +53,8 @@ type user = {
 
 type user_short = {
   id: int;
-  username: string;
   name: string;
+  username: string;
   ?state: string nullable;
   avatar_url: string;
   ?web_url: string nullable;
@@ -647,12 +647,12 @@ type commit_webhook = {
 type commits_webhook = commit_webhook list
 
 type push_webhook = {
+  event_name: string;
   before: string;
   after: string;
   ref: string;
   checkout_sha: string;
   message: string nullable;
-  event_name: string;
   user_id: int;
   user_name: string;
   user_username: string;

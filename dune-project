@@ -37,11 +37,9 @@ JavaScript via [js_of_ocaml](http://ocsigen.org/js_of_ocaml)."))
   (tls (>= 0.11.0))
   (lwt (>= 2.4.4))
   stringext
+  base-unix
   (alcotest :with-test)
-  (alcotest-lwt :with-test)
-  (qcheck :with-test)
-  (qcheck-alcotest :with-test)
-  base-unix)
+  (alcotest-lwt :with-test))
  (synopsis "GitLab APIv4 OCaml library")
  (description "This library provides an OCaml interface to the
 [Gitlab APIv4](https://docs.gitlab.com/ee/api/) (JSON).
@@ -64,9 +62,10 @@ This library installs the JavaScript version, which uses [js_of_ocaml](http://oc
  (name lab)
  (depends
   (ocaml (>= 4.08.0))
-  (mdx :with-test)
   (cmdliner (>= 0.9.8))
   (gitlab-unix (= :version))
-  (otoml (>= 0.9.0)))
+  (otoml (>= 0.9.0))
+  (mdx :with-test))
+
  (synopsis "GitLab cli")
  (description "Experimental GitLab cli in the style of GitHub's gh and hub commands."))
