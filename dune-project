@@ -65,6 +65,7 @@ This library installs the JavaScript version, which uses [js_of_ocaml](http://oc
   (cmdliner (>= 0.9.8))
   (gitlab-unix (= :version))
   (otoml (>= 0.9.0))
+  tls
   (mdx :with-test))
 
  (synopsis "GitLab cli")
