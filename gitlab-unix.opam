@@ -20,11 +20,9 @@ depends: [
   "tls" {>= "0.11.0"}
   "lwt" {>= "2.4.4"}
   "stringext"
+  "base-unix"
   "alcotest" {with-test}
   "alcotest-lwt" {with-test}
-  "qcheck" {with-test}
-  "qcheck-alcotest" {with-test}
-  "base-unix"
   "odoc" {with-doc}
 ]
 build: [

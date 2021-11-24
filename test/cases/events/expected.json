@@ -219,6 +219,15 @@
     "author_id": 490393,
     "target_title": "Update freer.cabal",
     "created_at": "2021-09-17T04:40:17.737Z",
+    "author": {
+      "id": 490393,
+      "name": "Tim McGilchrist",
+      "username": "tmcgilchrist",
+      "state": "active",
+      "avatar_url":
+        "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
+      "web_url": "https://gitlab.com/tmcgilchrist"
+    },
     "note": {
       "id": 680137735,
       "type": null,
@@ -241,15 +250,6 @@
       "resolvable": false,
       "confidential": false,
       "noteable_iid": 1
-    },
-    "author": {
-      "id": 490393,
-      "name": "Tim McGilchrist",
-      "username": "tmcgilchrist",
-      "state": "active",
-      "avatar_url":
-        "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
-      "web_url": "https://gitlab.com/tmcgilchrist"
     },
     "author_username": "tmcgilchrist"
   },
@@ -320,7 +320,8 @@
       "name": "Patrick Ferris",
       "username": "patrickferris",
       "state": "active",
-      "avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/9920770/avatar.png",
+      "avatar_url":
+        "https://gitlab.com/uploads/-/system/user/avatar/9920770/avatar.png",
       "web_url": "https://gitlab.com/patrickferris"
     },
     "push_data": {
@@ -350,7 +351,8 @@
       "name": "Patrick Ferris",
       "username": "patrickferris",
       "state": "active",
-      "avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/9920770/avatar.png",
+      "avatar_url":
+        "https://gitlab.com/uploads/-/system/user/avatar/9920770/avatar.png",
       "web_url": "https://gitlab.com/patrickferris"
     },
     "author_username": "patrickferris"
@@ -367,10 +369,11 @@
     "created_at": "2021-11-09T15:45:08.247Z",
     "author": {
       "id": 9920770,
-      "username": "patrickferris",
       "name": "Patrick Ferris",
+      "username": "patrickferris",
       "state": "active",
-      "avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/9920770/avatar.png",
+      "avatar_url":
+        "https://gitlab.com/uploads/-/system/user/avatar/9920770/avatar.png",
       "web_url": "https://gitlab.com/patrickferris"
     },
     "note": {
@@ -380,10 +383,11 @@
       "attachment": null,
       "author": {
         "id": 9920770,
-        "username": "patrickferris",
         "name": "Patrick Ferris",
+        "username": "patrickferris",
         "state": "active",
-        "avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/9920770/avatar.png",
+        "avatar_url":
+          "https://gitlab.com/uploads/-/system/user/avatar/9920770/avatar.png",
         "web_url": "https://gitlab.com/patrickferris"
       },
       "created_at": "2021-11-09T15:45:08.016Z",

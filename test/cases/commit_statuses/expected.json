@@ -17,7 +17,8 @@
       "name": "Tim McGilchrist",
       "username": "tmcgilchrist",
       "state": "active",
-      "avatar_url": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
+      "avatar_url":
+        "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
       "web_url": "https://gitlab.com/tmcgilchrist"
     }
   },
@@ -39,7 +40,8 @@
       "name": "Tim McGilchrist",
       "username": "tmcgilchrist",
       "state": "active",
-      "avatar_url": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
+      "avatar_url":
+        "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
       "web_url": "https://gitlab.com/tmcgilchrist"
     }
   }
