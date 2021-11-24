@@ -14,8 +14,7 @@ jobs:
         os:
           - macos-latest
           - ubuntu-latest
-          # TODO Disabled due to go/jd dependency.
-          # - windows-latest
+          - windows-latest
 
         ocaml-compiler:
           - 4.08.x
@@ -36,17 +35,13 @@ jobs:
         with:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
 
-      - run: opam install . --deps-only --with-test
+      - name: Install dependencies
+        run: |
+          opam install . --deps-only --with-test
 
-      - run: opam exec -- dune build @all
-
-      # - uses: actions/setup-go@v2
-      #   with:
-      #     go-version: '^1.13.1' # The Go version to download (if necessary) and use.
-      # - run: |
-      #     # Install go json diff tool for running tests
-      #     go version
-      #     go install github.com/josephburnett/jd@latest
+      - name: Build
+        run: |
+          opam exec -- dune build @all
 
       - name: Tests
         run: |
