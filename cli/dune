@@ -4,7 +4,8 @@
  (public_names lab)
  (names lab))
 
-(mdx
- (files lab.md)
- (package lab)
- (packages lab))
+; TODO Optionally enable this test in ocaml-ci
+; (mdx
+;  (files lab.md)
+;  (package lab)
+;  (packages lab))
