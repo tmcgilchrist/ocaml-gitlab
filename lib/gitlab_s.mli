@@ -99,19 +99,64 @@ module type Gitlab = sig
     val ( and* ) : 'a t -> 'b t -> ('a * 'b) t
   end
 
+  (** The [Scope] module abstracts GitLab's
+      {{:https://docs.gitlab.com/ee/integration/oauth_provider.html#authorized-applications}authorization
+      scopes}. *)
+  module Scope : sig
+    val to_string : Gitlab_t.scope -> string
+    (** [to_string scope] is the string GitLab uses to indicate
+        the scope constructor [scope]. *)
+
+    val of_string : string -> Gitlab_t.scope option
+    (** [scope_of_string scope] is the constructor corresponding to
+        the GitLab scope constructor [scope] if one exists. *)
+
+    val list_to_string : Gitlab_t.scope list -> string
+    (** [string_of_scopes scopes] is the serialization for a list of
+        scopes [scopes] which GitLab accepts as a set of scopes in its
+        API. *)
+
+    val list_of_string : string -> Gitlab_t.scope list option
+    (** [scopes_of_string scopes] are the scope constructors
+        corresponding to the serialized list of constructors
+        [scopes]. *)
+
+    val all : Gitlab_t.scope list
+    (** [all] is a list containing every scope constructor known. *)
+  end
+
   (** Authentication Token for accessing GitLab APIs.
 
       Of the several ways provided in GitLab, we currently support:
       {ul {- Personal Access Tokens}
-          {- Project Access Tokens}}
+          {- Project Access Tokens}
+          {- OAuth Authorization Codes}
+      }
    *)
   module Token : sig
-    type t
-    (** [t] is the abstract type of a token. *)
+    type oauth = { access_token : string; refresh_token : string }
 
-    val of_string : string -> t
-    (** [of_string token_string] is the abstract token value
-        corresponding to the string [token_string]. *)
+    type t =
+      | AccessToken of string (* Either a Personal or Project Access Token. *)
+      | OAuthToken of oauth  (** [t] is the abstract type of a token. *)
+
+    val create_url :
+      client_id:string ->
+      redirect_uri:Uri.t ->
+      state:string ->
+      scopes:Gitlab_t.scope list ->
+      unit ->
+      Uri.t
+
+    val of_code :
+      client_id:string ->
+      client_secret:string ->
+      code:string ->
+      unit ->
+      t option Lwt.t
+    (** [of_code ~client_id ~client_secret ~code ()] is the {!t}
+        granted by a [code]
+      *)
 
     val to_string : t -> string
     (** [to_string token] is the string serialization of [token]. *)

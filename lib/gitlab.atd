@@ -978,6 +978,14 @@ type scope = [
   | WriteRepository <json name="write_repository">
 ]
 
+type auth = {
+  access_token: string;
+  token_type: string;
+  expires_in: int;
+  refresh_token: string;
+  created_at: int;
+}
+
 type personal_access_token = {
   id: int;
   name: string;
