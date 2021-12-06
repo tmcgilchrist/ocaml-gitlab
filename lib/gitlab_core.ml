@@ -73,6 +73,197 @@ struct
       end
   end
 
+  (* Authorization Scopes *)
+  module Scope = struct
+    let to_string (x : Gitlab_t.scope) =
+      match x with
+      | `ReadRegistry -> "read_registry"
+      | `ReadRepository -> "read_repository"
+      | `ReadApi -> "read_api"
+      | `ReadUser -> "read_user"
+      | `Api -> "api"
+      | `WriteRepository -> "write_repository"
+      | `WriteRegistry -> "write_registry"
+
+    let of_string x : Gitlab_t.scope option =
+      match x with
+      | "read_registry" -> Some `ReadRegistry
+      | "read_repository" -> Some `ReadRepository
+      | "read_api" -> Some `ReadApi
+      | "read_user" -> Some `ReadUser
+      | "api" -> Some `Api
+      | "write_repository" -> Some `WriteRepository
+      | "write_registry" -> Some `WriteRegistry
+      | _ -> None
+
+    let list_to_string scopes = String.concat "," (List.map to_string scopes)
+
+    let list_of_string s =
+      let scopes = Stringext.split ~on:',' s in
+      List.fold_left
+        (fun a b ->
+          match (a, of_string b) with
+          | None, _ -> None
+          | Some _, None -> None
+          | Some a, Some b -> Some (b :: a))
+        (Some []) scopes
+
+    let all =
+      [
+        `ReadRegistry;
+        `ReadRepository;
+        `ReadApi;
+        `ReadUser;
+        `Api;
+        `WriteRepository;
+        `WriteRegistry;
+      ]
+  end
+
+  module URI = struct
+    let api = Env.gitlab_uri
+
+    let authorize = Uri.of_string (Printf.sprintf "%s/oauth/authorize" api)
+
+    let token = Uri.of_string (Printf.sprintf "%s/oauth/token" api)
+
+    let events = Uri.of_string (Printf.sprintf "%s/events" api)
+
+    let user = Uri.of_string (Printf.sprintf "%s/users" api)
+
+    let user_by_id ~id = Uri.of_string (Printf.sprintf "%s/users/%s" api id)
+
+    let user_events ~id =
+      Uri.of_string (Printf.sprintf "%s/users/%s/events" api id)
+
+    let user_projects ~id =
+      Uri.of_string (Printf.sprintf "%s/users/%s/projects" api id)
+
+    let merge_requests = Uri.of_string (Printf.sprintf "%s/merge_requests" api)
+
+    let personal_access_tokens =
+      Uri.of_string (Printf.sprintf "%s/personal_access_tokens" api)
+
+    let personal_access_token user_id =
+      Uri.of_string
+        (Printf.sprintf "%s/users/%i/personal_access_tokens" api user_id)
+
+    let personal_access_token_revoke id =
+      Uri.of_string (Printf.sprintf "%s/personal_access_tokens/%i" api id)
+
+    let project_access_tokens project_id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/access_tokens" api project_id)
+
+    let project_access_token_revoke project_id id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/access_tokens/%i" api project_id id)
+
+    let project_commits project_id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/repository/commits" api project_id)
+
+    let project_commit project_id sha =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/repository/commits/%s" api project_id
+           sha)
+
+    let project_commit_statuses project_id sha =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/repository/commits/%s/statuses" api
+           project_id sha)
+
+    let project_commit_status project_id sha =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/statuses/%s" api project_id sha)
+
+    let project_comments project_id sha =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/repository/commits/%s/comments" api
+           project_id sha)
+
+    let projects = Uri.of_string (Printf.sprintf "%s/projects" api)
+
+    let projects_by_id project_id =
+      Uri.of_string (Printf.sprintf "%s/projects/%i" api project_id)
+
+    let project_branch project_id name =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/repository/branches/%s" api project_id
+           name)
+
+    let project_branches project_id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/repository/branches" api project_id)
+
+    let project_merge_requests ~id =
+      Uri.of_string (Printf.sprintf "%s/projects/%i/merge_requests" api id)
+
+    let project_merge_request ~id ~merge_request_iid =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/merge_requests/%s" api id
+           merge_request_iid)
+
+    let project_merge_request_participants ~id ~merge_request_iid =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/merge_requests/%s/participants" api id
+           merge_request_iid)
+
+    let project_merge_request_commits ~id ~merge_request_iid =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/merge_requests/%s/commits" api id
+           merge_request_iid)
+
+    let project_merge_request_changes ~id ~merge_request_iid =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/merge_requests/%s/changes" api id
+           merge_request_iid)
+
+    let project_events ~id =
+      Uri.of_string (Printf.sprintf "%s/projects/%i/events" api id)
+
+    let project_milestones ~project_id =
+      Uri.of_string (Printf.sprintf "%s/projects/%i/milestones" api project_id)
+
+    let project_milestone ~project_id ~milestone_id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/milestones/%i" api project_id
+           milestone_id)
+
+    let group_projects ~id =
+      Uri.of_string (Printf.sprintf "%s/groups/%s/projects" api id)
+
+    let group_merge_requests ~id =
+      Uri.of_string (Printf.sprintf "%s/groups/%s/merge_requests" api id)
+
+    let group_milestones ~group_id =
+      Uri.of_string (Printf.sprintf "%s/group/%i/milestones" api group_id)
+
+    let group_milestone ~group_id ~milestone_id =
+      Uri.of_string
+        (Printf.sprintf "%s/group/%i/milestones/%i" api group_id milestone_id)
+
+    let external_status_checks ~id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/external_status_checks" api id)
+
+    let external_status_check ~id ~check_id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/external_status_checks/%i" api id
+           check_id)
+
+    let list_status_checks ~id ~merge_request_iid =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/merge_requests/%s/status_checks" api id
+           merge_request_iid)
+
+    let set_status_check ~id ~merge_request_iid =
+      Uri.of_string
+        (Printf.sprintf
+           "%s/projects/%i/merge_requests/%s/status_check_responses" api id
+           merge_request_iid)
+  end
+
   module C = Cohttp
   module CLB = Cohttp_lwt.Body
 
@@ -201,6 +392,71 @@ struct
 
     let catch try_ with_ state =
       Lwt.catch (fun () -> try_ () state) (fun exn -> with_ exn state)
+  end
+
+  module Token = struct
+    open Lwt
+
+    type oauth = { access_token : string; refresh_token : string }
+    type grant_type = AuthorizationCode | RefreshToken
+
+    let grant_type_to_string = function
+      | AuthorizationCode -> "authorization_code"
+      | RefreshToken -> "refresh_token"
+
+    type t =
+      | AccessToken of string (* Either a Personal or Project Access Token. *)
+      | OAuthToken of oauth
+
+    (* TODO Model these 2 OAuth requests via types. *)
+
+    (* Authorization code flow
+       https://docs.gitlab.com/ee/api/oauth2.html#authorization-code-flow
+    *)
+
+    (** Create URL for Authorisation code flow. *)
+    let create_url ~client_id ~redirect_uri ~state ~scopes () =
+      let q =
+        [ "client_id", client_id
+        ; "state", state
+        ; "response_type", "code"
+        ; "redirect_uri", Uri.to_string redirect_uri
+        ; "code_challenge_method", "S256"
+        ]
+      in
+      let query_strings =
+        match scopes with
+        | [] -> q
+        | scopes -> ("scope", Scope.list_to_string scopes) :: q
+      in
+      Uri.with_query' URI.authorize query_strings
+
+    let of_code ~client_id ~client_secret ?(grant_type = AuthorizationCode) ~redirect_uri ~code () =
+      let uri =
+        Uri.with_query' URI.token [
+          "client_id", client_id;
+          "client_secret", client_secret;
+          "grant_type", grant_type_to_string grant_type;
+          "redirect_uri", redirect_uri;
+          "code", code;
+        ]
+      in
+      CL.post uri >>= fun (_res, body) ->
+      CLB.to_string body >>= fun body ->
+      try
+        let form = Gitlab_j.auth_of_string body in
+        let oauth =
+          {
+            access_token = form.access_token;
+            refresh_token = form.refresh_token;
+          }
+        in
+        return (Some (OAuthToken oauth))
+      with _ -> return None
+
+    let to_string = function
+      | AccessToken x -> x
+      | OAuthToken x -> x.access_token
   end
 
   module Endpoint = struct
@@ -397,7 +653,9 @@ struct
               }
           in
           let new_rates = { core = new_rate } in
-          Hashtbl.replace rate_table token new_rates
+          Hashtbl.replace rate_table
+            (Option.map Token.to_string token)
+            new_rates
       | _ -> ()
 
     (* Force chunked-encoding
@@ -414,7 +672,8 @@ struct
       | `Moved_permanently -> Response.Permanent target
       | _ -> Response.Temporary target
 
-    let rec request ?(redirects = []) ~token resp_handlers req =
+    let rec request ?(redirects = []) ~token resp_handlers
+        req =
       Lwt.(
         if List.length redirects > max_redirects then
           Lwt.fail
@@ -465,7 +724,9 @@ struct
       let headers = C.Header.add_opt headers "accept" media_type in
       match token with
       | None -> headers
-      | Some token -> C.Header.add headers "Authorization" ("Bearer " ^ token)
+      | Some token ->
+          C.Header.add headers "Authorization"
+            ("Bearer " ^ Token.to_string token)
 
     let idempotent meth ?headers ?token ?params ~fail_handlers ~expected_code
         ~uri fn state =
@@ -595,7 +856,7 @@ struct
 
     let get_stream (type a) ?(fail_handlers : a Stream.parse handler list = [])
         ?(expected_code : Cohttp.Code.status_code = `OK)
-        ?(headers : Cohttp.Header.t option) ?(token : string option)
+        ?(headers : Cohttp.Header.t option) ?(token : Token.t option)
         ?(params : (string * string) list option) ~(uri : Uri.t)
         (fn : a Stream.parse) =
       let restart =
@@ -646,10 +907,14 @@ struct
         Lwt.return ({ state with user_agent = Some user_agent }, Response ()))
 
     let set_token token state =
-      Monad.(Lwt.return ({ state with token = Some token }, Response ()))
+      Monad.(
+        Lwt.return
+          ({ state with token = Some (Token.to_string token) }, Response ()))
 
     let get_rate ?token () =
-      try Monad.return (Hashtbl.find rate_table token)
+      try
+        Monad.return
+          (Hashtbl.find rate_table (Option.map Token.to_string token))
       with Not_found -> Monad.return empty_rates
 
     let get_rate_limit ?token () =
@@ -668,154 +933,6 @@ struct
         return (Option.map (fun x -> x.reset) core))
 
     let string_of_message = Monad.string_of_message
-  end
-
-  module Token = struct
-    type t = string
-
-    let of_string x = x
-
-    let to_string x = x
-  end
-
-  module URI = struct
-    let api = Env.gitlab_uri
-
-    let events = Uri.of_string (Printf.sprintf "%s/events" api)
-
-    let user = Uri.of_string (Printf.sprintf "%s/users" api)
-
-    let user_by_id ~id = Uri.of_string (Printf.sprintf "%s/users/%s" api id)
-
-    let user_events ~id =
-      Uri.of_string (Printf.sprintf "%s/users/%s/events" api id)
-
-    let user_projects ~id =
-      Uri.of_string (Printf.sprintf "%s/users/%s/projects" api id)
-
-    let merge_requests = Uri.of_string (Printf.sprintf "%s/merge_requests" api)
-
-    let personal_access_tokens =
-      Uri.of_string (Printf.sprintf "%s/personal_access_tokens" api)
-
-    let personal_access_token user_id =
-      Uri.of_string
-        (Printf.sprintf "%s/users/%i/personal_access_tokens" api user_id)
-
-    let personal_access_token_revoke id =
-      Uri.of_string (Printf.sprintf "%s/personal_access_tokens/%i" api id)
-
-    let project_access_tokens project_id =
-      Uri.of_string
-        (Printf.sprintf "%s/projects/%i/access_tokens" api project_id)
-
-    let project_access_token_revoke project_id id =
-      Uri.of_string
-        (Printf.sprintf "%s/projects/%i/access_tokens/%i" api project_id id)
-
-    let project_commits project_id =
-      Uri.of_string
-        (Printf.sprintf "%s/projects/%i/repository/commits" api project_id)
-
-    let project_commit project_id sha =
-      Uri.of_string
-        (Printf.sprintf "%s/projects/%i/repository/commits/%s" api project_id
-           sha)
-
-    let project_commit_statuses project_id sha =
-      Uri.of_string
-        (Printf.sprintf "%s/projects/%i/repository/commits/%s/statuses" api
-           project_id sha)
-
-    let project_commit_status project_id sha =
-      Uri.of_string
-        (Printf.sprintf "%s/projects/%i/statuses/%s" api project_id sha)
-
-    let project_comments project_id sha =
-      Uri.of_string
-        (Printf.sprintf "%s/projects/%i/repository/commits/%s/comments" api
-           project_id sha)
-
-    let projects = Uri.of_string (Printf.sprintf "%s/projects" api)
-
-    let projects_by_id project_id =
-      Uri.of_string (Printf.sprintf "%s/projects/%i" api project_id)
-
-    let project_branch project_id name =
-      Uri.of_string
-        (Printf.sprintf "%s/projects/%i/repository/branches/%s" api project_id
-           name)
-
-    let project_branches project_id =
-      Uri.of_string
-        (Printf.sprintf "%s/projects/%i/repository/branches" api project_id)
-
-    let project_merge_requests ~id =
-      Uri.of_string (Printf.sprintf "%s/projects/%i/merge_requests" api id)
-
-    let project_merge_request ~id ~merge_request_iid =
-      Uri.of_string
-        (Printf.sprintf "%s/projects/%i/merge_requests/%s" api id
-           merge_request_iid)
-
-    let project_merge_request_participants ~id ~merge_request_iid =
-      Uri.of_string
-        (Printf.sprintf "%s/projects/%i/merge_requests/%s/participants" api id
-           merge_request_iid)
-
-    let project_merge_request_commits ~id ~merge_request_iid =
-      Uri.of_string
-        (Printf.sprintf "%s/projects/%i/merge_requests/%s/commits" api id
-           merge_request_iid)
-
-    let project_merge_request_changes ~id ~merge_request_iid =
-      Uri.of_string
-        (Printf.sprintf "%s/projects/%i/merge_requests/%s/changes" api id
-           merge_request_iid)
-
-    let project_events ~id =
-      Uri.of_string (Printf.sprintf "%s/projects/%i/events" api id)
-
-    let project_milestones ~project_id =
-      Uri.of_string (Printf.sprintf "%s/projects/%i/milestones" api project_id)
-
-    let project_milestone ~project_id ~milestone_id =
-      Uri.of_string
-        (Printf.sprintf "%s/projects/%i/milestones/%i" api project_id
-           milestone_id)
-
-    let group_projects ~id =
-      Uri.of_string (Printf.sprintf "%s/groups/%s/projects" api id)
-
-    let group_merge_requests ~id =
-      Uri.of_string (Printf.sprintf "%s/groups/%s/merge_requests" api id)
-
-    let group_milestones ~group_id =
-      Uri.of_string (Printf.sprintf "%s/group/%i/milestones" api group_id)
-
-    let group_milestone ~group_id ~milestone_id =
-      Uri.of_string
-        (Printf.sprintf "%s/group/%i/milestones/%i" api group_id milestone_id)
-
-    let external_status_checks ~id =
-      Uri.of_string
-        (Printf.sprintf "%s/projects/%i/external_status_checks" api id)
-
-    let external_status_check ~id ~check_id =
-      Uri.of_string
-        (Printf.sprintf "%s/projects/%i/external_status_checks/%i" api id
-           check_id)
-
-    let list_status_checks ~id ~merge_request_iid =
-      Uri.of_string
-        (Printf.sprintf "%s/projects/%i/merge_requests/%s/status_checks" api id
-           merge_request_iid)
-
-    let set_status_check ~id ~merge_request_iid =
-      Uri.of_string
-        (Printf.sprintf
-           "%s/projects/%i/merge_requests/%s/status_check_responses" api id
-           merge_request_iid)
   end
 
   (* Query Parameter helpers *)
