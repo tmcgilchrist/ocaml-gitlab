@@ -9,8 +9,8 @@ $ ./lab.exe api "https://gitlab.com/api/v4/users?username=tmcgilchrist"
 [
   {
     "id": 490393,
-    "name": "Tim McGilchrist",
     "username": "tmcgilchrist",
+    "name": "Tim McGilchrist",
     "state": "active",
     "avatar_url":
       "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
@@ -35,6 +35,7 @@ $ GITLAB_DEBUG=true ./lab.exe user-projects  --owner 490393
 >>> GitLab: Requesting https://gitlab.com/api/v4/users/490393/projects
 >>> GitLab: Response code 200 OK
 
+tezos
 ocaml-changes
 ocaml-gitlab
 freer
