@@ -140,6 +140,8 @@ module type Gitlab = sig
       | AccessToken of string (* Either a Personal or Project Access Token. *)
       | OAuthToken of oauth  (** [t] is the abstract type of a token. *)
 
+    type grant_type = AuthorizationCode | RefreshToken
+
     val create_url :
       client_id:string ->
       redirect_uri:Uri.t ->
@@ -147,16 +149,24 @@ module type Gitlab = sig
       scopes:Gitlab_t.scope list ->
       unit ->
       Uri.t
+    (** Create URL for Authorisation code flow. {{:https://docs.gitlab.com/ee/api/oauth2.html#authorization-code-flow}} 
+      *)
 
     val of_code :
       client_id:string ->
       client_secret:string ->
+      ?grant_type:grant_type ->
+      redirect_uri:string ->
       code:string ->
       unit ->
       t option Lwt.t
-    (** [of_code ~client_id ~client_secret ~code ()] is the {!t}
-        granted by a [code]
+    (** Retrieve an OAuth Token using the default grant_type [AuthorizationCode].
+        Use the [refresh_token] along with a grant_type of [RefreshToken] to request a
+        refreshed OAuth Token.
       *)
+
+    val of_string : string -> t
+    (** [of_string] create an [AccessToken]. *)
 
     val to_string : t -> string
     (** [to_string token] is the string serialization of [token]. *)
@@ -410,7 +420,12 @@ module type Gitlab = sig
     (** [by_name ~name ()] search for user by [name].
 
         See {{:https://docs.gitlab.com/14.0/ee/api/users.html#for-user}List Users}.
-     *)
+      *)
+
+    val current_user : token:Token.t -> unit -> Gitlab_t.user Response.t Monad.t
+    (** [current_user ~token ()] is the current user for [token]. 
+        See {{:https://docs.gitlab.com/ee/api/users.html#list-current-user-for-normal-users}Current Authenticated User.}
+    *)
 
     val projects :
       id:string -> unit -> Gitlab_t.projects_short Response.t Monad.t

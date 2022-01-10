@@ -129,7 +129,9 @@ struct
 
     let events = Uri.of_string (Printf.sprintf "%s/events" api)
 
-    let user = Uri.of_string (Printf.sprintf "%s/users" api)
+    let users = Uri.of_string (Printf.sprintf "%s/users" api)
+
+    let user = Uri.of_string (Printf.sprintf "%s/user" api)
 
     let user_by_id ~id = Uri.of_string (Printf.sprintf "%s/users/%s" api id)
 
@@ -408,13 +410,6 @@ struct
       | AccessToken of string (* Either a Personal or Project Access Token. *)
       | OAuthToken of oauth
 
-    (* TODO Model these 2 OAuth requests via types. *)
-
-    (* Authorization code flow
-       https://docs.gitlab.com/ee/api/oauth2.html#authorization-code-flow
-    *)
-
-    (** Create URL for Authorisation code flow. *)
     let create_url ~client_id ~redirect_uri ~state ~scopes () =
       let q =
         [ "client_id", client_id
@@ -453,6 +448,8 @@ struct
         in
         return (Some (OAuthToken oauth))
       with _ -> return None
+
+    let of_string s = AccessToken s
 
     let to_string = function
       | AccessToken x -> x
@@ -1168,8 +1165,11 @@ struct
 
     let by_name ~name () =
       let params = [ ("username", name) ] in
-      API.get ~uri:URI.user ~params (fun body ->
+      API.get ~uri:URI.users ~params (fun body ->
           return (Gitlab_j.users_of_string body))
+
+    let current_user ~token () =
+      API.get ~token ~uri:URI.user (fun body -> return (Gitlab_j.user_of_string body))
 
     let projects ~id () =
       let uri = URI.user_projects ~id in
