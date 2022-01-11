@@ -12,15 +12,15 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - macos-latest
-          - ubuntu-latest
-          - windows-latest
+          - macos-11
+          - ubuntu-20.04
+          - windows-2019
 
         ocaml-compiler:
           - 4.08.x
-          - 4.09.x
-          - 4.10.x
-          - 4.11.x
+          # - 4.09.x
+          # - 4.10.x
+          # - 4.11.x
           - 4.12.x
           - 4.13.x
 
