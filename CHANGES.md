@@ -1,4 +1,11 @@
-# 0.1.0 - 2020-11-17
+# dev
+
+## Added
+
+- Support Authorization code flow in OAuth. (#30 @tmcgilchrist)
+- Extra merge status values (#32 @tmcgilchrist)
+
+# 0.1.0 - 2021-11-17
 
 ## Added
 
