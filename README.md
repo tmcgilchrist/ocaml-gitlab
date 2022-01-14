@@ -1,6 +1,7 @@
 Gitlab bindings for OCaml
 ==========
 [![GitHub CI][github-shield]][github-ci] [![docs][docs-shield]][docs]
+[![OCaml-CI Build Status](https://img.shields.io/endpoint?url=https%3A%2F%2Fci.ocamllabs.io%2Fbadge%2Ftmcgilchrist%2Focaml-gitlab%2Fmaster&logo=ocaml)](https://ci.ocamllabs.io/github/tmcgilchrist/ocaml-gitlab)
 
 Native OCaml bindings to [Gitlab REST API v4].
 
