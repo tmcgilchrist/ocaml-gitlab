@@ -1,7 +1,7 @@
 Gitlab bindings for OCaml
 ==========
 [![GitHub CI][github-shield]][github-ci] [![docs][docs-shield]][docs]
-[![OCaml-CI Build Status](https://img.shields.io/endpoint?url=https%3A%2F%2Fci.ocamllabs.io%2Fbadge%2Ftmcgilchrist%2Focaml-gitlab%2Fmaster&logo=ocaml)](https://ci.ocamllabs.io/github/tmcgilchrist/ocaml-gitlab)
+[![OCaml-CI Build Status][ocaml-ci-shield]][ocaml-ci]
 
 Native OCaml bindings to [Gitlab REST API v4].
 
@@ -12,8 +12,7 @@ Pre-requisites
 ----------
 
  * Plain opam / ocaml for building.
- * jd for diffing json (github.com/josephburnett/jd) in tests
-
+ 
 Configuration
 ----------
 
@@ -52,10 +51,32 @@ If you opam install lab then the executable is available as `lab`.
 
 Run `lab -h` for more information about cli options.
 
+Tests
+------
+
+Running mdx tests for lab cli:
+
+``` shell
+# Run integration tests against real gitlab instance
+dune runtest --profile non-deterministic
+
+# Promote any changes
+dune runtest --profile non-deterministic --auto-promote
+```
+
+NOTE that ocaml-ci doesn't run these tests, any changes to the cli need to be validated manually.
+
  [github-shield]: https://github.com/tmcgilchrist/ocaml-gitlab/actions/workflows/ci.yaml/badge.svg
  [github-ci]: https://github.com/tmcgilchrist/ocaml-gitlab/actions/workflows/ci.yaml
 
  [docs-shield]:https://img.shields.io/badge/doc-online-blue.svg
  [docs]: https://tmcgilchrist.github.io/ocaml-gitlab/gitlab/index.html
 
+ [ocaml-ci]: https://ci.ocamllabs.io/github/tmcgilchrist/ocaml-gitlab
+ [ocaml-ci-shield]: https://img.shields.io/endpoint?url=https%3A%2F%2Fci.ocamllabs.io%2Fbadge%2Ftmcgilchrist%2Focaml-gitlab%2Fmaster&logo=ocaml
  [Gitlab REST API v4]: https://docs.gitlab.com/ee/api/README.html
+
+Resources
+----------
+
+ [MDX Setup in RWO](https://github.com/realworldocaml/book/blob/master/Makefile#L14)
