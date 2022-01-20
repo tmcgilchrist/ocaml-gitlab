@@ -1,7 +1,8 @@
 {
   "id": 1066316,
-  "description": "An implementation of \"Freer Monads, More Extensible Effects\".",
   "name": "freer",
+  "description":
+    "An implementation of \"Freer Monads, More Extensible Effects\".",
   "name_with_namespace": "Tim McGilchrist / freer",
   "path": "freer",
   "path_with_namespace": "tmcgilchrist/freer",

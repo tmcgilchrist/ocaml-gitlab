@@ -1,6 +1,7 @@
 (lang dune 2.9)
 (name gitlab)
 (generate_opam_files true)
+(formatting disabled)
 (using mdx 0.1)
 
 (license BSD-3-clause)
@@ -38,9 +39,7 @@ JavaScript via [js_of_ocaml](http://ocsigen.org/js_of_ocaml)."))
   (lwt (>= 2.4.4))
   stringext
   base-unix
-  (alcotest :with-test)
-  (alcotest-lwt :with-test)
-  (cmdliner (and (>= 0.9.8) :with-test)))
+  (alcotest :with-test))
  (synopsis "GitLab APIv4 OCaml library")
  (description "This library provides an OCaml interface to the
 [Gitlab APIv4](https://docs.gitlab.com/ee/api/) (JSON).
@@ -66,7 +65,7 @@ This library installs the JavaScript version, which uses [js_of_ocaml](http://oc
   (cmdliner (>= 0.9.8))
   (gitlab-unix (= :version))
   (cohttp-lwt-unix (>= 4.0))
-  (otoml (>= 0.9.0))
-  (mdx :with-test))
+  (otoml (>= 0.9.0)))
  (synopsis "GitLab cli")
  (description "Experimental GitLab cli in the style of GitHub's gh and hub commands."))
+

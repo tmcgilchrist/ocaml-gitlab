@@ -1,86 +1,87 @@
-; (test
-;  (name test)
-;  (package gitlab-unix)
-;  (libraries gitlab gitlab-unix alcotest qcheck qcheck-alcotest alcotest-lwt patdiff)
-;  (modules test lib)
-;  (deps
-;   (source_tree cases)))
-
-(executable
+(test
+ (name test)
  (package gitlab-unix)
- (libraries gitlab-unix cmdliner)
- (public_name diff)
- (modules diff)
- (name diff))
+ (libraries gitlab-unix alcotest)
+ (modules test)
+ (deps
+  (source_tree cases)))
+
+; (executable
+;  (package gitlab-unix)
+;  (libraries gitlab-unix cmdliner)
+;  (public_name diff)
+;  (modules diff)
+;  (name diff)
+;  )
 
 ; Run diff.exe on each GitLab sample json from test/cases/
 
-(rule
- (with-stdout-to
-  events_output.json
-  (run ./diff.exe events)))
+; (rule
+;  (with-stdout-to
+;   events_output.json
+;   (run ./diff.exe events)))
 
-(rule
- (alias runtest)
- (action
-  (diff cases/events/expected.json events_output.json)))
+; (rule
+;  (alias runtest)
+;  (action
+;   (diff cases/events/expected.json events_output.json)))
 
-(rule
- (with-stdout-to
-  user_short_output.json
-  (run ./diff.exe user_short)))
+; (rule
+;  (with-stdout-to
+;   user_short_output.json
+;   (run ./diff.exe user_short)))
 
-(rule
- (alias runtest)
- (action
-  (diff cases/user_short/expected.json user_short_output.json)))
+; (rule
+;  (alias runtest)
+;  (action
+;   (diff cases/user_short/expected.json user_short_output.json)))
 
-(rule
- (with-stdout-to
-  webhooks_output.json
-  (run ./diff.exe webhooks)))
+; (rule
+;  (with-stdout-to
+;   webhooks_output.json
+;   (run ./diff.exe webhooks)))
 
-(rule
- (alias runtest)
- (action
-  (diff cases/webhooks/expected.json webhooks_output.json)))
+; (rule
+;  (alias runtest)
+;  (action
+;   (diff cases/webhooks/expected.json webhooks_output.json)))
 
-(rule
- (with-stdout-to
-  merge_requests_output.json
-  (run ./diff.exe merge_requests)))
+; (rule
+;  (with-stdout-to
+;   merge_requests_output.json
+;   (run ./diff.exe merge_requests)))
 
-(rule
- (alias runtest)
- (action
-  (diff cases/merge_requests/expected.json merge_requests_output.json)))
+; (rule
+;  (alias runtest)
+;  (action
+;   (diff cases/merge_requests/expected.json merge_requests_output.json)))
 
-(rule
- (with-stdout-to
-  commit_statuses_output.json
-  (run ./diff.exe commit_statuses)))
+; (rule
+;  (with-stdout-to
+;   commit_statuses_output.json
+;   (run ./diff.exe commit_statuses)))
 
-(rule
- (alias runtest)
- (action
-  (diff cases/commit_statuses/expected.json commit_statuses_output.json)))
+; (rule
+;  (alias runtest)
+;  (action
+;   (diff cases/commit_statuses/expected.json commit_statuses_output.json)))
 
-(rule
- (with-stdout-to
-  branches_output.json
-  (run ./diff.exe branches)))
+; (rule
+;  (with-stdout-to
+;   branches_output.json
+;   (run ./diff.exe branches)))
 
-(rule
- (alias runtest)
- (action
-  (diff cases/branches/expected.json branches_output.json)))
+; (rule
+;  (alias runtest)
+;  (action
+;   (diff cases_branches_expected.json branches_output.json)))
 
-(rule
- (with-stdout-to
-  milestones_output.json
-  (run ./diff.exe milestones)))
+; (rule
+;  (with-stdout-to
+;   milestones_output.json
+;   (run ./diff.exe milestones)))
 
-(rule
- (alias runtest)
- (action
-  (diff cases/milestones/expected.json milestones_output.json)))
+; (rule
+;  (alias runtest)
+;  (action
+;   (diff cases/milestones/expected.json milestones_output.json)))

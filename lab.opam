@@ -16,7 +16,6 @@ depends: [
   "gitlab-unix" {= version}
   "cohttp-lwt-unix" {>= "4.0"}
   "otoml" {>= "0.9.0"}
-  "mdx" {with-test}
   "odoc" {with-doc}
 ]
 build: [
