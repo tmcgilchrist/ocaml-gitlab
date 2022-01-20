@@ -22,8 +22,6 @@ depends: [
   "stringext"
   "base-unix"
   "alcotest" {with-test}
-  "alcotest-lwt" {with-test}
-  "cmdliner" {>= "0.9.8" & with-test}
   "odoc" {with-doc}
 ]
 build: [

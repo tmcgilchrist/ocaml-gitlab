@@ -14,21 +14,15 @@ let read_file path =
   close_in ic;
   contents
 
-let check_diff dir s =
-  let expected = dir / "expected.json" in
-  let output = dir / "output.json" in
-  let oc = open_out output in
-  output_string oc s;
-  close_out oc;
-  (* TODO Do type comparison rather than via strings and external jd tool. *)
-  let diff = Printf.sprintf "jd -set %s %s" expected output in
-  let diff_out, diff_in = Unix.open_process diff in
-  let diff_output = read_ic diff_out in
-  match (Unix.close_process (diff_out, diff_in), String.length diff_output) with
-  | Unix.WEXITED 0, 0 -> ()
-  | Unix.WEXITED x, _ ->
-      Alcotest.fail ("diff failed " ^ string_of_int x ^ ":\n" ^ diff_output)
-  | _, _ -> Alcotest.fail ("diff failed :\n" ^ diff_output)
+let yojson =
+  let module M = struct
+    type t = Yojson.Basic.t
+
+    let pp f t = Fmt.pf f "%s" (Yojson.Basic.pretty_to_string t)
+
+    let equal = Yojson.Basic.equal
+  end in
+  (module M : Alcotest.TESTABLE with type t = M.t)
 
 module type TestableJson = sig
   type t
@@ -37,20 +31,26 @@ module type TestableJson = sig
 
   val of_string : string -> t
 
-  val pp : t -> string
+  val to_json : t -> Yojson.Basic.t
 end
 
 module Make (M : TestableJson) = struct
   let test () =
-    let open Alcotest_lwt in
-    let dir = "cases" / M.name in
-    let str = read_file (dir / "event.json") in
+    let open Alcotest in
+    let base = "cases" / M.name in
+    let test_file = read_file (base / "event.json") in
+    let diff_json output =
+      let expected =
+        M.to_json @@ M.of_string @@ read_file (base / "expected.json")
+      in
+      Alcotest.(check yojson) "diff-json" expected output
+    in
     let a =
-      try M.of_string str
+      try M.of_string test_file
       with e ->
         Alcotest.fail (M.name ^ " failed with: " ^ Printexc.to_string e)
     in
-    [ test_case_sync M.name `Quick (fun () -> check_diff dir (M.pp a)) ]
+    [ test_case M.name `Quick (fun () -> diff_json (M.to_json a)) ]
 end
 
 module Gitlab_j_events : TestableJson = struct
@@ -60,9 +60,7 @@ module Gitlab_j_events : TestableJson = struct
 
   let of_string = Gitlab_j.events_of_string
 
-  let pp v =
-    Yojson.Basic.pretty_to_string
-    @@ Yojson.Basic.from_string (Gitlab_j.string_of_events v)
+  let to_json v = Yojson.Basic.from_string (Gitlab_j.string_of_events v)
 end
 
 module Gitlab_j_user_short : TestableJson = struct
@@ -72,9 +70,7 @@ module Gitlab_j_user_short : TestableJson = struct
 
   let of_string = Gitlab_j.user_short_of_string
 
-  let pp v =
-    Yojson.Basic.pretty_to_string
-    @@ Yojson.Basic.from_string (Gitlab_j.string_of_user_short v)
+  let to_json v = Yojson.Basic.from_string (Gitlab_j.string_of_user_short v)
 end
 
 module Gitlab_j_projects : TestableJson = struct
@@ -84,7 +80,7 @@ module Gitlab_j_projects : TestableJson = struct
 
   let of_string = Gitlab_j.projects_full_of_string
 
-  let pp v = Yojson.Basic.prettify (Gitlab_j.string_of_projects_full v)
+  let to_json v = Yojson.Basic.from_string (Gitlab_j.string_of_projects_full v)
 end
 
 module Gitlab_j_project_short : TestableJson = struct
@@ -94,9 +90,7 @@ module Gitlab_j_project_short : TestableJson = struct
 
   let of_string = Gitlab_j.project_short_of_string
 
-  let pp v =
-    Yojson.Basic.pretty_to_string
-    @@ Yojson.Basic.from_string (Gitlab_j.string_of_project_short v)
+  let to_json v = Yojson.Basic.from_string (Gitlab_j.string_of_project_short v)
 end
 
 module Gitlab_j_webhooks : TestableJson = struct
@@ -106,9 +100,7 @@ module Gitlab_j_webhooks : TestableJson = struct
 
   let of_string = Gitlab_j.webhooks_of_string
 
-  let pp v =
-    Yojson.Basic.pretty_to_string
-    @@ Yojson.Basic.from_string (Gitlab_j.string_of_webhooks v)
+  let to_json v = Yojson.Basic.from_string (Gitlab_j.string_of_webhooks v)
 end
 
 module Gitlab_j_merge_requests : TestableJson = struct
@@ -118,9 +110,7 @@ module Gitlab_j_merge_requests : TestableJson = struct
 
   let of_string = Gitlab_j.merge_requests_of_string
 
-  let pp v =
-    Yojson.Basic.pretty_to_string
-    @@ Yojson.Basic.from_string (Gitlab_j.string_of_merge_requests v)
+  let to_json v = Yojson.Basic.from_string (Gitlab_j.string_of_merge_requests v)
 end
 
 module Gitlab_j_commit_statuses : TestableJson = struct
@@ -130,9 +120,8 @@ module Gitlab_j_commit_statuses : TestableJson = struct
 
   let of_string = Gitlab_j.commit_statuses_of_string
 
-  let pp v =
-    Yojson.Basic.pretty_to_string
-    @@ Yojson.Basic.from_string (Gitlab_j.string_of_commit_statuses v)
+  let to_json v =
+    Yojson.Basic.from_string (Gitlab_j.string_of_commit_statuses v)
 end
 
 module Gitlab_j_branches_full : TestableJson = struct
@@ -142,9 +131,7 @@ module Gitlab_j_branches_full : TestableJson = struct
 
   let of_string = Gitlab_j.branches_full_of_string
 
-  let pp v =
-    Yojson.Basic.(
-      pretty_to_string @@ from_string (Gitlab_j.string_of_branches_full v))
+  let to_json v = Yojson.Basic.from_string (Gitlab_j.string_of_branches_full v)
 end
 
 module Gitlab_j_milestones : TestableJson = struct
@@ -154,9 +141,7 @@ module Gitlab_j_milestones : TestableJson = struct
 
   let of_string = Gitlab_j.milestones_of_string
 
-  let pp v =
-    Yojson.Basic.(
-      pretty_to_string @@ from_string (Gitlab_j.string_of_milestones v))
+  let to_json v = Yojson.Basic.from_string (Gitlab_j.string_of_milestones v)
 end
 
 (* instances under test *)
@@ -172,17 +157,16 @@ module M = Make (Gitlab_j_milestones)
 
 (* Run it *)
 let () =
-  let open Alcotest_lwt in
-  Lwt_main.run
-  @@ run "GitLab"
-       [
-         ("commit_statuses", CS.test ());
-         ("events", E.test ());
-         ("merge_requests", MR.test ());
-         ("project_short", PS.test ());
-         ("projects", P.test ());
-         ("user_short", US.test ());
-         ("webhooks", WH.test ());
-         ("branches", BF.test ());
-         ("milestones", M.test ());
-       ]
+  let open Alcotest in
+  run "GitLab"
+    [
+      ("commit_statuses", CS.test ());
+      ("events", E.test ());
+      ("merge_requests", MR.test ());
+      ("project_short", PS.test ());
+      ("projects", P.test ());
+      ("user_short", US.test ());
+      ("webhooks", WH.test ());
+      ("branches", BF.test ());
+      ("milestones", M.test ());
+    ]

@@ -106,7 +106,7 @@ let user_name_cmd =
       else
         List.iter
           (fun user ->
-            printf "%s:%i\n" user.Gitlab_t.user_short_username
+            printf "%s:%Li\n" user.Gitlab_t.user_short_username
               user.Gitlab_t.user_short_id)
           users
     in
@@ -153,7 +153,7 @@ let merge_requests_cmd config =
       let* mr = return (User.merge_requests ~token:config.token ()) in
       Stream.iter
         (fun merge_request ->
-          printf "#%i %s\n" merge_request.Gitlab_t.merge_request_id
+          printf "#%Li %s\n" merge_request.Gitlab_t.merge_request_id
             merge_request.Gitlab_t.merge_request_title;
           return ())
         mr
