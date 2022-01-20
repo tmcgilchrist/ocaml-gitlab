@@ -39,7 +39,14 @@ JavaScript via [js_of_ocaml](http://ocsigen.org/js_of_ocaml)."))
   (lwt (>= 2.4.4))
   stringext
   base-unix
-  (alcotest :with-test))
+  (alcotest :with-test)
+  (alcotest-lwt :with-test)
+  (qcheck-alcotest :with-test)
+  (qcheck :with-test)
+  (cmdliner (and (>= 0.9.8) :with-test))
+  ppx_deriving_qcheck
+  ppx_import
+  ppx_deriving)
  (synopsis "GitLab APIv4 OCaml library")
  (description "This library provides an OCaml interface to the
 [Gitlab APIv4](https://docs.gitlab.com/ee/api/) (JSON).

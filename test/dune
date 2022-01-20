@@ -85,3 +85,9 @@
 ;  (alias runtest)
 ;  (action
 ;   (diff cases/milestones/expected.json milestones_output.json)))
+
+(test
+ (name quickcheck)
+ (modules quickcheck corpus)
+ (libraries gitlab qcheck alcotest qcheck-alcotest ppx_deriving_qcheck ppx_import)
+ (preprocess (staged_pps ppx_import ppx_deriving_qcheck)))

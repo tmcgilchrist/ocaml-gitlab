@@ -22,6 +22,13 @@ depends: [
   "stringext"
   "base-unix"
   "alcotest" {with-test}
+  "alcotest-lwt" {with-test}
+  "qcheck-alcotest" {with-test}
+  "qcheck" {with-test}
+  "cmdliner" {>= "0.9.8" & with-test}
+  "ppx_deriving_qcheck"
+  "ppx_import"
+  "ppx_deriving"
   "odoc" {with-doc}
 ]
 build: [
@@ -42,3 +49,6 @@ build: [
 ]
 dev-repo: "git+https://github.com/tmcgilchrist/ocaml-gitlab.git"
 available: [ arch != "x86_32" & arch != "arm32" & arch != "ppc32" ]
+pin-depends: [
+  ["ppx_deriving_qcheck.dev" "git+https://github.com/c-cube/qcheck#14be7e2c47996bd9fb98faaf147fcbea3addc74b"]
+]
