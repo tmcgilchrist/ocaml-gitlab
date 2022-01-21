@@ -14,7 +14,6 @@
  (name gitlab)
  (depends
   (ocaml (>= 4.08.0))
-  (dune (>= 1.10))
   (uri (>= 1.9.0))
   (cohttp-lwt (>= 4.0))
   (atdgen (>= 2.0.0))
@@ -31,7 +30,6 @@ JavaScript via [js_of_ocaml](http://ocsigen.org/js_of_ocaml)."))
  (name gitlab-unix)
  (depends
   (ocaml (>= 4.08.0))
-  (dune (>= 1.10))
   (gitlab (= :version))
   (cohttp (>= 4.0))
   (cohttp-lwt-unix (>= 4.0))
