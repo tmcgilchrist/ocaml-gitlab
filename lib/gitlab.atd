@@ -26,11 +26,16 @@ type merge_request_scope = [
   | All <json name="all">
 ]
 
+type user_state = [
+| Blocked <json name="blocked">
+| Active <json name="active">
+]
+
 type user = {
   id: int <ocaml repr="int64">;
   username: string;
   name: string;
-  state: string;
+  state: user_state;
   avatar_url: string;
   web_url: string;
   created_at: string;
@@ -55,7 +60,7 @@ type user_short = {
   id: int <ocaml repr="int64">;
   name: string;
   username: string;
-  ?state: string nullable;
+  ?state: user_state nullable;
   avatar_url: string;
   ?web_url: string nullable;
   ?email: string nullable;
