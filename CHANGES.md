@@ -1,4 +1,8 @@
-# 0.1.1 - 2022-11-14
+# 0.1.2 - 2022-02-02
+
+- Revert using int64 types in gitlab.atd (#38 @tmcgilchrist)
+
+# 0.1.1 - 2022-01-14
 
 ## Added
 

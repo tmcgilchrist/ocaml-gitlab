@@ -52,7 +52,7 @@ type user = {
 } <ocaml field_prefix="user_">
 
 type user_short = {
-  id: int <ocaml repr="int64">;
+  id: int;
   name: string;
   username: string;
   ?state: string nullable;
@@ -64,13 +64,13 @@ type user_short = {
 type users = user_short list
 
 type owner = {
-  id: int <ocaml repr="int64">;
+  id: int;
   name: string;
   created_at: string;
 } <ocaml field_prefix="owner_">
 
 type namespace = {
-  id: int <ocaml repr="int64">;
+  id: int;
   name: string;
   path: string;
   kind: string;
@@ -114,7 +114,7 @@ type visibility = [
 ]
 
 type project_short = {
-  id: int <ocaml repr="int64">;
+  id: int;
   name: string;
   description: string;
   name_with_namespace: string;
@@ -162,7 +162,7 @@ type project_full = {
   container_registry_access_level: string;
   container_registry_enabled: bool;
   container_registry_image_prefix: string;
-  creator_id: int <ocaml repr="int64">;
+  creator_id: int;
   emails_disabled: string nullable;
   empty_repo: bool;
   external_authorization_classification_label: string;
@@ -262,8 +262,8 @@ type milestone_state = [
 ]
 
 type milestone = {
-  id: int <ocaml repr="int64">;
-  iid: int <ocaml repr="int64">;
+  id: int;
+  iid: int;
   ?project_id: int option;
   ?group_id: int option;
   title: string;
@@ -298,9 +298,9 @@ type task_completion_status = {
 } <ocaml field_prefix="time_completion_status_">
 
 type merge_request = {
-  id: int <ocaml repr="int64">;
-  iid: int <ocaml repr="int64">;
-  project_id: int <ocaml repr="int64">;
+  id: int;
+  iid: int;
+  project_id: int;
   title: string;
   description: string;
   state: state;
@@ -323,8 +323,8 @@ type merge_request = {
   has_conflicts: bool;
   assignees: user_short list;
   reviewers: user_short list;
-  source_project_id: int <ocaml repr="int64">;
-  target_project_id: int <ocaml repr="int64">;
+  source_project_id: int;
+  target_project_id: int;
   labels: string list;
   draft: bool;
   work_in_progress: bool;
@@ -375,7 +375,7 @@ type commit_comment = {
 type commit_comments = commit_comment list
 
 type commit_status = {
-  id: int <ocaml repr="int64">;
+  id: int;
   sha: string;
   ref: string;
   status: string;
@@ -426,9 +426,9 @@ type change = {
 } <ocaml field_prefix="change_">
 
 type changes = {
-  id: int <ocaml repr="int64">;
-  iid: int <ocaml repr="int64">;
-  project_id: int <ocaml repr="int64">;
+  id: int;
+  iid: int;
+  project_id: int;
   title: string;
   state: string; (* TODO Should be an enum *)
   created_at: string;
@@ -441,8 +441,8 @@ type changes = {
   ?assignee: user_short option;
   ?assignees: user_short list option;
   reviewers: user_short list;
-  source_project_id: int <ocaml repr="int64">;
-  target_project_id: int <ocaml repr="int64">;
+  source_project_id: int;
+  target_project_id: int;
   labels: string list;
   description: string;
   draft: bool;
@@ -484,23 +484,23 @@ type author = {
 } <ocaml field_prefix="author_">
 
 type issue = {
-  author_id: int <ocaml repr="int64">;
+  author_id: int;
   closed_at: string nullable;
   confidential: bool;
   created_at: string;
   description: string;
   discussion_locked: string nullable;
   due_date: string nullable;
-  id: int <ocaml repr="int64">;
-  iid: int <ocaml repr="int64">;
+  id: int;
+  iid: int;
   last_edited_at: string nullable;
   last_edited_by_id: string nullable;
   milestone_id: string nullable;
   moved_to_id: string nullable;
   duplicated_to_id: int nullable;
-  project_id: int <ocaml repr="int64">;
+  project_id: int;
   relative_position: int;
-  state_id: int <ocaml repr="int64">;
+  state_id: int;
   time_estimate: int;
   title: string;
   updated_at: string;
@@ -513,7 +513,7 @@ type issue = {
   human_time_change: int nullable;
   human_time_estimate: int nullable;
   assignee_ids: int list;
-  assignee_id: int <ocaml repr="int64">;
+  assignee_id: int;
   labels: string list;
   state: state;
   severity: string;
@@ -529,7 +529,7 @@ type commit_short_webhook = {
 } <ocaml field_prefix="commit_short_webhook">
 
 type project_webhook = {
-  id: int <ocaml repr="int64">;
+  id: int;
   name: string;
   description: string nullable;
   web_url: string;
@@ -551,12 +551,12 @@ type merge_request_attributes = {
   ?action: string option;
   assignee_id: int nullable;
   assignee_ids: int list;
-  author_id: int <ocaml repr="int64">;
+  author_id: int;
   created_at: string;
   description: string;
   head_pipeline_id: int nullable;
-  id: int <ocaml repr="int64">;
-  iid: int <ocaml repr="int64">;
+  id: int;
+  iid: int;
   last_edited_at: string nullable;
   last_edited_by_id: string nullable;
   last_commit: commit_short_webhook;
@@ -570,12 +570,12 @@ type merge_request_attributes = {
   milestone_id: string nullable;
   source: project_webhook;
   source_branch: string;
-  source_project_id: int <ocaml repr="int64">;
-  state_id: int <ocaml repr="int64">;
+  source_project_id: int;
+  state_id: int;
   state: string;
   target: project_webhook;
   target_branch: string;
-  target_project_id: int <ocaml repr="int64">;
+  target_project_id: int;
   title: string;
   updated_at: string;
   updated_by_id: int nullable;
@@ -594,10 +594,10 @@ type merge_params =  {
 }  <ocaml field_prefix="merge_params_">
 
 type label = {
-  id: int <ocaml repr="int64">;
+  id: int;
   title: string;
   colour: string;
-  project_id: int <ocaml repr="int64">;
+  project_id: int;
   created_at: string;
   updated_at: string;
   template: bool;
@@ -727,7 +727,7 @@ type issue_webhook = {
 
 type note_attributes = {
   attachment: string nullable;
-  author_id: int <ocaml repr="int64">;
+  author_id: int;
   change_position: string nullable;
   commit_id: string nullable;
   created_at: string;
@@ -834,8 +834,8 @@ type webhook = [
 (* https://docs.gitlab.com/ee/api/events.html *)
 type events = event list
 type event = {
-  id: int <ocaml repr="int64">;
-  project_id: int <ocaml repr="int64">;
+  id: int;
+  project_id: int;
   action_name: event_action_name nullable;
   target_id: int nullable;
   target_iid: int nullable ;
