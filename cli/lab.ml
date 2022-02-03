@@ -274,13 +274,14 @@ let ci_status_set_cmd config =
       $ CommandLine.state $ pure ()),
     Term.info "set-ci-status - Set or update the build status of a commit" )
 
-let api_cmd =
+let api_cmd config =
   let api uri_str () =
     let cmd =
       let open Gitlab in
       let open Monad in
+      let config = config () in
       let uri = Uri.of_string uri_str in
-      API.get ~uri (fun body -> Lwt.return (Yojson.Basic.from_string body))
+      API.get ~token:config.token ~uri (fun body -> Lwt.return (Yojson.Basic.from_string body))
       >|~ fun json -> printf "%s" (Yojson.Basic.pretty_to_string json)
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
@@ -311,7 +312,7 @@ let cmds =
     user_cmd;
     user_name_cmd;
     user_projects_cmd;
-    api_cmd;
+    api_cmd config;
     merge_requests_cmd config;
     status_checks_cmd config;
     user_events_cmd config;

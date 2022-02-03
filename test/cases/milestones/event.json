@@ -26,5 +26,306 @@
     "start_date": "2013-11-10",
     "expired": false,
     "web_url": "https://gitlab.com/groups/gitlab-org/-/milestones/42"
+  },
+  {
+    "id": 2438363,
+    "iid": 68,
+    "project_id": 3836952,
+    "title": "Michelson technical debt",
+    "description":
+      "This milestone regroups issues and MRs related to the Michelson runtime and which are not about adding new features to the Michelson language but about easing the maintenance of this part of the code base so that in the future new features can be added faster and with more confidence.\r\n\r\nIt is a followup of %45 containing the work that wasn't done during the lifetime of this crew.",
+    "state": "active",
+    "created_at": "2022-01-26T17:03:20.823Z",
+    "updated_at": "2022-01-26T17:03:20.823Z",
+    "due_date": null,
+    "start_date": null,
+    "expired": null,
+    "web_url": "https://gitlab.com/tezos/tezos/-/milestones/68"
+  },
+  {
+    "id": 2421346,
+    "iid": 67,
+    "project_id": 3836952,
+    "title": "Effects handlers usage investigation",
+    "description":
+      "# Context\r\n\r\nWith the upcoming OCaml V5 comes the long-awaited [effect handlers](https://discuss.ocaml.org/t/multicore-ocaml-september-2021-effect-handlers-will-be-in-ocaml-5-0/8554). Effect handlers have been all the rage these last years in Haskell world, some languages like [Unison](https://www.unisonweb.org/) even building them in their language directly.\r\n\r\n# Objective\r\n\r\nWe propose to explore using effect handlers in Tezos both to replace existing monads that are subsumed by effects handlers:\r\n\r\n* the Error monad,\r\n* the Lwt monad,\r\n* the [combined Lwt/Error monad](https://gitlab.com/tezos/tezos/-/blob/7cc52324f64e6f442acbf59e0b71390b887b27db/src/lib_lwt_result_stdlib/bare/sigs/monad.ml#L254)\r\n\r\nbut also to support effects that are currently hand-crafted/manually coded/coupled, e.g.:\r\n\r\n* the monad for reading/writing [Context.t](https://gitlab.com/tezos/tezos/-/blob/7cc52324f64e6f442acbf59e0b71390b887b27db/src/lib_protocol_environment/environment_context.ml#L99) (which would be the [State](https://wiki.haskell.org/State_Monad) monad in Haskell terms),\r\n* the readonly Context.t monad (the [Reader](https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-Reader.html) monad).\r\n* the logging monad (events in Tezos terms)\r\n\r\nAn additional benefit of effect handlers is that they simplify testability: a business function could have the effects \"Logging, State Context, Error\" and a test could easily \"mock\" how these effects behave inside the test (by simply changing the effect handler).\r\nHere's an [example in Haskell](https://sir4ur0n.github.io/posts/polysemy-tests.html) but the idea would be the same.\r\n\r\n# Success criterion\r\n\r\nThis project is concerned with practical integration of effects handlers within the tezos/tezos codebase. The project will be a success if one of these criterion is met:\r\n\r\n* One or more packages are modified to use effects handlers, hereby showing by example what it means to use them and what it implies in terms of code readibility.\r\n* Reasons why using effects handlers in tezos/tezos is impossible and/or impractical. For example, because the use is too heavyweight. In this case, we expect pointers to possible improvements to effects handlers - that would change this outcome - to have been explored and documented.",
+    "state": "active",
+    "created_at": "2022-01-17T10:26:28.508Z",
+    "updated_at": "2022-01-17T10:26:28.508Z",
+    "due_date": null,
+    "start_date": null,
+    "expired": null,
+    "web_url": "https://gitlab.com/tezos/tezos/-/milestones/67"
+  },
+  {
+    "id": 2412682,
+    "iid": 66,
+    "project_id": 3836952,
+    "title":
+      "TZS: Implementation-independent validation system for Tezos economic protocol",
+    "description":
+      "TZS is a language for describing implementation-independent validation\r\nscenarios for the Tezos economic properties and a system for\r\nexecuting and validating such scenarios.\r\n\r\nThe first benefit of TZS is that it allows to assert\r\nbehaviors of the protocol without delving into the details of its\r\nimplementation. It is more high-level than TZT, which aims to\r\nassert the behavior of Michelson snippets. TZS authors will have less\r\nprotocol-boilerplate to deal with to write scenarios, as opposed to\r\nwhen writing \"classic\" protocol-integration tests or system tests.\r\n\r\nThe second is that it can be used to validate other implementations of\r\nthe economic protocol, or specific sub-components thereof (such has as\r\nthe Michelson interpreter).\r\n\r\nFor more details and motivation, see: https://hackmd.io/v9zHVliuR3mv_jrOU40SAw?view\r\n",
+    "state": "active",
+    "created_at": "2022-01-11T13:54:51.374Z",
+    "updated_at": "2022-01-11T13:54:51.374Z",
+    "due_date": null,
+    "start_date": null,
+    "expired": null,
+    "web_url": "https://gitlab.com/tezos/tezos/-/milestones/66"
+  },
+  {
+    "id": 2412311,
+    "iid": 65,
+    "project_id": 3836952,
+    "title": "Unit tezts",
+    "description":
+      "# Unittezts project\r\n\r\nThe test suite of octez is highly fractured. We currently use the\r\nfollowing test frameworks:\r\n\r\n\r\n  - system tests: pytest, tezt and flextesa\r\n  - unit tests: alcotest, qcheck (mostly launched through alcotest),\r\n    ppx_expect (or ppx_inline test) and ad-hoc ocaml unit tests,\r\n\r\nThe goal of this project is to make the test suite more coherent by\r\nreplacing alcotest by Tezt. As pointed out in issue #1265, Tezt now\r\nhas all the features of Alcotest, in addition to many features that\r\nimprove developer experience (e.g. test selection) and that\r\nfacilitates CI integration (e.g. load balancing). In addition,\r\nreducing the number of tools decreases productivity losses induced by\r\ndeveloper context switches.\r\n\r\nHowever, some technical issues (also discussed in the issue #1265)\r\nshould be resolved to migrate Alcotest to Tezt:\r\n\r\n - How can we keep package-level tests while integrating them all in a\r\n   global test suite?\r\n - How will tezt unit tests be launched when installing opam packages\r\n   `--with-test`\r\n - Unit tests are typically launched through `dune runtest` that runs\r\n   tests in parallel. in my experience, this shortens wall-time test\r\n   time by 1/2 - 1/3 on my machine as opposed to running tests\r\n   sequentially. Should we implement parallel test execution in Tezt?\r\n\r\nThe project should resolve the issues mentioned above, and produce a\r\nproof of concept by translating the unit tests of at least one package\r\nin the source tree (e.g. `src/lib_base`).\r\n\r\n# Notes by Romain\r\n\r\nhttps://codimd.nomadic-labs.com/rmAqM73dS2uiVCj2wRR5Yg\r\n",
+    "state": "active",
+    "created_at": "2022-01-11T09:53:38.189Z",
+    "updated_at": "2022-01-17T09:11:30.832Z",
+    "due_date": null,
+    "start_date": null,
+    "expired": null,
+    "web_url": "https://gitlab.com/tezos/tezos/-/milestones/65"
+  },
+  {
+    "id": 2400975,
+    "iid": 64,
+    "project_id": 3836952,
+    "title": "Verify property-based tests in coq-of-ocaml",
+    "description":
+      "While PBTs express properties that are tested against an arbitrary number of pseudo-random inputs, a passing PBT is an absence of evidence of a bug, not an evidence of absence of bug.\r\n\r\nOne step further in checking the quality of parts of Tezos  is to use a proof assistant like [Coq](https://coq.inria.fr/) to check some properties are **always** true (hence those properties are never bugged).\r\n\r\nThis is the role of the [Coq Tezos of OCaml](https://gitlab.com/nomadic-labs/coq-tezos-of-ocaml) \r\n (CTOC) project.\r\n\r\nAdditionally there are [some ideas](https://codimd.nomadic-labs.com/I2M2Xt37Rje9ukDMvgFI7w#) on how to further integrate PBTs with CTOC.",
+    "state": "active",
+    "created_at": "2022-01-03T14:55:52.031Z",
+    "updated_at": "2022-01-03T14:55:52.031Z",
+    "due_date": null,
+    "start_date": null,
+    "expired": null,
+    "web_url": "https://gitlab.com/tezos/tezos/-/milestones/64"
+  },
+  {
+    "id": 2400659,
+    "iid": 63,
+    "project_id": 3836952,
+    "title": "Property Based Tests: Extend PBT suite",
+    "description":
+      "Originally part of %7.\r\n\r\nThis milestone gathers all efforts related to extending the suit of Property-based tests (PBT).\r\n\r\nThis is a part of the overall [Test effort of Tezos](https://gitlab.com/nomadic-labs/tezos/-/issues/339).\r\n\r\nThe high level goal of both PBTs is to increase productivity of developers and lowering costs by improving the software quality of Octez (or achieving the same quality with fewer efforts).\r\n\r\n# PBT tests to add to suite:\r\n\r\n- [ ] Add PBTs to places: that lack testing, and that have interesting properties worth checking (e.g. \"adding then removing a duration from a timestamp should give back the original timestamp\")\r\n- [ ] Check that serializing and deserializing [Data_encoding](https://gitlab.com/nomadic-labs/data-encoding) structures is the identity function.",
+    "state": "active",
+    "created_at": "2022-01-03T12:11:13.271Z",
+    "updated_at": "2022-01-03T12:11:13.271Z",
+    "due_date": null,
+    "start_date": null,
+    "expired": null,
+    "web_url": "https://gitlab.com/tezos/tezos/-/milestones/63"
+  },
+  {
+    "id": 2400313,
+    "iid": 62,
+    "project_id": 3836952,
+    "title": "Property Based Tests: QCheck Improvements",
+    "description":
+      "This milestone gathers all efforts related to improving the [QCheck tool](https://github.com/c-cube/qcheck) used for Property Based Testing (PBT) for Octez.\r\n\r\nThis is a part of the overall [Test effort of Tezos](https://gitlab.com/nomadic-labs/tezos/-/issues/339).\r\n\r\n## QCheck improvements (on QCheck repo)\r\n\r\nThese issues can't be linked in this milestone (Gitlab limitations)\r\n\r\n\r\n* [Provide a `check_eq` function a la Alcotest or Crowbar](https://github.com/c-cube/qcheck/issues/102)\r\n* [Improve error messages in test failures](https://github.com/c-cube/qcheck/issues/103)\r\n* [Give up or repeat during generation](https://github.com/c-cube/qcheck/issues/104)\r\n* [Provide more generators for `int64`](https://github.com/c-cube/qcheck/issues/105)\r\n* [Mix-and-match of `map` and `map_keep_input` to be able to combine arbitraries](https://github.com/c-cube/qcheck/issues/106)\r\n* [More generic heterogeneous combinators](https://github.com/c-cube/qcheck/issues/108) a la `Crowbar.map`. Maybe one can use `QCheck.Tuple` for such matters?\r\n* [Use the richer `Format.asprintf` syntax](https://github.com/c-cube/qcheck/issues/107) rather than the basic `'a -> string` printer type",
+    "state": "active",
+    "created_at": "2022-01-03T10:26:39.287Z",
+    "updated_at": "2022-01-03T10:26:39.287Z",
+    "due_date": null,
+    "start_date": null,
+    "expired": null,
+    "web_url": "https://gitlab.com/tezos/tezos/-/milestones/62"
+  },
+  {
+    "id": 2373974,
+    "iid": 61,
+    "project_id": 3836952,
+    "title": "Transaction Rollups",
+    "description":
+      "The Transaction Rollup project aims ta providing a ad-hoc optimistic solution to Tezos with the following properties:\r\n\r\n1. Implemented at the protocol layer (that is, in OCaml), to have a gas- and space-efficient implementation\r\n2. Limited to transactions (no in-rollup smart contracts), to keep the scope of the project smaller\r\n3. Fast finality thanks to a non-interactive rejection scheme.\r\n\r\nThis [board](https://gitlab.com/tezos/tezos/-/boards/3817494?milestone_title=Transaction+Rollups) can make it easier to understand what is being actively worked on.\r\n\r\nThereafter, we explain the plan wrt. merge requests.\r\n\r\n<details><summary>Completed phase(s)</summary>\r\n\r\n# Phase 1. Creation\r\n\r\n- [x] [!3915](https://gitlab.com/tezos/tezos/-/merge_requests/3915) adds the layer-1 operation to originate a transaction rollup\r\n- [x] [!4198](https://gitlab.com/tezos/tezos/-/merge_requests/4198) improves the API related to a transaction rollup state</details>\r\n\r\n# Phase 2. Layer-1-to-layer-2 communication\r\n\r\nThis phase introduces in the protocol the “inboxes” of the transaction rollups, along with the way to fill them, and to interpret them.\r\n\r\n- [ ] [!4315](https://gitlab.com/tezos/tezos/-/merge_requests/4315) improves the documentation available in the [Tezos manual](http://tezos.gitlab.io/alpha/transaction_rollups.html) to take into account the development of this phase.\r\n\r\n## 2.A. In the layer-1\r\n\r\n- [x] [!4190](https://gitlab.com/tezos/tezos/-/merge_requests/4190) makes it easier for the project to rely on the global table of tickets infrastructure\r\n- [x] [!4200](https://gitlab.com/tezos/tezos/-/merge_requests/4200) provides the API to register “messages” in the layer-1, that the layer-2 needs to interpret\r\n- [x] [!4205](https://gitlab.com/tezos/tezos/-/merge_requests/4205) makes it possible to target something that is not a smart contract or an implicit account with a layer-1 `Transaction` operation\r\n- [x] [!4203](https://gitlab.com/tezos/tezos/-/merge_requests/4203) introduces a new layer-1 operation to submit batches of transactions the layer-2 needs to interpret\r\n- [ ] [!4017](https://gitlab.com/tezos/tezos/-/merge_requests/4017) allows smart contracts to deposit ticket to the layer-2 with a layer-1 `Transaction` operation\r\n\r\n## 2.B. In the layer-2\r\n\r\nReference implementation can be found at [!3921](https://gitlab.com/tezos/tezos/-/merge_requests/3921). The following MR are a revamp of this initial implemenation.\r\n\r\n- [ ] [!4275](https://gitlab.com/tezos/tezos/-/merge_requests/4275) introduces the definition of the layer-2 batches, and a novel framework to write compact encoding for them.\r\n- [ ] [!4360](https://gitlab.com/tezos/tezos/-/merge_requests/4360) introduces the notion of layer-2 context, with extensive testing\r\n- [ ] `WIP` introduces the notion of layer-2 apply function, with extensive testing\r\n\r\n# Phase 3. Commitments\r\n\r\nThe goal of this phase is to provide the notion of commitments to the transaction rollups. A commitment is a way for a rollup node to advertise to the layer-1 participants the advancement of the layer-2. This also includes a way to reject erroneous or malicious commitments.\r\n\r\n## 3.A. In the layer-1\r\n\r\nReference MR is [!4162](https://gitlab.com/tezos/tezos/-/merge_requests/4162). The idea is to gradually extract self-contained MR from it, to reduce the workload on reviewers, and the history-rewriting nightmare that can be splitting it in several MRs at once.\r\n\r\n- [ ] [!4323](https://gitlab.com/tezos/tezos/-/merge_requests/4323) refactors yet another time the `Ticket_hash` module\r\n- [ ] [!4332](https://gitlab.com/tezos/tezos/-/merge_requests/4332) refines the implementation of inboxes to make them a linked list\r\n\r\n## 3.B. In the rollup node\r\n\r\n- [ ] `WIP` introduces a passive transaction rollup node that reconstructs the inboxes.\r\n\r\n# Phase 4. Layer-2-to-layer-1 communication\r\n\r\nThe goal of this phase is to implement the mechanism which allows transaction rollup participants to withdraw their assets from the layer-2.\r\n\r\n# Phase 5. Activation\r\n\r\nThe goal of this phase is to enable the transaction rollup feature flag, to make the implementation available on mainnet.\r\n\r\n# Nice to have\r\n\r\nThe following MRs are not blocking, and should potentially be added to TORU in another iteration of the protocol if need be.\r\n\r\n- [ ] [!4309](https://gitlab.com/tezos/tezos/-/merge_requests/4309) refines the fees logic implemented in !4200 to smooth the variation of the fees\r\n- [ ] [!4344](https://gitlab.com/tezos/tezos/-/merge_requests/4344) allows to provide an upper bound for the fees you are willing to pay",
+    "state": "active",
+    "created_at": "2021-12-13T15:08:09.631Z",
+    "updated_at": "2022-02-02T21:18:30.861Z",
+    "due_date": "2022-02-28",
+    "start_date": "2021-12-13",
+    "expired": false,
+    "web_url": "https://gitlab.com/tezos/tezos/-/milestones/61"
+  },
+  {
+    "id": 2373036,
+    "iid": 60,
+    "project_id": 3836952,
+    "title": "Protocol environment v5",
+    "description":
+      "Issues and MRs for the protocol environment V5.\r\n\r\n### Info\r\n\r\n- First protocol using v5: TBA\r\n- First Octez release including v5: TBA (date: TBA)\r\n\r\n### status\r\n\r\n- Includes rolling, long-term, maintenance issues which are not specific to v5 itself but about general environment issues.\r\n- Will include v5-specific features when they start to appear.",
+    "state": "active",
+    "created_at": "2021-12-13T08:24:25.463Z",
+    "updated_at": "2021-12-13T08:24:25.463Z",
+    "due_date": null,
+    "start_date": null,
+    "expired": null,
+    "web_url": "https://gitlab.com/tezos/tezos/-/milestones/60"
+  },
+  {
+    "id": 2357180,
+    "iid": 59,
+    "project_id": 3836952,
+    "title": "Strengthen token delegations",
+    "description":
+      "The consistency of a delegate's stake with respect to its delegators' balances is a critical property for Tenderbake, as it must enforce the stake balances invariants: https://gitlab.com/tezos/tzip/-/merge_requests/172#note_677243929\r\nThe fact that the consistency of a delegate's stake with respect to its delegators' balances is enforced at multiple locations makes code maintenance and reviews more cumbersome. \r\nThese locations include crediting a contract, spending from a contract, freezing fees, punishing a delegate, etc.; as well as the delegation management which is performed by `Delegate_storage.set`.  \r\n\r\n**Design**  \r\nWith the `transfer` function of the `Token` module, it becomes possible to \r\nlocate stake movements inside the `token` module so that the associated invariants are enforced in a single module.\r\n\r\n \r\n**Tasks**  \r\n- **Move references to `Stake_storage.add_stake` and `Stake_storage.remove_stake`** related to transfers and delegations in the `Token` module\r\n- **Remove redundant representations**: (1) remove `Token.DelegateBalance` constructor as it becomes redundant with the constructor `Token.Contract`, and (2) unify the types `Receipt.balance` and `Token.[source | container | sink]`\r\n- **Reduce the number of calls to `add_stake` and `remove_stake`** depending on the nature of transfers (e.g. no stake updating needed when the source and the sink share the same delegate)\r\n",
+    "state": "active",
+    "created_at": "2021-12-02T10:16:12.480Z",
+    "updated_at": "2021-12-02T10:18:55.905Z",
+    "due_date": "2022-01-31",
+    "start_date": "2021-12-02",
+    "expired": true,
+    "web_url": "https://gitlab.com/tezos/tezos/-/milestones/59"
+  },
+  {
+    "id": 2345263,
+    "iid": 58,
+    "project_id": 3836952,
+    "title": "Openapi-diff",
+    "description":
+      "A tool to check differences between two openapi specification. ",
+    "state": "active",
+    "created_at": "2021-11-24T17:09:22.184Z",
+    "updated_at": "2021-11-24T17:09:22.184Z",
+    "due_date": null,
+    "start_date": null,
+    "expired": null,
+    "web_url": "https://gitlab.com/tezos/tezos/-/milestones/58"
+  },
+  {
+    "id": 2344572,
+    "iid": 57,
+    "project_id": 3836952,
+    "title": "Tenderbake Activation",
+    "description":
+      "The main objective is to ensure Tenderbake can be safely activated. Normally this milestone ends once we observe that Tenderbake has been activated and works as expected.\r\n\r\n\"Maintenance\" tasks:\r\n- [ ] test the migration\r\n- fix any appearing issues related to Tenderbake (observed for instance on the testnet), and not covered by other crew (like \"mempool\")\r\n- resolve other remaining issues, raised during the previous milestone (which are not critical), see [the list of issues](https://gitlab.com/nomadic-labs/tezos/-/issues?label_name%5B%5D=tenderbake&scope=all&state=opened) or the [NL analogue milestone](https://gitlab.com/nomadic-labs/tezos/-/milestones/69); this includes improving the code quality overall, both in the protocol, and in the baker; do this in the order of their priority\r\n- check coverage and improve if necessary\r\n- improve documentation\r\n- assists developers with Tenderbake-related issues, if needed\r\n- [ ] new blog post, before injection\r\n- communicate with indexer and block explorer developers/maintainers, so that they smoothly adapt their tools to Tenderbake\r\n\r\nConsensus-related tasks for protocol J:\r\n- Everywhere: reduce `preserved_cycles` (nomadic-labs/tezos#351)\r\n- Proto: simplify activity rules, if possible\r\n- Baker: fix remaining issues (see again [NL milestone](https://gitlab.com/nomadic-labs/tezos/-/milestones/69));remove TODOs and FIXMEs (34 occurrences)\r\n- Baker: use deterministic nonces",
+    "state": "active",
+    "created_at": "2021-11-24T09:23:12.728Z",
+    "updated_at": "2021-11-30T09:38:58.330Z",
+    "due_date": "2022-03-31",
+    "start_date": "2021-11-24",
+    "expired": false,
+    "web_url": "https://gitlab.com/tezos/tezos/-/milestones/57"
+  },
+  {
+    "id": 2343560,
+    "iid": 56,
+    "project_id": 3836952,
+    "title": "Protocol J+",
+    "description":
+      "- Feature Freeze: ~8 March\r\n- Hashing: ~15 March\r\n- Injection: ~29 March\r\n\r\n### Ithaca followup\r\n- [x] Merge fix for Ledger app [update](https://github.com/LedgerHQ/app-tezos/pull/27)\r\n- [ ] Release Ledger app @vbotbol \r\n- [ ] Update indexers\r\n- [ ] Update docs after activation\r\n\r\n### Required\r\n- [ ] Name\r\n- [x] Migration from Ithaca !4107 \r\n- [ ] Fix endorsements for migration block\r\n- [ ] Update gas model\r\n- [ ] Update space model\r\n- [ ] Fix OCaml compiler stack overflow\r\n\r\n### Environment V5\r\n- [ ] BLS gas improvements #2184 !4234\r\n- [ ] Change BLS signature size (for TORU)\r\n- [ ] Tree and stream proof APIs !4086\r\n- [ ] Patch for performance !4305\r\n- [ ] (optional) Move compact encoding from protocol to environment\r\n\r\n### https://gitlab.com/tezos/tezos/-/milestones/61\r\n- [x] Phase 1. Creation of rollup and Rollup node\r\n- [ ] Phase 2. Rollup operations and Deposits - almost done\r\n- [ ] Phase 3. Commitments and rejections - under review\r\n- [ ] Phase 4. Withdrawals - being developed\r\n- [ ] Phase 5. Activation\r\n\r\n### https://gitlab.com/tezos/tezos/-/milestones/38\r\n- [x] Carbonated map  !3845\r\n- [x] Fetching balances from lazy diff !4011\r\n- [x] Ticket operations diff !4168\r\n- [ ] Activate tickets validation\r\n- [ ] Address TODOs (gas costs, caching of scripts)\r\n\r\n### Compact Merkle Proofs\r\n- [x] Release Irmin 2.10 with API for TORU and SCORU\r\n- [ ] Expose proofs API in environment !4086\r\n- [ ] Encoding for Merkle proofs !4307\r\n- [ ] Use different version of proof for TORU and SCORU\r\n\r\n### https://gitlab.com/tezos/tezos/-/milestones/45\r\n- [ ] Constant time equality for types (fix annotations)\r\n- [ ] Migrate legacy contracts\r\n- [ ] Typed representation of internal operations\r\n\r\n### Reduce block time\r\n- [ ] Change block time to 20s !4163\r\n\r\n### Liquidity Baking vote\r\n - [ ] Add a pass option + makes the vote symmetric !4201 \r\n\r\n---\r\n\r\n### https://gitlab.com/tezos/tezos/-/milestones/47\r\n- [x] Creation of rollup\r\n- [x] Rollup node\r\n- [x] Rollup client\r\n- [x] Rollup inbox on L1\r\n- [ ] Inbox in the node !4289\r\n- [ ] Refutation game !4246\r\n- [ ] Commitments !4148 !4173\r\n\r\n### Cache for Bigmap\r\n- [ ] Define scope\r\n",
+    "state": "active",
+    "created_at": "2021-11-23T16:27:18.755Z",
+    "updated_at": "2022-02-01T16:54:27.497Z",
+    "due_date": "2022-03-29",
+    "start_date": null,
+    "expired": false,
+    "web_url": "https://gitlab.com/tezos/tezos/-/milestones/56"
+  },
+  {
+    "id": 2341544,
+    "iid": 55,
+    "project_id": 3836952,
+    "title": "Octez 12.0",
+    "description":
+      "This milestone lists what is needed for Octez 12.0, the next major release of Octez.\r\n\r\nNote: Octez 12.0 has been forked from a version of `master` which already had plenty of improvements compared to 11.0.\r\n\r\n### Required for 12.0 or 12.1\r\n\r\n- [ ] Cache patch (`simulate_operation` RPC)\r\n- ~~https://gitlab.com/tezos/tezos/-/merge_requests/4277 binary mode by default~~ => it is actually the default in v12 already\r\n- [ ] https://gitlab.com/tezos/tezos/-/merge_requests/4284\r\n- [ ] https://gitlab.com/tezos/tezos/-/merge_requests/4313\r\n- [ ] https://gitlab.com/tezos/tezos/-/merge_requests/4310\r\n- [ ] https://gitlab.com/tezos/tezos/-/merge_requests/4047 (patch to support patched ledgers, critical)\r\n- [ ] !4283\r\n\r\n### Nice to Have\r\n\r\n- [ ] !3934 (minor bugfix) \r\n\r\nStore introspection:\r\n- [ ] !4285\r\n- [ ] !4154\r\n- [ ] !4134\r\n- [ ] !3992\r\n\r\nOld nice-to-haves:\r\n- [ ] https://gitlab.com/tezos/tezos/-/merge_requests/4012/ (for future tools that would read the storage)\r\n- [ ] https://gitlab.com/tezos/tezos/-/merge_requests/3885\r\n\r\n### Required for 12.0~rc2\r\n\r\n- [x] https://gitlab.com/tezos/tezos/-/merge_requests/4220 (original MR: https://gitlab.com/tezos/tezos/-/merge_requests/3776) (deadline: end of January)\r\n- [x] https://gitlab.com/tezos/tezos/-/merge_requests/4185 (original MR: https://gitlab.com/tezos/tezos/-/merge_requests/3747)\r\n- [x] https://gitlab.com/tezos/tezos/-/merge_requests/4186 (original MR: https://gitlab.com/tezos/tezos/-/merge_requests/4026)\r\n- [x] https://gitlab.com/tezos/tezos/-/merge_requests/4187 (original MR: https://gitlab.com/tezos/tezos/-/merge_requests/4115)\r\n- [x] https://gitlab.com/tezos/tezos/-/merge_requests/4188 (original MR: https://gitlab.com/tezos/tezos/-/merge_requests/4151)\r\n- [x] https://gitlab.com/tezos/tezos/-/merge_requests/4199 (original MR: https://gitlab.com/tezos/tezos/-/merge_requests/4051)\r\n- [x] https://gitlab.com/tezos/tezos/-/merge_requests/4213 (original MR: !4171)\r\n- [x] !4214 (original MR: !3997)\r\n- ~~should we backport !4117 ?~~\r\n- [x] https://gitlab.com/tezos/tezos/-/merge_requests/4236 Replace Ithaca with Ithaca2 (@shrmtv) (original MR: !4226)\r\n- [x] https://gitlab.com/tezos/tezos/-/merge_requests/4244 (original MR: https://gitlab.com/tezos/tezos/-/merge_requests/4107)\r\n- [x] https://gitlab.com/tezos/tezos/-/merge_requests/4270 Cache patch (priority 1 blocks) (original MR: https://gitlab.com/tezos/tezos/-/merge_requests/4240)\r\n- ~~Support s390x for bls12-381: https://gitlab.com/tezos/tezos/-/issues/2364~~\r\n- [x] https://gitlab.com/tezos/tezos/-/merge_requests/4239 update Ithacanet configuration (original MR: https://gitlab.com/tezos/tezos/-/merge_requests/4237)\r\n- [x] https://gitlab.com/tezos/tezos/-/merge_requests/4278 Ithaca2net : change starting date to final one (original MR: https://gitlab.com/tezos/tezos/-/merge_requests/4253)\r\n- [x] https://gitlab.com/tezos/tezos/-/merge_requests/4261 would help the CI\r\n\r\nStore bugfixes:\r\n- [x] https://gitlab.com/tezos/tezos/-/merge_requests/4210 (original MR: https://gitlab.com/tezos/tezos/-/merge_requests/4129)\r\n- [x] https://gitlab.com/tezos/tezos/-/merge_requests/4252 (original MR: https://gitlab.com/tezos/tezos/-/merge_requests/3868)\r\n\r\n### Required for 12.0~rc1\r\n\r\nCannot release without it:\r\n- [X] https://gitlab.com/tezos/tezos/-/merge_requests/4056 Protocol I @shrmtv\r\n- [X] https://gitlab.com/tezos/tezos/-/merge_requests/4078 (Ithaca replacement)\r\n\r\nRequired for better UX only:\r\n- [x] Replace by fees with client !4025 @iguerNL  @Saroupille \r\n- [x] Bad injection UX if precheck is activated (default): !4115 @iguerNL @Saroupille \r\n\r\nRequired for 12.0~rc1 if we plan to stresstest the test network for protocol I:\r\n- [x] Prioritize consensus operations prevalidation !4026 @iguerNL @Saroupille \r\n\r\nRequired for testnet for protocol I:\r\n- [X] https://gitlab.com/tezos/tezos/-/merge_requests/3938\r\n- [X] https://gitlab.com/tezos/tezos/-/merge_requests/4079\r\n\r\n### Done\r\n\r\n- [X] !4076 (quick fix to reduce snapshot import memory consumption)\r\n- [X] !3961 env-v4 fix\r\n- [X] https://gitlab.com/tezos/tezos/-/merge_requests/4029\r\n- [x] https://gitlab.com/tezos/tezos/-/merge_requests/3843\r\n- [x] https://gitlab.com/tezos/tezos/-/merge_requests/3888\r\n- [X] Precheck !3813 @Saroupille\r\n- [x] 1M !3909 @Saroupille  \r\n- [x] Replace by fees in prevalidator !3968 @iguerNL  @Saroupille \r\n- [X] !4018 Unplug and remove the legacy store\r\n- [X] !3874 More information while checking/restoring store's integrity\r\n- [X] !3774 Handle potential cementing leftovers \r\n- [X] BLS @dannywillems \r\n\r\n### Release Process Improvements\r\n\r\nOwner: @romain.nl \r\n\r\n- Any feature from %\"Release Management Process and Packaging\" is welcome but not necessary\r\n\r\n### Not Planned\r\n\r\n- ~~`--network kaizen` (replacing `--network granadanet`) (if Kaizen is still active)~~\r\n",
+    "state": "active",
+    "created_at": "2021-11-22T14:27:53.338Z",
+    "updated_at": "2022-02-02T09:37:15.425Z",
+    "due_date": null,
+    "start_date": null,
+    "expired": null,
+    "web_url": "https://gitlab.com/tezos/tezos/-/milestones/55"
+  },
+  {
+    "id": 2333606,
+    "iid": 54,
+    "project_id": 3836952,
+    "title": "Enhance storage layer",
+    "description":
+      "The goals of this project is at the intersection of the development of new features for the storage as whole, that can be located in the store itself or on components interacting directly with it, and maintenance and bug fixes of the store.\r\n\r\n## Crew mumbers\r\n- Victor Allombert (@vect0r, DRI, PA)\r\n- (more to come?)\r\n\r\n# 1. Improving the context (ledger state)\r\n\r\nThe improvement of the context consists in following the development of the [Irmin](https://github.com/mirage/irmin/) and [Index](https://github.com/mirage/index) libraries developed by Tarides and to report bugs or issues to them. It also tracks improvement related to the activation of Hangzhou.\r\n\r\n## Step one: Index\r\n\r\nThe [Index](https://github.com/mirage/index) is in charge of indexing the Irmin's pack backend which stores the data as a \"raw\" append only file. The index indexs all objects of a context, that is to say all nodes and leaves (even leaves containing values smaller than a hash). It results, for a recent mainnet archive node,  in a `55Gb` index file referencing `1.3` billon entries -- which is huge. Because of it, very costly (in terms of memory, IOs and time) merges (or maintenance procedure) are required. Additionally, the index lookup is slow and breaks various cache mechanisms from the operating system (as it requires to load a lot of \"pages\" in memory). Finally, a big file with so many entries is more likely to be subject of data corruptions.\r\n\r\nTo solve theses issues and relax the Index's bottleneck, several steps are considered:\r\n- [x] optimize the current implementation\r\n    - Changed the implementation of the write-ahead log to significantly reduce its\r\nmemory usage (at the cost of some additional disk IO). [#355](https://github.com/mirage/index/pull/355)\r\n    - Release Index 1.4.2 (https://gitlab.com/tezos/tezos/-/merge_requests/3679)\r\n    - !3679: Update to irmin.2.8.\r\n    - !3735: Context: reduces memory usage peak of the context flattening \r\n- [ ] Index less elements to be lighter and faster: Irmin 3.0\r\n    - [#1695](https://github.com/mirage/irmin/issues/1695) Irmin 3.0\r\n    - [#1510 merged](https://github.com/mirage/irmin/pull/1510)\r\n    - [#1534 closed](https://github.com/mirage/irmin/pull/1534)\r\n    - may require a context upgrade (actually it is more like a cleanup) to perform better\r\n- [ ] Alternative index implementations. @tomjridge who is currently working on exploring alternatives to replace the Index implementation (in particular, B-trees). Achieving the inter-process concurrency semantics is challenging and there are not many existing implementations that meet the right parameters, but we’re hopeful that a more scalable design can be found.\r\n\r\n## Step two: Irmin\r\n\r\nThe mission for the layered store project is to integrate and test the layered store backend of [Irmin](https://github.com/mirage/irmin/). This layered store aims to provide native garbage collection and also to improve the overall performances of the context.\r\n\r\nCurrently, the layered store is considered as working and is fully integrated in Irmin. However, it does not scale with Octez as the Index's bottleneck is to important.\r\n\r\n- [X] (~High priority~) Optimize the snapshot import, as a quick fix at least\r\n- [ ] (High ~Medium~ priority) Restructure the snapshot export/import to enable better performances and lower memory footprint #2312 \r\n- [X] [Irmin.2.10](https://github.com/mirage/irmin/releases/tag/2.10.0)\r\n    - Adds tree proofs\r\n- [ ] integrate the layered store (this work was partially done thanks to previous attempts [2127](https://gitlab.com/tezos/tezos/-/merge_requests/2127))\r\n- [ ] test it with typical data sets\r\n\r\n## Next blurry steps\r\n\r\n- [ ] Introduce a dedicated implementation for TenderBake\r\n- [ ] Optimize the overall performances \r\n- [ ] Allow more resilient storage\r\n- [ ] Introduce tools to fix corrupted storage\r\n- [ ] Reduce the memory footprint (aka optimize stored representation)\r\n\r\n# 2. Maintenance, improvement and bug fixes of the store (block history)\r\n\r\nHere, we aim to maintain an improve the store by:\r\n- resolving the followup issues from the [Store rehaul MR](https://gitlab.com/tezos/tezos/-/issues/1512),\r\n- resolving `TODO` and `FIXME` present in the store's code,\r\n- fix bug/emergencies directly related to the store. \r\n\r\nAs the activation of Hangzhou requires users to use the `v11` release, many issues may be encountered as the number of users of the `v0.0.6` store is increasing.\r\n\r\n# 3. Development of dependencies\r\n\r\nAs the storage is a low level component which interacts with many other components, it is required to rework some parts of the code to allows better performances and a higher confidence.",
+    "state": "active",
+    "created_at": "2021-11-16T16:39:37.969Z",
+    "updated_at": "2022-01-28T07:39:09.124Z",
+    "due_date": "2022-02-18",
+    "start_date": "2021-11-15",
+    "expired": false,
+    "web_url": "https://gitlab.com/tezos/tezos/-/milestones/54"
+  },
+  {
+    "id": 2323088,
+    "iid": 53,
+    "project_id": 3836952,
+    "title":
+      "Cache 2: New usage of the cache and other cache-related improvements",
+    "description":
+      "The objectives of this milestone are:\r\n- to implement cache-enabled optimization that are low-hanging fruits (caching bigmaps, constants, etc) ;\r\n- to adjust several aspects of the cache implementation (turn cache layout as a protocol parameter, better handling of the cache and the mempool). ",
+    "state": "active",
+    "created_at": "2021-11-09T14:59:20.348Z",
+    "updated_at": "2021-12-06T09:24:30.494Z",
+    "due_date": null,
+    "start_date": null,
+    "expired": null,
+    "web_url": "https://gitlab.com/tezos/tezos/-/milestones/53"
+  },
+  {
+    "id": 2319865,
+    "iid": 52,
+    "project_id": 3836952,
+    "title": "Transactional ORU (Next)",
+    "description": "",
+    "state": "active",
+    "created_at": "2021-11-08T10:03:39.147Z",
+    "updated_at": "2021-11-08T10:03:39.147Z",
+    "due_date": null,
+    "start_date": null,
+    "expired": null,
+    "web_url": "https://gitlab.com/tezos/tezos/-/milestones/52"
+  },
+  {
+    "id": 2296999,
+    "iid": 51,
+    "project_id": 3836952,
+    "title": "Smoother Gas generation",
+    "description":
+      "(On the technical debt in Snoop, by @igarnier : https://codimd.nomadic-labs.com/ZtwH1bOCRkGhhedALrsxhQ)\r\n\r\nFor a more robust and faster generation of gas in the protocol, we must first address the technical debt of `tezos-snoop`, while adding some nice to have functionalities. The following list contains the major points that needs to be addressed in this milestone, they are mostly independent and can be worked on separately.\r\n\r\n- [ ] Reduce global benchmarking time (see https://hackmd.io/QCRLtCo3QfGQuQgFYqAcjw, nomadic-labs/tezos#669)\r\n- [x] Merge and improve the Snoop integration in Tezt (tezos/tezos!3682)\r\n  - [ ] Some features from Tezt can be useful when used for Snoop (see https://gitlab.com/tezos/tezos/-/merge_requests/3682#note_711594143)\r\n- [ ] Remove python bindings for graph generation, replace them with some alternatives tezos/tezos#1523\r\n- [ ] Rework the codegen tool to adapt it for the growing codebase: gas costs are separated in multiple files, we may want to normalize how gas costs are represented in the protocol\r\n  - [ ] A good use for the codegen tool would be to generate a document listing all the gas costs in the interpreter, for the online documentation tezos/tezos!2038\r\n- [ ] Improve report generation: we may want to add some information on the inferred model, improve graph readability, and allow the generation of smaller sub-reports. https://gitlab.com/tezos/tezos/-/issues/1950\r\n- [ ] Extract more information from the benchmarks, we currently only extract one statistic (usually the 50th percentile), but we may want more data, like the variance for a given benchmark point. tezos/tezos#1943\r\n- [ ] Allow a model to have multiple benchmarks, and solve it accordingly",
+    "state": "active",
+    "created_at": "2021-10-25T12:58:09.373Z",
+    "updated_at": "2022-01-24T15:58:24.970Z",
+    "due_date": null,
+    "start_date": null,
+    "expired": null,
+    "web_url": "https://gitlab.com/tezos/tezos/-/milestones/51"
+  },
+  {
+    "id": 2296533,
+    "iid": 50,
+    "project_id": 3836952,
+    "title": "Hangzhou2",
+    "description":
+      "Fixed version of Hangzou.\r\n\r\nAre listed here the MR toward master. Their back-port in a release branch is under the responsibility of @pirbo. The branch is `hanghou2`.\r\n\r\n\r\nQuestions:\r\n- [x] ~~Better RPC for \"cache query\" (in protocol plugin) (@Saroupille)~~",
+    "state": "closed",
+    "created_at": "2021-10-25T08:32:09.303Z",
+    "updated_at": "2021-11-04T10:29:58.446Z",
+    "due_date": "2021-11-02",
+    "start_date": null,
+    "expired": true,
+    "web_url": "https://gitlab.com/tezos/tezos/-/milestones/50"
+  },
+  {
+    "id": 2294204,
+    "iid": 49,
+    "project_id": 3836952,
+    "title": "Improve RPCs",
+    "description":
+      "https://gitlab.com/tezos/tezos/-/milestones/36\r\n\r\nhttps://gitlab.com/tezos/tezos/-/milestones/40\r\n\r\nhttps://gitlab.com/tezos/tezos/-/milestones/48",
+    "state": "closed",
+    "created_at": "2021-10-22T14:07:25.893Z",
+    "updated_at": "2022-01-06T14:53:30.042Z",
+    "due_date": null,
+    "start_date": null,
+    "expired": null,
+    "web_url": "https://gitlab.com/tezos/tezos/-/milestones/49"
   }
 ]

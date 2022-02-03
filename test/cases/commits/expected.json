@@ -1,0 +1,379 @@
+[
+  {
+    "id": "802ca97a059eaa341a974930d71765417c8e8617",
+    "short_id": "802ca97a",
+    "created_at": "2022-02-02T18:10:29.000+00:00",
+    "parent_ids": [
+      "ebc8853ae7ad2d0b43b4a9e27e73e7b78dd1c213",
+      "b4de7d5fa0f8260509075efc5cdc135b05e17f51"
+    ],
+    "title": "Merge branch 'hhugo-update' into 'master'",
+    "message":
+      "Merge branch 'hhugo-update' into 'master'\n\nEverywhere: update opam deps\n\nSee merge request tezos/tezos!4322",
+    "author_name": "Marge Bot",
+    "author_email": "marge-bot@nomadic-labs.com",
+    "authored_date": "2022-02-02T18:10:29.000+00:00",
+    "committer_name": "Marge Bot",
+    "committer_email": "marge-bot@nomadic-labs.com",
+    "committed_date": "2022-02-02T18:10:29.000+00:00",
+    "trailers": {},
+    "web_url":
+      "https://gitlab.com/tezos/tezos/-/commit/802ca97a059eaa341a974930d71765417c8e8617"
+  },
+  {
+    "id": "b4de7d5fa0f8260509075efc5cdc135b05e17f51",
+    "short_id": "b4de7d5f",
+    "created_at": "2022-02-02T17:06:27.000+00:00",
+    "parent_ids": [ "a2fe4445fec1d33a9ee10fdcef9bd6fc9bebeedc" ],
+    "title": "Opam: freese the version of json_data_encoding for now",
+    "message": "Opam: freese the version of json_data_encoding for now\n",
+    "author_name": "Hugo Heuzard",
+    "author_email": "hugo.heuzard@nomadic-labs.com",
+    "authored_date": "2022-02-02T11:50:38.000+01:00",
+    "committer_name": "Marge Bot",
+    "committer_email": "marge-bot@nomadic-labs.com",
+    "committed_date": "2022-02-02T17:06:27.000+00:00",
+    "trailers": {},
+    "web_url":
+      "https://gitlab.com/tezos/tezos/-/commit/b4de7d5fa0f8260509075efc5cdc135b05e17f51"
+  },
+  {
+    "id": "a2fe4445fec1d33a9ee10fdcef9bd6fc9bebeedc",
+    "short_id": "a2fe4445",
+    "created_at": "2022-02-02T17:06:27.000+00:00",
+    "parent_ids": [ "450eaf45bf7a63c74043dfbd95f2d29fc92d1081" ],
+    "title": "Opam: manually remove 'hidden' packages",
+    "message": "Opam: manually remove 'hidden' packages\n",
+    "author_name": "Hugo Heuzard",
+    "author_email": "hugo.heuzard@nomadic-labs.com",
+    "authored_date": "2022-01-31T16:01:39.000+01:00",
+    "committer_name": "Marge Bot",
+    "committer_email": "marge-bot@nomadic-labs.com",
+    "committed_date": "2022-02-02T17:06:27.000+00:00",
+    "trailers": {},
+    "web_url":
+      "https://gitlab.com/tezos/tezos/-/commit/a2fe4445fec1d33a9ee10fdcef9bd6fc9bebeedc"
+  },
+  {
+    "id": "450eaf45bf7a63c74043dfbd95f2d29fc92d1081",
+    "short_id": "450eaf45",
+    "created_at": "2022-02-02T17:06:27.000+00:00",
+    "parent_ids": [ "ebc8853ae7ad2d0b43b4a9e27e73e7b78dd1c213" ],
+    "title": "Opam: update opam dependencies",
+    "message": "Opam: update opam dependencies\n",
+    "author_name": "Hugo Heuzard",
+    "author_email": "hugo.heuzard@nomadic-labs.com",
+    "authored_date": "2022-01-30T00:47:36.000+01:00",
+    "committer_name": "Marge Bot",
+    "committer_email": "marge-bot@nomadic-labs.com",
+    "committed_date": "2022-02-02T17:06:27.000+00:00",
+    "trailers": {},
+    "web_url":
+      "https://gitlab.com/tezos/tezos/-/commit/450eaf45bf7a63c74043dfbd95f2d29fc92d1081"
+  },
+  {
+    "id": "ebc8853ae7ad2d0b43b4a9e27e73e7b78dd1c213",
+    "short_id": "ebc8853a",
+    "created_at": "2022-02-02T15:54:22.000+00:00",
+    "parent_ids": [
+      "6bde78822ea9b4a320753b56fe667b7e44be232a",
+      "4b931b8ba5616da4e636626e86f4287cb79c431e"
+    ],
+    "title":
+      "Merge branch 'albin@fix-ithaca-mempool-tezt-tests' into 'master'",
+    "message":
+      "Merge branch 'albin@fix-ithaca-mempool-tezt-tests' into 'master'\n\nTezt: enable and fix mempool tests for ithaca\n\nSee merge request tezos/tezos!4327",
+    "author_name": "Marge Bot",
+    "author_email": "marge-bot@nomadic-labs.com",
+    "authored_date": "2022-02-02T15:54:22.000+00:00",
+    "committer_name": "Marge Bot",
+    "committer_email": "marge-bot@nomadic-labs.com",
+    "committed_date": "2022-02-02T15:54:22.000+00:00",
+    "trailers": {},
+    "web_url":
+      "https://gitlab.com/tezos/tezos/-/commit/ebc8853ae7ad2d0b43b4a9e27e73e7b78dd1c213"
+  },
+  {
+    "id": "4b931b8ba5616da4e636626e86f4287cb79c431e",
+    "short_id": "4b931b8b",
+    "created_at": "2022-02-02T15:07:54.000+00:00",
+    "parent_ids": [ "6bde78822ea9b4a320753b56fe667b7e44be232a" ],
+    "title": "Tezt: enable and fix mempool tests for ithaca",
+    "message": "Tezt: enable and fix mempool tests for ithaca\n",
+    "author_name": "Albin Coquereau",
+    "author_email": "albin.coquereau@nomadic-labs.com",
+    "authored_date": "2022-01-31T13:52:58.000+01:00",
+    "committer_name": "Marge Bot",
+    "committer_email": "marge-bot@nomadic-labs.com",
+    "committed_date": "2022-02-02T15:07:54.000+00:00",
+    "trailers": {},
+    "web_url":
+      "https://gitlab.com/tezos/tezos/-/commit/4b931b8ba5616da4e636626e86f4287cb79c431e"
+  },
+  {
+    "id": "6bde78822ea9b4a320753b56fe667b7e44be232a",
+    "short_id": "6bde7882",
+    "created_at": "2022-02-02T15:06:03.000+00:00",
+    "parent_ids": [
+      "05b09c00622cbeea226e7607d22f91a67c681cc0",
+      "25f04aba0c0b0aaded88d2a3bbdbf68dd082fed6"
+    ],
+    "title":
+      "Merge branch 'raphael-p@convert-lib-crypto-to-newer-let-syntax' into 'master'",
+    "message":
+      "Merge branch 'raphael-p@convert-lib-crypto-to-newer-let-syntax' into 'master'\n\nCrypto: switch from Lwt.Infix to Lwt.Syntax\n\nSee merge request tezos/tezos!4353",
+    "author_name": "Marge Bot",
+    "author_email": "marge-bot@nomadic-labs.com",
+    "authored_date": "2022-02-02T15:06:03.000+00:00",
+    "committer_name": "Marge Bot",
+    "committer_email": "marge-bot@nomadic-labs.com",
+    "committed_date": "2022-02-02T15:06:03.000+00:00",
+    "trailers": {},
+    "web_url":
+      "https://gitlab.com/tezos/tezos/-/commit/6bde78822ea9b4a320753b56fe667b7e44be232a"
+  },
+  {
+    "id": "25f04aba0c0b0aaded88d2a3bbdbf68dd082fed6",
+    "short_id": "25f04aba",
+    "created_at": "2022-02-02T15:07:36.000+01:00",
+    "parent_ids": [ "05b09c00622cbeea226e7607d22f91a67c681cc0" ],
+    "title": "Crypto: switch from Lwt.Infix to Lwt.Syntax",
+    "message": "Crypto: switch from Lwt.Infix to Lwt.Syntax\n",
+    "author_name": "Raphaël Proust",
+    "author_email": "code@bnwr.net",
+    "authored_date": "2022-02-02T15:07:36.000+01:00",
+    "committer_name": "Raphaël Proust",
+    "committer_email": "code@bnwr.net",
+    "committed_date": "2022-02-02T15:07:36.000+01:00",
+    "trailers": {},
+    "web_url":
+      "https://gitlab.com/tezos/tezos/-/commit/25f04aba0c0b0aaded88d2a3bbdbf68dd082fed6"
+  },
+  {
+    "id": "05b09c00622cbeea226e7607d22f91a67c681cc0",
+    "short_id": "05b09c00",
+    "created_at": "2022-02-02T10:42:17.000+00:00",
+    "parent_ids": [
+      "3d519fc23185f92ef7030dd2e193012494a7d194",
+      "e9a0e4953b73215dc7bf1925728403b5b666ebcd"
+    ],
+    "title": "Merge branch 'abate@static-testing' into 'master'",
+    "message":
+      "Merge branch 'abate@static-testing' into 'master'\n\nAdd  python integration tests and tezt tests for static binaries\n\nSee merge request tezos/tezos!3322",
+    "author_name": "Marge Bot",
+    "author_email": "marge-bot@nomadic-labs.com",
+    "authored_date": "2022-02-02T10:42:17.000+00:00",
+    "committer_name": "Marge Bot",
+    "committer_email": "marge-bot@nomadic-labs.com",
+    "committed_date": "2022-02-02T10:42:17.000+00:00",
+    "trailers": {},
+    "web_url":
+      "https://gitlab.com/tezos/tezos/-/commit/05b09c00622cbeea226e7607d22f91a67c681cc0"
+  },
+  {
+    "id": "e9a0e4953b73215dc7bf1925728403b5b666ebcd",
+    "short_id": "e9a0e495",
+    "created_at": "2022-02-02T10:07:51.000+00:00",
+    "parent_ids": [ "d8e015e2ebb149652486ed50c3196032373c511e" ],
+    "title": "ci: run tezt tests for static binaries",
+    "message": "ci: run tezt tests for static binaries\n",
+    "author_name": "Pietro",
+    "author_email": "pietro.abate@tezcore.com",
+    "authored_date": "2021-09-13T10:15:47.000+02:00",
+    "committer_name": "Marge Bot",
+    "committer_email": "marge-bot@nomadic-labs.com",
+    "committed_date": "2022-02-02T10:07:51.000+00:00",
+    "trailers": {},
+    "web_url":
+      "https://gitlab.com/tezos/tezos/-/commit/e9a0e4953b73215dc7bf1925728403b5b666ebcd"
+  },
+  {
+    "id": "d8e015e2ebb149652486ed50c3196032373c511e",
+    "short_id": "d8e015e2",
+    "created_at": "2022-02-02T10:07:51.000+00:00",
+    "parent_ids": [ "3d519fc23185f92ef7030dd2e193012494a7d194" ],
+    "title": "test: add fast python tests for static binaries",
+    "message": "test: add fast python tests for static binaries\n",
+    "author_name": "Pietro",
+    "author_email": "pietro.abate@tezcore.com",
+    "authored_date": "2021-09-24T11:15:28.000+02:00",
+    "committer_name": "Marge Bot",
+    "committer_email": "marge-bot@nomadic-labs.com",
+    "committed_date": "2022-02-02T10:07:51.000+00:00",
+    "trailers": {},
+    "web_url":
+      "https://gitlab.com/tezos/tezos/-/commit/d8e015e2ebb149652486ed50c3196032373c511e"
+  },
+  {
+    "id": "3d519fc23185f92ef7030dd2e193012494a7d194",
+    "short_id": "3d519fc2",
+    "created_at": "2022-02-02T10:06:32.000+00:00",
+    "parent_ids": [
+      "109e3372dc8b2846bcabadb59a3e73940c1f0c2f",
+      "9d9530062672d154ad41980234e7828772d596ec"
+    ],
+    "title": "Merge branch 'password_filename_in_decrypt' into 'master'",
+    "message":
+      "Merge branch 'password_filename_in_decrypt' into 'master'\n\nPassword-filename and tezos-signer\n\nCloses #2361\n\nSee merge request tezos/tezos!4299",
+    "author_name": "Marge Bot",
+    "author_email": "marge-bot@nomadic-labs.com",
+    "authored_date": "2022-02-02T10:06:32.000+00:00",
+    "committer_name": "Marge Bot",
+    "committer_email": "marge-bot@nomadic-labs.com",
+    "committed_date": "2022-02-02T10:06:32.000+00:00",
+    "trailers": {},
+    "web_url":
+      "https://gitlab.com/tezos/tezos/-/commit/3d519fc23185f92ef7030dd2e193012494a7d194"
+  },
+  {
+    "id": "9d9530062672d154ad41980234e7828772d596ec",
+    "short_id": "9d953006",
+    "created_at": "2022-02-02T09:26:01.000+00:00",
+    "parent_ids": [ "162e3db439c0a5b4e4d0af0e175e0fecd5d9184c" ],
+    "title":
+      "Signer: always take into account '--password-filename' when trying to 'decrypt' a key",
+    "message":
+      "Signer: always take into account '--password-filename' when trying to 'decrypt' a key\n",
+    "author_name": "Pierre Boutillier",
+    "author_email": "pierre.boutillier@nomadic-labs.com",
+    "authored_date": "2022-01-24T13:39:15.000+01:00",
+    "committer_name": "Marge Bot",
+    "committer_email": "marge-bot@nomadic-labs.com",
+    "committed_date": "2022-02-02T09:26:01.000+00:00",
+    "trailers": {},
+    "web_url":
+      "https://gitlab.com/tezos/tezos/-/commit/9d9530062672d154ad41980234e7828772d596ec"
+  },
+  {
+    "id": "162e3db439c0a5b4e4d0af0e175e0fecd5d9184c",
+    "short_id": "162e3db4",
+    "created_at": "2022-02-02T09:26:01.000+00:00",
+    "parent_ids": [ "109e3372dc8b2846bcabadb59a3e73940c1f0c2f" ],
+    "title":
+      "Signer: take into account password_filename (and use the same long name as tezos-client)",
+    "message":
+      "Signer: take into account password_filename (and use the same long name as tezos-client)\n",
+    "author_name": "Pierre Boutillier",
+    "author_email": "pierre.boutillier@nomadic-labs.com",
+    "authored_date": "2022-01-26T09:43:16.000+01:00",
+    "committer_name": "Marge Bot",
+    "committer_email": "marge-bot@nomadic-labs.com",
+    "committed_date": "2022-02-02T09:26:01.000+00:00",
+    "trailers": {},
+    "web_url":
+      "https://gitlab.com/tezos/tezos/-/commit/162e3db439c0a5b4e4d0af0e175e0fecd5d9184c"
+  },
+  {
+    "id": "109e3372dc8b2846bcabadb59a3e73940c1f0c2f",
+    "short_id": "109e3372",
+    "created_at": "2022-02-02T09:24:47.000+00:00",
+    "parent_ids": [
+      "2036fb20d974abbc8b05e8eb35b86db87a079884",
+      "255add3b620af62297cf43dc6bca29b032e0bae2"
+    ],
+    "title":
+      "Merge branch 'raphael-p@convert-src-bin-validation-to-newer-error-monad-syntax' into 'master'",
+    "message":
+      "Merge branch 'raphael-p@convert-src-bin-validation-to-newer-error-monad-syntax' into 'master'\n\nConvert src/bin_validation to newer error monad syntax\n\nSee merge request tezos/tezos!4094",
+    "author_name": "Marge Bot",
+    "author_email": "marge-bot@nomadic-labs.com",
+    "authored_date": "2022-02-02T09:24:47.000+00:00",
+    "committer_name": "Marge Bot",
+    "committer_email": "marge-bot@nomadic-labs.com",
+    "committed_date": "2022-02-02T09:24:47.000+00:00",
+    "trailers": {},
+    "web_url":
+      "https://gitlab.com/tezos/tezos/-/commit/109e3372dc8b2846bcabadb59a3e73940c1f0c2f"
+  },
+  {
+    "id": "255add3b620af62297cf43dc6bca29b032e0bae2",
+    "short_id": "255add3b",
+    "created_at": "2022-02-02T08:38:29.000+00:00",
+    "parent_ids": [ "d169b547ed532d9928226c86bcd7b11b8d088db1" ],
+    "title": "Validation: simplify control-flow",
+    "message": "Validation: simplify control-flow\n",
+    "author_name": "Raphaël Proust",
+    "author_email": "code@bnwr.net",
+    "authored_date": "2022-01-20T09:09:14.000+01:00",
+    "committer_name": "Raphaël Proust",
+    "committer_email": "code@bnwr.net",
+    "committed_date": "2022-02-02T08:38:29.000+00:00",
+    "trailers": {},
+    "web_url":
+      "https://gitlab.com/tezos/tezos/-/commit/255add3b620af62297cf43dc6bca29b032e0bae2"
+  },
+  {
+    "id": "d169b547ed532d9928226c86bcd7b11b8d088db1",
+    "short_id": "d169b547",
+    "created_at": "2022-02-02T08:38:29.000+00:00",
+    "parent_ids": [ "0d405232326ecca8c8eefe0d4149cf587af8c4c5" ],
+    "title": "Validation: minor code cosmetics",
+    "message": "Validation: minor code cosmetics\n",
+    "author_name": "Raphaël Proust",
+    "author_email": "code@bnwr.net",
+    "authored_date": "2021-12-22T08:57:46.000+01:00",
+    "committer_name": "Raphaël Proust",
+    "committer_email": "code@bnwr.net",
+    "committed_date": "2022-02-02T08:38:29.000+00:00",
+    "trailers": {},
+    "web_url":
+      "https://gitlab.com/tezos/tezos/-/commit/d169b547ed532d9928226c86bcd7b11b8d088db1"
+  },
+  {
+    "id": "0d405232326ecca8c8eefe0d4149cf587af8c4c5",
+    "short_id": "0d405232",
+    "created_at": "2022-02-02T08:38:29.000+00:00",
+    "parent_ids": [ "2036fb20d974abbc8b05e8eb35b86db87a079884" ],
+    "title":
+      "Validation: convert code from infix bind into let binding operators",
+    "message":
+      "Validation: convert code from infix bind into let binding operators\n",
+    "author_name": "Raphaël Proust",
+    "author_email": "code@bnwr.net",
+    "authored_date": "2021-12-16T15:08:15.000+00:00",
+    "committer_name": "Raphaël Proust",
+    "committer_email": "code@bnwr.net",
+    "committed_date": "2022-02-02T08:38:29.000+00:00",
+    "trailers": {},
+    "web_url":
+      "https://gitlab.com/tezos/tezos/-/commit/0d405232326ecca8c8eefe0d4149cf587af8c4c5"
+  },
+  {
+    "id": "2036fb20d974abbc8b05e8eb35b86db87a079884",
+    "short_id": "2036fb20",
+    "created_at": "2022-02-01T22:56:01.000+00:00",
+    "parent_ids": [
+      "069b58e726c4e02d9f8bdc1ea9537485058f6b41",
+      "8e9c8cb20a7f6fe2f803adbb1c91cd056963b5d4"
+    ],
+    "title": "Merge branch 'storage-head-command' into 'master'",
+    "message":
+      "Merge branch 'storage-head-command' into 'master'\n\nbin_node: Add `storage head-commit` command to print current context head hash\n\nSee merge request tezos/tezos!4285",
+    "author_name": "Marge Bot",
+    "author_email": "marge-bot@nomadic-labs.com",
+    "authored_date": "2022-02-01T22:56:01.000+00:00",
+    "committer_name": "Marge Bot",
+    "committer_email": "marge-bot@nomadic-labs.com",
+    "committed_date": "2022-02-01T22:56:01.000+00:00",
+    "trailers": {},
+    "web_url":
+      "https://gitlab.com/tezos/tezos/-/commit/2036fb20d974abbc8b05e8eb35b86db87a079884"
+  },
+  {
+    "id": "8e9c8cb20a7f6fe2f803adbb1c91cd056963b5d4",
+    "short_id": "8e9c8cb2",
+    "created_at": "2022-02-01T14:07:55.000-08:00",
+    "parent_ids": [ "a56318fbe06f75d76324ad44b04f9c7990ed82d5" ],
+    "title": "Changelog: add tezos-node storage head-commit",
+    "message": "Changelog: add tezos-node storage head-commit\n",
+    "author_name": "zach",
+    "author_email": "zachshipko@gmail.com",
+    "authored_date": "2022-02-01T06:46:15.000-08:00",
+    "committer_name": "zach",
+    "committer_email": "zachshipko@gmail.com",
+    "committed_date": "2022-02-01T14:07:55.000-08:00",
+    "trailers": {},
+    "web_url":
+      "https://gitlab.com/tezos/tezos/-/commit/8e9c8cb20a7f6fe2f803adbb1c91cd056963b5d4"
+  }
+]
