@@ -73,6 +73,16 @@ module Gitlab_j_user_short : TestableJson = struct
   let to_json v = Yojson.Basic.from_string (Gitlab_j.string_of_user_short v)
 end
 
+module Gitlab_j_user : TestableJson = struct
+  type t = Gitlab_j.user
+
+  let name = "user"
+
+  let of_string = Gitlab_j.user_of_string
+
+  let to_json v = Yojson.Basic.from_string (Gitlab_j.string_of_user v)
+end
+
 module Gitlab_j_projects : TestableJson = struct
   type t = Gitlab_j.projects_full
 
@@ -124,6 +134,17 @@ module Gitlab_j_commit_statuses : TestableJson = struct
     Yojson.Basic.from_string (Gitlab_j.string_of_commit_statuses v)
 end
 
+module Gitlab_j_commits : TestableJson = struct
+  type t = Gitlab_j.commits
+
+  let name = "commits"
+
+  let of_string = Gitlab_j.commits_of_string
+
+  let to_json v =
+    Yojson.Basic.from_string (Gitlab_j.string_of_commits v)
+end
+
 module Gitlab_j_branches_full : TestableJson = struct
   type t = Gitlab_j.branches_full
 
@@ -146,6 +167,7 @@ end
 
 (* instances under test *)
 module E = Make (Gitlab_j_events)
+module U = Make (Gitlab_j_user)
 module US = Make (Gitlab_j_user_short)
 module P = Make (Gitlab_j_projects)
 module PS = Make (Gitlab_j_project_short)
@@ -154,17 +176,20 @@ module MR = Make (Gitlab_j_merge_requests)
 module CS = Make (Gitlab_j_commit_statuses)
 module BF = Make (Gitlab_j_branches_full)
 module M = Make (Gitlab_j_milestones)
+module C = Make (Gitlab_j_commits)
 
 (* Run it *)
 let () =
   let open Alcotest in
   run "GitLab"
     [
+      ("commits", C.test ());
       ("commit_statuses", CS.test ());
       ("events", E.test ());
       ("merge_requests", MR.test ());
       ("project_short", PS.test ());
       ("projects", P.test ());
+      ("user", U.test ());
       ("user_short", US.test ());
       ("webhooks", WH.test ());
       ("branches", BF.test ());
