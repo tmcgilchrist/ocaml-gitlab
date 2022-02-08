@@ -852,6 +852,7 @@ type event = {
 } <ocaml field_prefix="event_">
 
 type event_target_type = [
+  | DiffNote <json name="DiffNote">
   | Issue <json name="Issue">
   | Milestone <json name="Milestone">
   | MergeRequest <json name="MergeRequest">

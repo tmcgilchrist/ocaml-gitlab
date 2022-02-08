@@ -397,5 +397,88 @@
       "noteable_iid": 2
     },
     "author_username": "patrickferris"
+  },
+  {
+    "id": 1668834763,
+    "project_id": 3836952,
+    "action_name": "commented on",
+    "target_id": 812979532,
+    "target_iid": 812979532,
+    "target_type": "DiffNote",
+    "author_id": 2247344,
+    "target_title":
+      "Proto,tx_rollup: Refactor the [state] type of [Tx_rollup_repr]",
+    "created_at": "2022-01-17T19:57:51.046Z",
+    "note": {
+      "id": 812979532,
+      "type": "DiffNote",
+      "body":
+        "Other storage functions use `find` instead of `get_opt` (it's not super consistent but I've been trying to fix those when I'm seeing them). Might be worth to rename it as well?",
+      "attachment": null,
+      "author": {
+        "id": 2247344,
+        "username": "samoht",
+        "name": "Thomas Gazagnaire",
+        "state": "active",
+        "avatar_url":
+          "https://secure.gravatar.com/avatar/940bda3edb5d69fd4f11f3cb2fe19a8b?s=80&d=identicon",
+        "web_url": "https://gitlab.com/samoht"
+      },
+      "created_at": "2022-01-17T19:57:50.347Z",
+      "updated_at": "2022-01-17T19:57:50.347Z",
+      "system": false,
+      "noteable_id": 135236331,
+      "noteable_type": "MergeRequest",
+      "commit_id": null,
+      "position": {
+        "base_sha": "4af5c52fded819bf910dd02968be47fbf6650eb2",
+        "start_sha": "05ec5293c10706b103688374802e7ab8869e4e5b",
+        "head_sha": "92fb6eb87309566a6f7209bc9b73bdb045c03b02",
+        "old_path": "src/proto_alpha/lib_protocol/alpha_context.mli",
+        "new_path": "src/proto_alpha/lib_protocol/alpha_context.mli",
+        "position_type": "text",
+        "old_line": null,
+        "new_line": 1560,
+        "line_range": {
+          "start": {
+            "line_code": "86364935a2d50deb552dda50d615df24e36e13d6_1557_1559",
+            "type": "new",
+            "old_line": null,
+            "new_line": 1559
+          },
+          "end": {
+            "line_code": "86364935a2d50deb552dda50d615df24e36e13d6_1557_1559",
+            "type": "new",
+            "old_line": null,
+            "new_line": 1559
+          }
+        }
+      },
+      "resolvable": true,
+      "resolved": true,
+      "resolved_by": {
+        "id": 2247344,
+        "username": "samoht",
+        "name": "Thomas Gazagnaire",
+        "state": "active",
+        "avatar_url":
+          "https://secure.gravatar.com/avatar/940bda3edb5d69fd4f11f3cb2fe19a8b?s=80&d=identicon",
+        "web_url": "https://gitlab.com/samoht"
+      },
+      "resolved_at": "2022-01-20T22:00:41.501Z",
+      "confidential": false,
+      "noteable_iid": 4198,
+      "commands_changes": {}
+    },
+    "author": {
+      "id": 2247344,
+      "username": "samoht",
+      "name": "Thomas Gazagnaire",
+      "state": "active",
+      "avatar_url":
+        "https://secure.gravatar.com/avatar/940bda3edb5d69fd4f11f3cb2fe19a8b?s=80&d=identicon",
+      "web_url": "https://gitlab.com/samoht"
+    },
+    "author_username": "samoht"
   }
 ]
