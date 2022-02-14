@@ -92,8 +92,9 @@ let user_cmd =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  ( Term.(pure user_list $ CommandLine.owner_id $ pure ()),
-    Term.info "user-list - Display user name and id" )
+  let info = Cmd.info "user-list - Display user name and id" in
+  let term = Term.(const user_list $ CommandLine.owner_id $ const ()) in
+  Cmd.v info term
 
 let user_name_cmd =
   let user_list name json () =
@@ -112,8 +113,9 @@ let user_name_cmd =
     in
     Lwt_main.run @@ Gitlab.Monad.run (cmd name)
   in
-  ( Term.(pure user_list $ CommandLine.owner_name $ CommandLine.json $ pure ()),
-    Term.info "user-name - Display users by name and id" )
+  let info = Cmd.info "user-name - Display users by name and id" in
+  let term = Term.(const user_list $ CommandLine.owner_name $ CommandLine.json $ const ()) in
+  Cmd.v info term
 
 let user_projects_cmd =
   let user_projects_list id () =
@@ -127,8 +129,9 @@ let user_projects_cmd =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  ( Term.(pure user_projects_list $ CommandLine.owner_id $ pure ()),
-    Term.info "user-projects - List public projects owned by the user" )
+  let info = Cmd.info "user-projects - List public projects owned by the user"  in
+  let term = Term.(const user_projects_list $ CommandLine.owner_id $ const ()) in
+  Cmd.v info term
 
 let user_events_cmd config =
   let user_projects_list id () =
@@ -141,8 +144,9 @@ let user_events_cmd config =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  ( Term.(pure user_projects_list $ CommandLine.owner_id $ pure ()),
-    Term.info "user-events - List all user events" )
+  let info = Cmd.info "user-events - List all user events" in
+  let term =  Term.(const user_projects_list $ CommandLine.owner_id $ const ()) in
+  Cmd.v info term
 
 let merge_requests_cmd config =
   let merge_requests_list () =
@@ -160,8 +164,9 @@ let merge_requests_cmd config =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  ( Term.(pure merge_requests_list $ pure ()),
-    Term.info "merge-requests - List user's merge requests" )
+  let info = Cmd.info "merge-requests - List user's merge requests" in
+  let term = Term.(const merge_requests_list $ const ()) in
+  Cmd.v info term
 
 let status_checks_cmd config =
   let status_checks project_id () =
@@ -180,9 +185,9 @@ let status_checks_cmd config =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  let exits = Term.default_exits in
-  ( Term.(pure status_checks $ CommandLine.project_id $ pure ()),
-    Term.info "status-checks - List external status checks" ~exits )
+  let info = Cmd.info "status-checks - List external status checks" in
+  let term = Term.(const status_checks $ CommandLine.project_id $ const ()) in
+  Cmd.v info term
 
 let project_create_cmd config =
   let project_create name description () =
@@ -195,12 +200,9 @@ let project_create_cmd config =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  ( Term.(
-      pure project_create $ CommandLine.project_name
-      $ CommandLine.project_description $ pure ()),
-    Term.info
-      "project-create - Creates a new project owned by the authenticated user."
-  )
+  let info = Cmd.info "project-create - Creates a new project owned by the authenticated user." in
+  let term = Term.(const project_create $ CommandLine.project_name $ CommandLine.project_description $ const ()) in
+  Cmd.v info term
 
 let ci_status_cmd config =
   let ci_status project_id sha _verbose () =
@@ -222,10 +224,9 @@ let ci_status_cmd config =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  ( Term.(
-      pure ci_status $ CommandLine.project_id $ CommandLine.commit_sha
-      $ CommandLine.verbose $ pure ()),
-    Term.info "ci-status - List build status of a commit" )
+  let info = Cmd.info "ci-status - List build status of a commit" in
+  let term = Term.(const ci_status $ CommandLine.project_id $ CommandLine.commit_sha $ CommandLine.verbose $ const ()) in
+  Cmd.v info term
 
 let project_branches_cmd config =
   let project_branches project_id () =
@@ -242,8 +243,9 @@ let project_branches_cmd config =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  ( Term.(pure project_branches $ CommandLine.project_id $ pure ()),
-    Term.info "branch - List branches for a project" )
+  let info = Cmd.info "branch - List branches for a project" in
+  let term = Term.(const project_branches $ CommandLine.project_id $ const ()) in
+  Cmd.v info term
 
 let ci_status_set_cmd config =
   let ci_status project_id sha state () =
@@ -269,10 +271,9 @@ let ci_status_set_cmd config =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  ( Term.(
-      pure ci_status $ CommandLine.project_id $ CommandLine.commit_sha
-      $ CommandLine.state $ pure ()),
-    Term.info "set-ci-status - Set or update the build status of a commit" )
+  let info = Cmd.info "set-ci-status - Set or update the build status of a commit" in
+  let term = Term.(const ci_status $ CommandLine.project_id $ CommandLine.commit_sha $ CommandLine.state $ const ()) in
+  Cmd.v info term
 
 let api_cmd config =
   let api uri_str () =
@@ -286,13 +287,14 @@ let api_cmd config =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  ( Term.(pure api $ CommandLine.api $ pure ()),
-    Term.info "api - Low-level GitLab API request interface" )
+  let info = Cmd.info "api - Low-level GitLab API request interface" in
+  let term = Term.(const api $ CommandLine.api $ const ()) in
+  Cmd.v info term
 
-let default_cmd =
+let cmds =
   let doc = "make git easier with GitLab" in
-  ( Term.(ret (pure (`Help (`Pager, None)))),
-    let man =
+  let default = Term.(ret (const (`Help (`Pager, None)))) in
+  let man =
       [
         `S "DESCRIPTION";
         `P
@@ -302,12 +304,10 @@ let default_cmd =
         `P "<https://github.com/tmcgilchrist/ocaml-gitlab/issues>";
         `S "AUTHORS";
         `P "<https://github.com/tmcgilchrist/ocaml-gitlab>";
-      ]
-    in
-    Term.info "lab" ~version:"0.1" ~doc ~man )
-
-let cmds =
+      ] in
+  let info = Cmd.info "lab" ~version:"0.1" ~doc ~man in
   let config = Config.from_file in
+  Cmd.group ~default info
   [
     user_cmd;
     user_name_cmd;
@@ -323,6 +323,4 @@ let cmds =
   ]
 
 let () =
-  match Term.eval_choice ~catch:true default_cmd cmds with
-  | `Error _ -> exit 1
-  | _ -> exit 0
+  exit @@ Cmd.eval ~catch:true cmds
