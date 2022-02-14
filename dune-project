@@ -60,7 +60,7 @@ This library installs the JavaScript version, which uses [js_of_ocaml](http://oc
  (name lab)
  (depends
   (ocaml (>= 4.08.0))
-  (cmdliner (>= 0.9.8))
+  (cmdliner (>= 1.1.0))
   (gitlab-unix (= :version))
   (cohttp-lwt-unix (>= 4.0))
   (otoml (>= 0.9.0))
