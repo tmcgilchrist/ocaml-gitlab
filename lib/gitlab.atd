@@ -531,7 +531,7 @@ type commit_short_webhook = {
   timestamp: string;
   url: string;
   author: author;
-} <ocaml field_prefix="commit_short_webhook">
+} <ocaml field_prefix="commit_short_webhook_">
 
 type project_webhook = {
   id: int <ocaml repr="int64">;
