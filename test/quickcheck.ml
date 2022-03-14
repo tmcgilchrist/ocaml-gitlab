@@ -263,49 +263,117 @@ module Generator = struct
         merge_request_changes_assignees;
       }
 
+  let gen_commit_short_webhook : Gitlab_t.commit_short_webhook Gen.t =
+    let open Gen in
+    let* commit_short_webhook_id = string_printable
+    and* commit_short_webhook_message = string_printable
+    and* commit_short_webhook_title = string_printable
+    and* commit_short_webhook_timestamp = gen_timestamp
+    and* commit_short_webhook_url = gen_url
+    and* commit_short_webhook_author = gen_author in
+    return
+      {
+        Gitlab_t.commit_short_webhook_id;
+        commit_short_webhook_message;
+        commit_short_webhook_title;
+        commit_short_webhook_timestamp;
+        commit_short_webhook_url;
+        commit_short_webhook_author;
+      }
+
+  let gen_merge_params : Gitlab_t.merge_params Gen.t =
+    let open Gen in
+    let* merge_params_force_remove_source_branch = string_printable in
+    return
+      {
+        Gitlab_t.merge_params_force_remove_source_branch;
+      }
+
+  type merge_status = [%import: Gitlab_t.merge_status] [@@deriving qcheck]
+
   let gen_merge_request_attributes : Gitlab_t.merge_request_attributes Gen.t =
-    let open Gen in 
-    merge_request_attributes = {
-  merge_request_attributes_action : string option;
-  merge_request_attributes_assignee_id : int option;
-  merge_request_attributes_assignee_ids : int list;
-  merge_request_attributes_author_id : int;
-  merge_request_attributes_created_at : string;
-  merge_request_attributes_description : string;
-  merge_request_attributes_head_pipeline_id : int option;
-  merge_request_attributes_id : int;
-  merge_request_attributes_iid : int;
-  merge_request_attributes_last_edited_at : string option;
-  merge_request_attributes_last_edited_by_id : string option;
-  merge_request_attributes_last_commit : Gitlab_t.commit_short_webhook;
-  merge_request_attributes_oldrev : string option;
-  merge_request_attributes_merge_commit_sha : string option;
-  merge_request_attributes_merge_error : string option;
-  merge_request_attributes_merge_params : Gitlab_t.merge_params;
-  merge_request_attributes_merge_status : Gitlab_t.merge_status;
-  merge_request_attributes_merge_user_id : int option;
-  merge_request_attributes_merge_when_pipeline_succeeds : bool;
-  merge_request_attributes_milestone_id : string option;
-  merge_request_attributes_source : Gitlab_t.project_webhook;
-  merge_request_attributes_source_branch : string;
-  merge_request_attributes_source_project_id : int;
-  merge_request_attributes_state_id : int;
-  merge_request_attributes_state : string;
-  merge_request_attributes_target : Gitlab_t.project_webhook;
-  merge_request_attributes_target_branch : string;
-  merge_request_attributes_target_project_id : int;
-  merge_request_attributes_title : string;
-  merge_request_attributes_updated_at : string;
-  merge_request_attributes_updated_by_id : int option;
-  merge_request_attributes_url : string;
-  merge_request_attributes_work_in_progress : bool;
-  merge_request_attributes_total_time_spent : int;
-  merge_request_attributes_time_change : int;
-  merge_request_attributes_time_estimate : int;
-  merge_request_attributes_human_total_time_spent : int option;
-  merge_request_attributes_human_time_change : int option;
-  merge_request_attributes_human_time_estimate : int option;
-}
+    let open Gen in
+    let* merge_request_attributes_action = opt string_printable
+    and* merge_request_attributes_assignee_id = opt pint
+    and* merge_request_attributes_assignee_ids = list pint
+    and* merge_request_attributes_author_id = pint
+    and* merge_request_attributes_created_at = string_printable
+    and* merge_request_attributes_description = string_printable
+    and* merge_request_attributes_head_pipeline_id = opt pint
+    and* merge_request_attributes_id = pint
+    and* merge_request_attributes_iid = pint
+    and* merge_request_attributes_last_edited_at = opt string_printable
+    and* merge_request_attributes_last_edited_by_id = opt string_printable
+    and* merge_request_attributes_last_commit = gen_commit_short_webhook
+    and* merge_request_attributes_oldrev = opt string_printable
+    and* merge_request_attributes_merge_commit_sha = opt string_printable
+    and* merge_request_attributes_merge_error = opt string_printable
+    and* merge_request_attributes_merge_params = gen_merge_params
+    and* merge_request_attributes_merge_status = gen_merge_status
+    and* merge_request_attributes_merge_user_id = opt pint
+    and* merge_request_attributes_merge_when_pipeline_succeeds = bool
+    and* merge_request_attributes_milestone_id = opt string_printable
+    and* merge_request_attributes_source = gen_project
+    and* merge_request_attributes_source_branch = string_printable
+    and* merge_request_attributes_source_project_id = pint
+    and* merge_request_attributes_state_id = pint
+    and* merge_request_attributes_state = string_printable
+    and* merge_request_attributes_target = gen_project
+    and* merge_request_attributes_target_branch = string_printable
+    and* merge_request_attributes_target_project_id = pint
+    and* merge_request_attributes_title = string_printable
+    and* merge_request_attributes_updated_at = string_printable
+    and* merge_request_attributes_updated_by_id = opt pint
+    and* merge_request_attributes_url = string_printable
+    and* merge_request_attributes_work_in_progress = bool
+    and* merge_request_attributes_total_time_spent = pint
+    and* merge_request_attributes_time_change = pint
+    and* merge_request_attributes_time_estimate = pint
+    and* merge_request_attributes_human_total_time_spent = opt pint
+    and* merge_request_attributes_human_time_change = opt pint
+    and* merge_request_attributes_human_time_estimate = opt pint in
+    return
+      {
+        Gitlab_t.merge_request_attributes_action;
+        merge_request_attributes_assignee_id;
+        merge_request_attributes_assignee_ids;
+        merge_request_attributes_author_id;
+        merge_request_attributes_created_at;
+        merge_request_attributes_description;
+        merge_request_attributes_head_pipeline_id;
+        merge_request_attributes_id;
+        merge_request_attributes_iid;
+        merge_request_attributes_last_edited_at;
+        merge_request_attributes_last_edited_by_id;
+        merge_request_attributes_last_commit;
+        merge_request_attributes_oldrev;
+        merge_request_attributes_merge_commit_sha;
+        merge_request_attributes_merge_error;
+        merge_request_attributes_merge_params;
+        merge_request_attributes_merge_status;
+        merge_request_attributes_merge_user_id;
+        merge_request_attributes_merge_when_pipeline_succeeds;
+        merge_request_attributes_milestone_id;
+        merge_request_attributes_source;
+        merge_request_attributes_source_branch;
+        merge_request_attributes_source_project_id;
+        merge_request_attributes_state_id;
+        merge_request_attributes_state;
+        merge_request_attributes_target;
+        merge_request_attributes_target_branch;
+        merge_request_attributes_target_project_id;
+        merge_request_attributes_title;
+        merge_request_attributes_updated_at;
+        merge_request_attributes_updated_by_id;
+        merge_request_attributes_url;
+        merge_request_attributes_work_in_progress;
+        merge_request_attributes_total_time_spent;
+        merge_request_attributes_time_change;
+        merge_request_attributes_time_estimate;
+        merge_request_attributes_human_total_time_spent;
+        merge_request_attributes_human_time_change;
+        merge_request_attributes_human_time_estimate;
+     }
 
   let gen_merge_request_webhook : Gitlab_t.merge_request_webhook Gen.t =
     let open Gen in
