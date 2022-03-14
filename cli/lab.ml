@@ -82,8 +82,10 @@ let exit_with str =
   eprintf "%s" str;
   exit 1
 
+let envs = Gitlab.Env.envs
+
 let user_cmd =
-  let user_list user () =
+  let user_list user =
     let cmd =
       let open Gitlab in
       let open Monad in
@@ -92,12 +94,13 @@ let user_cmd =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  let info = Cmd.info "user-list - Display user name and id" in
-  let term = Term.(const user_list $ CommandLine.owner_id $ const ()) in
+  let doc = "Display user name and id." in
+  let info = Cmd.info ~envs ~doc "user-list" in
+  let term = Term.(const user_list $ CommandLine.owner_id) in
   Cmd.v info term
 
 let user_name_cmd =
-  let user_list name json () =
+  let user_list name json =
     let cmd name =
       let open Gitlab in
       let open Monad in
@@ -113,12 +116,13 @@ let user_name_cmd =
     in
     Lwt_main.run @@ Gitlab.Monad.run (cmd name)
   in
-  let info = Cmd.info "user-name - Display users by name and id" in
-  let term = Term.(const user_list $ CommandLine.owner_name $ CommandLine.json $ const ()) in
+  let doc = "Display users by name and id." in
+  let info = Cmd.info ~envs ~doc "user-name" in
+  let term = Term.(const user_list $ CommandLine.owner_name $ CommandLine.json) in
   Cmd.v info term
 
 let user_projects_cmd =
-  let user_projects_list id () =
+  let user_projects_list id =
     let cmd =
       let open Gitlab in
       let open Monad in
@@ -129,12 +133,13 @@ let user_projects_cmd =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  let info = Cmd.info "user-projects - List public projects owned by the user"  in
-  let term = Term.(const user_projects_list $ CommandLine.owner_id $ const ()) in
+  let doc = "List public projects owned by the user." in
+  let info = Cmd.info ~envs ~doc "user-projects"  in
+  let term = Term.(const user_projects_list $ CommandLine.owner_id) in
   Cmd.v info term
 
 let user_events_cmd config =
-  let user_projects_list id () =
+  let user_projects_list id =
     let cmd =
       let open Gitlab in
       let open Monad in
@@ -144,8 +149,9 @@ let user_events_cmd config =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  let info = Cmd.info "user-events - List all user events" in
-  let term =  Term.(const user_projects_list $ CommandLine.owner_id $ const ()) in
+  let doc = "List all user events." in
+  let info = Cmd.info ~envs ~doc "user-events" in
+  let term =  Term.(const user_projects_list $ CommandLine.owner_id) in
   Cmd.v info term
 
 let merge_requests_cmd config =
@@ -164,12 +170,13 @@ let merge_requests_cmd config =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  let info = Cmd.info "merge-requests - List user's merge requests" in
+  let doc = "List user's merge requests." in
+  let info = Cmd.info ~envs ~doc "merge-requests" in
   let term = Term.(const merge_requests_list $ const ()) in
   Cmd.v info term
 
 let status_checks_cmd config =
-  let status_checks project_id () =
+  let status_checks project_id =
     let cmd =
       let open Gitlab in
       let open Monad in
@@ -185,12 +192,13 @@ let status_checks_cmd config =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  let info = Cmd.info "status-checks - List external status checks" in
-  let term = Term.(const status_checks $ CommandLine.project_id $ const ()) in
+  let doc = "List external status checks." in
+  let info = Cmd.info ~envs ~doc "status-checks" in
+  let term = Term.(const status_checks $ CommandLine.project_id) in
   Cmd.v info term
 
 let project_create_cmd config =
-  let project_create name description () =
+  let project_create name description =
     let cmd =
       let open Gitlab in
       let open Monad in
@@ -200,12 +208,13 @@ let project_create_cmd config =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  let info = Cmd.info "project-create - Creates a new project owned by the authenticated user." in
-  let term = Term.(const project_create $ CommandLine.project_name $ CommandLine.project_description $ const ()) in
+  let doc = "Creates a new project owned by the authenticated user." in
+  let info = Cmd.info ~envs ~doc "project-create" in
+  let term = Term.(const project_create $ CommandLine.project_name $ CommandLine.project_description) in
   Cmd.v info term
 
 let ci_status_cmd config =
-  let ci_status project_id sha _verbose () =
+  let ci_status project_id sha _verbose =
     let cmd =
       let open Gitlab in
       let open Monad in
@@ -224,12 +233,13 @@ let ci_status_cmd config =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  let info = Cmd.info "ci-status - List build status of a commit" in
-  let term = Term.(const ci_status $ CommandLine.project_id $ CommandLine.commit_sha $ CommandLine.verbose $ const ()) in
+  let doc = "List build status of a commit." in
+  let info = Cmd.info ~envs ~doc "ci-status" in
+  let term = Term.(const ci_status $ CommandLine.project_id $ CommandLine.commit_sha $ CommandLine.verbose) in
   Cmd.v info term
 
 let project_branches_cmd config =
-  let project_branches project_id () =
+  let project_branches project_id =
     let cmd =
       let open Gitlab in
       let open Monad in
@@ -243,12 +253,13 @@ let project_branches_cmd config =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  let info = Cmd.info "branch - List branches for a project" in
-  let term = Term.(const project_branches $ CommandLine.project_id $ const ()) in
+  let doc = "List branches for a project." in
+  let info = Cmd.info ~envs ~doc "branch" in
+  let term = Term.(const project_branches $ CommandLine.project_id) in
   Cmd.v info term
 
 let ci_status_set_cmd config =
-  let ci_status project_id sha state () =
+  let ci_status project_id sha state =
     let cmd =
       let open Gitlab in
       let open Monad in
@@ -271,12 +282,13 @@ let ci_status_set_cmd config =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  let info = Cmd.info "set-ci-status - Set or update the build status of a commit" in
-  let term = Term.(const ci_status $ CommandLine.project_id $ CommandLine.commit_sha $ CommandLine.state $ const ()) in
+  let doc = "Set or update the build status of a commit." in
+  let info = Cmd.info ~envs ~doc "set-ci-status" in
+  let term = Term.(const ci_status $ CommandLine.project_id $ CommandLine.commit_sha $ CommandLine.state) in
   Cmd.v info term
 
 let api_cmd config =
-  let api uri_str () =
+  let api uri_str =
     let cmd =
       let open Gitlab in
       let open Monad in
@@ -287,8 +299,9 @@ let api_cmd config =
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
-  let info = Cmd.info "api - Low-level GitLab API request interface" in
-  let term = Term.(const api $ CommandLine.api $ const ()) in
+  let doc = "Low-level GitLab API request interface." in
+  let info = Cmd.info ~doc ~envs "api" in
+  let term = Term.(const api $ CommandLine.api) in
   Cmd.v info term
 
 let cmds =
@@ -305,7 +318,7 @@ let cmds =
         `S "AUTHORS";
         `P "<https://github.com/tmcgilchrist/ocaml-gitlab>";
       ] in
-  let info = Cmd.info "lab" ~version:"0.1" ~doc ~man in
+  let info = Cmd.info ~envs "lab" ~version:"0.1" ~doc ~man in
   let config = Config.from_file in
   Cmd.group ~default info
   [
