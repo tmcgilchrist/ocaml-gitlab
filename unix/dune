@@ -2,4 +2,4 @@
  (name gitlab_unix)
  (public_name gitlab-unix)
  (wrapped false)
- (libraries lwt.unix cohttp-lwt-unix gitlab bytes))
+ (libraries cmdliner lwt.unix cohttp-lwt-unix gitlab bytes))
