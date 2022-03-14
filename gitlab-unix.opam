@@ -49,6 +49,3 @@ build: [
 ]
 dev-repo: "git+https://github.com/tmcgilchrist/ocaml-gitlab.git"
 available: [ arch != "x86_32" & arch != "arm32" & arch != "ppc32" ]
-pin-depends: [
-  ["ppx_deriving_qcheck.dev" "git+https://github.com/c-cube/qcheck#14be7e2c47996bd9fb98faaf147fcbea3addc74b"]
-]
