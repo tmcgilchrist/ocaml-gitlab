@@ -31,6 +31,7 @@ JavaScript via [js_of_ocaml](http://ocsigen.org/js_of_ocaml)."))
  (depends
   (ocaml (>= 4.08.0))
   (gitlab (= :version))
+  (cmdliner (>= 1.1.0))
   (cohttp (>= 4.0))
   (cohttp-lwt-unix (>= 4.0))
   (tls (>= 0.11.0))
