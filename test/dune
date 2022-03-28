@@ -3,5 +3,4 @@
  (package gitlab-unix)
  (libraries gitlab-unix alcotest)
  (modules test)
- (deps
-  (source_tree cases)))
+ (deps (source_tree cases)))

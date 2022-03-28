@@ -495,7 +495,7 @@ type issue = {
   iid: int;
   last_edited_at: string nullable;
   last_edited_by_id: int nullable;
-  milestone_id: string nullable;
+  milestone_id: int nullable;
   moved_to_id: string nullable;
   duplicated_to_id: int nullable;
   project_id: int;
@@ -567,7 +567,7 @@ type merge_request_attributes = {
   merge_status: merge_status;
   merge_user_id: int nullable;
   merge_when_pipeline_succeeds: bool;
-  milestone_id: string nullable;
+  milestone_id: int nullable;
   source: project_webhook;
   source_branch: string;
   source_project_id: int;
@@ -697,7 +697,7 @@ type issue_attributes = {
   labels: string list;
   last_edited_at: string nullable;
   last_edited_by_id: int nullable;
-  milestone_id: string nullable;
+  milestone_id: int nullable;
   moved_to_id: int nullable;
   project_id: int;
   relative_position: int;
