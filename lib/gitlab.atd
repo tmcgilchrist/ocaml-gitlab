@@ -494,7 +494,7 @@ type issue = {
   id: int;
   iid: int;
   last_edited_at: string nullable;
-  last_edited_by_id: string nullable;
+  last_edited_by_id: int nullable;
   milestone_id: string nullable;
   moved_to_id: string nullable;
   duplicated_to_id: int nullable;
@@ -558,7 +558,7 @@ type merge_request_attributes = {
   id: int;
   iid: int;
   last_edited_at: string nullable;
-  last_edited_by_id: string nullable;
+  last_edited_by_id: int nullable;
   last_commit: commit_short_webhook;
   ?oldrev: string option;
   merge_commit_sha: string nullable;
@@ -596,14 +596,14 @@ type merge_params =  {
 type label = {
   id: int;
   title: string;
-  colour: string;
+  color: string;
   project_id: int;
   created_at: string;
   updated_at: string;
   template: bool;
-  description: string;
+  description: string nullable;
   label_type <json name="type">: string;
-  group_id: int;
+  group_id: int nullable;
 } <ocaml field_prefix="label_">
 
 type updated_by_id = {
@@ -696,7 +696,7 @@ type issue_attributes = {
   iid: int;
   labels: string list;
   last_edited_at: string nullable;
-  last_edited_by_id: string nullable;
+  last_edited_by_id: int nullable;
   milestone_id: string nullable;
   moved_to_id: int nullable;
   project_id: int;
