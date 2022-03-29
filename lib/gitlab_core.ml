@@ -123,9 +123,14 @@ struct
   module URI = struct
     let api = Env.gitlab_uri
 
-    let authorize = Uri.of_string (Printf.sprintf "%s/oauth/authorize" api)
+    let replace input output =
+      Str.global_replace (Str.regexp_string input) output
 
-    let token = Uri.of_string (Printf.sprintf "%s/oauth/token" api)
+    let authorize =
+      (* IF we're given an API URL replace the api v4 part. *)
+      Uri.of_string (Printf.sprintf "%s/oauth/authorize" (replace "api/v4" "" api))
+
+    let token = Uri.of_string (Printf.sprintf "%s/oauth/token" (replace "api/v4" "" api))
 
     let events = Uri.of_string (Printf.sprintf "%s/events" api)
 
@@ -436,6 +441,7 @@ struct
           "code", code;
         ]
       in
+      log "Requesting %s" (Uri.to_string uri);
       CL.post uri >>= fun (_res, body) ->
       CLB.to_string body >>= fun body ->
       try
@@ -447,7 +453,9 @@ struct
           }
         in
         return (Some (OAuthToken oauth))
-      with _ -> return None
+      with exn -> 
+        log "Token.of_code body: %s exn: %s" body (Printexc.to_string exn);
+        return None
 
     let of_string s = AccessToken s
 
