@@ -345,7 +345,7 @@ type merge_request = {
   has_conflicts: bool;
   assignees: user_short list;
   reviewers: user_short list;
-  source_project_id: int;
+  source_project_id: int nullable;
   target_project_id: int;
   labels: string list;
   draft: bool;
