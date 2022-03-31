@@ -670,6 +670,7 @@ module type Gitlab = sig
       ?author_username:string ->
       ?my_reaction:string ->
       ?scope:Gitlab_t.merge_request_scope ->
+      ?updated_after:string ->
       id:int ->
       unit ->
       Gitlab_t.merge_request Stream.t
