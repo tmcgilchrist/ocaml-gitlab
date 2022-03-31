@@ -1438,7 +1438,7 @@ struct
       API.get ~token ~uri ~fail_handlers (fun body -> return (Some body))
 
     let merge_requests ?token ?state ?milestone ?labels ?author ?author_username
-        ?my_reaction ?scope ~id () =
+        ?my_reaction ?scope ?updated_after ~id () =
       let uri =
         URI.project_merge_requests ~id
         |> state_param state |> milestone_param milestone |> labels_param labels
@@ -1446,6 +1446,7 @@ struct
         |> author_username_param author_username
         |> my_reaction_param my_reaction
         |> scope_param scope
+        |> updated_after_param updated_after
       in
       API.get_stream ?token ~uri (fun body ->
           return (Gitlab_j.merge_requests_of_string body))
