@@ -203,6 +203,14 @@ struct
       Uri.of_string
         (Printf.sprintf "%s/projects/%i/repository/branches" api project_id)
 
+    let project_issues project_id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/issues" api project_id)  
+
+    let project_issue_id project_id issue_id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/issues/%i" api project_id issue_id)  
+
     let project_merge_requests ~id =
       Uri.of_string (Printf.sprintf "%s/projects/%i/merge_requests" api id)
 
@@ -1477,6 +1485,21 @@ struct
         let body = Gitlab_j.string_of_new_token new_token in
         API.post ~token ~uri ~body ~expected_code:`Created (fun s ->
             Lwt.return (Gitlab_j.project_access_token_of_string s))
+    end
+
+    module Issue = struct
+      let list ?token ~project_id () =
+        let uri = URI.project_issues project_id in
+        API.get_stream ?token ~uri (fun body -> return (Gitlab_j.issues_of_string body))
+
+      let by_id ?token ~project_id ~issue_id () =
+        let uri = URI.project_issue_id project_id issue_id in
+        API.get ?token ~uri (fun body -> return (Gitlab_j.issue_of_string body))
+
+      let create ~token ~project_id create_issue () =
+        let uri = URI.project_issues project_id in
+        let body = Gitlab_j.string_of_create_issue create_issue in
+        API.post ~token ~uri ~body ~expected_code: `Created (fun s -> Lwt.return (Gitlab_j.issue_of_string s))
     end
   end
 

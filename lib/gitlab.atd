@@ -26,6 +26,11 @@ type merge_request_scope = [
   | All <json name="all">
 ]
 
+(* Dates as YYYY-MM-DD *)
+type date = string
+
+type date_time_iso8601 = string
+
 type user = {
   id: int <ocaml repr="int64">;
   username: string;
@@ -483,6 +488,34 @@ type author = {
   email: string;
 } <ocaml field_prefix="author_">
 
+type issue_type = [
+ | Issue <json name="issue">
+ | Incident <json name="incident">
+ | TestCase <json name="test_case">
+]
+
+type create_issue = {
+  ?assignee_id: int option;
+  ?assignee_ids: int option;
+  ?confidential: bool option;
+  ?created_at: date_time_iso8601 option;
+  ?description: string option;
+  ?discussion_to_resolve: string option;
+  ?due_date: date option;
+  ?epic_id: int option;
+  ?epic_iid: int option;
+  id: int;
+  ?iid: int option;
+  ?issue_type: issue_type option;
+  ?labels: string list option;
+  ?merge_request_to_resolve_discussions_of: int option;
+  ?milestone_id: int option;
+  title: string;
+  ?weight: int option;
+} <ocaml field_prefix="create_issue_">
+
+type issues = issue list
+
 type issue = {
   author_id: int;
   closed_at: string nullable;
@@ -517,7 +550,7 @@ type issue = {
   labels: string list;
   state: state;
   severity: string;
-} <ocmal field_prefix="issue_">
+} <ocaml field_prefix="issue_">
 
 type commit_short_webhook = {
   id: string;
@@ -1045,5 +1078,3 @@ type new_milestone = {
   ?due_date: string nullable;
   ?start_date: string nullable;
 }
-
-

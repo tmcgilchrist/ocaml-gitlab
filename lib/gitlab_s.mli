@@ -932,6 +932,37 @@ module type Gitlab = sig
       (** Create a project access token for [~project_id]. See {{:https://docs.gitlab.com/ee/api/resource_access_tokens.html#create-a-project-access-token}Create a project access token}.
        *)
     end
+
+    module Issue : sig
+      val list :
+        ?token:Token.t ->
+        project_id:int ->
+        unit ->
+        Gitlab_t.issue Stream.t
+      (** [list ?token ~project_id] Request a list of a project’s issues.
+         See {{:https://docs.gitlab.com/ee/api/issues.html#list-project-issues}List project issues}.
+        *)    
+
+      val by_id :
+        ?token:Token.t ->
+        project_id:int ->
+        issue_id:int ->
+        unit ->
+        Gitlab_t.issue Response.t Monad.t
+      (** [by_id ?token ~project_id ~issue_id] Get a single project issue.
+        See {{:https://docs.gitlab.com/ee/api/issues.html#single-project-issue}Single project issue}.
+        *)    
+
+      val create :
+        token:Token.t ->
+        project_id:int ->
+        Gitlab_t.create_issue ->
+        unit ->
+        Gitlab_t.issue Response.t Monad.t
+      (** Creates a new issue.
+          See {{:https://docs.gitlab.com/ee/api/issues.html#new-issue}New issue}.
+        *)    
+    end
   end
 
   (** The [Group] module provides access to {{:https://docs.gitlab.com/ee/api/groups.html}Group API}. *)
