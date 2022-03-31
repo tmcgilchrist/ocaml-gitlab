@@ -2,7 +2,7 @@
  (libraries cohttp-lwt-unix gitlab-unix cmdliner otoml)
  (package lab)
  (public_names lab)
- (names lab))
+ (names main))
 
 (mdx
  (files lab.md)

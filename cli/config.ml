@@ -1,4 +1,4 @@
-type config = { token : Gitlab.Token.t; user : string }
+type t = { token : Gitlab.Token.t; user : string }
 
 exception Config of string
 
