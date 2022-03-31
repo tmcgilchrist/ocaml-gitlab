@@ -69,3 +69,4 @@ This library installs the JavaScript version, which uses [js_of_ocaml](http://oc
  (synopsis "GitLab cli")
  (description "Experimental GitLab cli in the style of GitHub's gh and hub commands."))
 
+(using menhir 2.1)

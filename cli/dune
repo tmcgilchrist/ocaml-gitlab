@@ -1,8 +1,19 @@
-(executables
+(executable
  (libraries cohttp-lwt-unix gitlab-unix cmdliner otoml)
  (package lab)
- (public_names lab)
- (names main))
+ (public_name lab)
+ (modules main)
+ (name main))
+
+(executable
+ (name test_gitconfig)
+ (modules_without_implementation gitconfig_types)
+ (modules gitconfig_lexer gitconfig_types gitconfig_parser test_gitconfig))
+
+(ocamllex gitconfig_lexer)
+
+(menhir
+ (modules gitconfig_parser))
 
 (mdx
  (files lab.md)
