@@ -5,18 +5,6 @@
  (modules main api config issue merge_request project user)
  (name main))
 
-; Parser for Git config files
-(library
-  (name gitconfig)
-  (package lab)
-  (modules gitconfig_lexer gitconfig_types gitconfig_parser)
-  (modules_without_implementation gitconfig_types))
-
-(ocamllex gitconfig_lexer)
-
-(menhir
- (modules gitconfig_parser))
-
 (mdx
  (files lab.md)
  (package lab)

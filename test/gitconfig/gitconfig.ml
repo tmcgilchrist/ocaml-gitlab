@@ -1,5 +1,3 @@
-open Gitconfig
-
 let print_config fmt config =
   let open Format in
   let rec print_bindings fmt = function
@@ -31,10 +29,10 @@ let () =
 |}
   in
   try
-    let config = Gitconfig_parser.config Gitconfig_lexer.token lexbuf in
+    let config = Gitconfig.Parser.config Gitconfig.Lexer.token lexbuf in
     print_config Format.std_formatter config
   with
-  | Gitconfig_lexer.Error msg ->
+  | Gitconfig.Lexer.Error msg ->
       Printf.fprintf stderr "%s%!" msg
-  | Gitconfig_parser.Error ->
+  | Gitconfig.Parser.Error ->
       Printf.fprintf stderr "At offset %d: syntax error.\n%!" (Lexing.lexeme_start lexbuf)

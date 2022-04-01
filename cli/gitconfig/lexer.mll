@@ -1,5 +1,5 @@
 {
-open Gitconfig_parser
+open Parser
 
 exception Error of string
 }
