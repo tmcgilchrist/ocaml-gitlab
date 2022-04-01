@@ -7,7 +7,7 @@
 
 %start config
 
-%type <Gitconfig_types.t> config
+%type <Gitconfig_types.config> config
 %type <Gitconfig_types.binding> key_value
 
 %%
