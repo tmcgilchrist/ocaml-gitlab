@@ -105,12 +105,15 @@ type statistics = {
 
 type links = {
   self: string;
-  issues: string;
-  merge_requests: string;
-  repo_branches: string;
-  labels: string;
-  events: string;
-  members: string;
+  ?notes: string option;
+  ?award_emoji: string option;
+  ?project: string option;
+  ?issues: string option;
+  ?merge_requests: string option;
+  ?repo_branches: string option;
+  ?labels: string option;
+  ?events: string option;
+  ?members: string option;
 } <ocaml field_prefix="links_">
 
 type visibility = [
@@ -518,6 +521,45 @@ type create_issue = {
 type issues = issue list
 
 type issue = {
+  id: int;
+  iid: int;
+  project_id: int;
+  title: string;
+  description: string;
+  state: state;
+  created_at: date_time;
+  updated_at: date_time;
+  closed_at: string nullable;
+  closed_by: string nullable;
+  labels: string list;
+  milestone: string nullable;
+  assignees: int list;
+  author: user_short;
+  type_ <json name="type">: string;
+  assignee: string nullable;
+  user_notes_count: int;
+  merge_requests_count: int;
+  upvotes: int;
+  downvotes: int;
+  due_date: date nullable;
+  confidential: bool;
+  discussion_locked: string nullable;
+  issue_type: issue_type;
+  web_url: string;
+  time_stats: time_stats;
+  task_completion_status: task_completion_status;
+  weight: int nullable;
+  blocking_issues_count: int;
+  has_tasks: bool;
+  links <json name="_links">: links;
+  references: references;
+  severity: string;
+  moved_to_id: string nullable;
+  service_desk_reply_to: string nullable;
+  health_status: string nullable;
+} <ocaml field_prefix="issue_">
+
+type note_issue = {
   author_id: int;
   closed_at: string nullable;
   confidential: bool;
@@ -551,7 +593,7 @@ type issue = {
   labels: string list;
   state: state;
   severity: string;
-} <ocaml field_prefix="issue_">
+} <ocaml field_prefix="note_issue_">
 
 type commit_short_webhook = {
   id: string;
@@ -793,7 +835,7 @@ type note_webhook = {
   attributes <json name="object_attributes">: note_attributes;
   repository: repository;
   project_id: int;
-  issue: issue;
+  issue: note_issue;
 } <ocaml field_prefix="note_webhook_">
 
 type wiki = {
