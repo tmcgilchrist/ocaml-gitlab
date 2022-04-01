@@ -19,7 +19,7 @@
   (atdgen (>= 2.0.0))
   (yojson (>= 1.7.0))
   ezjsonm
-  iso8601
+  ISO8601
   stringext)
  (synopsis "GitLab APIv4 OCaml library")
  (description "This library provides an OCaml interface to the

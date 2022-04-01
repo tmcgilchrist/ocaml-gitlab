@@ -30,7 +30,7 @@ type merge_request_scope = [
 type date = string wrap <ocaml module="Gitlab_json.Date">
 
 (* ISO8601 Date Times *)
-type date_time_iso8601 = string wrap <ocaml module="Gitlab_json.DateTime">
+type date_time = string wrap <ocaml module="Gitlab_json.DateTime">
 
 type user = {
   id: int <ocaml repr="int64">;
@@ -39,7 +39,7 @@ type user = {
   state: string;
   avatar_url: string;
   web_url: string;
-  created_at: string;
+  created_at: date_time;
   ?bio: string option;
   ?bio_html: string option;
   ?location: string option;
@@ -72,7 +72,7 @@ type users = user_short list
 type owner = {
   id: int;
   name: string;
-  created_at: string;
+  created_at: date_time;
 } <ocaml field_prefix="owner_">
 
 type namespace = {
@@ -126,7 +126,7 @@ type project_short = {
   name_with_namespace: string;
   path: string;
   path_with_namespace: string;
-  created_at: string;
+  created_at: date_time;
   default_branch: string;
   tag_list: string list nullable;
   topics: string list nullable;
@@ -137,7 +137,7 @@ type project_short = {
   avatar_url: string nullable;
   forks_count: int;
   star_count: int;
-  last_activity_at: string;
+  last_activity_at: date_time;
   namespace: namespace;
 } <ocaml field_prefix="project_short_">
 
@@ -182,8 +182,8 @@ type project_full = {
   keep_latest_artifact: bool;
   lfs_enabled: bool;
   links <json name="_links">: links;
-  marked_for_deletion_at: string nullable;
-  marked_for_deletion_on: string nullable;
+  marked_for_deletion_at: date nullable;
+  marked_for_deletion_on: date nullable;
   merge_method: merge_method;
   merge_pipelines_enabled: bool;
   merge_requests_access_level: string;
@@ -242,7 +242,7 @@ type container_expiration_policy = {
   keep_n: int;
   name_regex: string;
   name_regex_keep: string nullable;
-  next_run_at: string;
+  next_run_at: date_time;
   older_than: string;
 } <ocaml field_prefix="container_expiration_policy_">
 
@@ -275,10 +275,10 @@ type milestone = {
   title: string;
   description: string;
   state: milestone_state;
-  created_at: string;
-  updated_at: string;
-  due_date: string nullable;
-  start_date: string nullable;
+  created_at: date_time;
+  updated_at: date_time;
+  due_date: date nullable;
+  start_date: date nullable;
   expired: bool nullable;
   web_url: string;
 } <ocaml field_prefix="milestone_">
@@ -314,8 +314,8 @@ type merge_request = {
   merged_at: string nullable;
   closed_by: user_short nullable;
   closed_at: string nullable;
-  created_at: string;
-  updated_at: string;
+  created_at: date_time;
+  updated_at: date_time;
   target_branch: string;
   source_branch: string;
   upvotes: int;
@@ -361,10 +361,10 @@ type commit = {
   author_name: string;
   author_email: string;
   authored_date: string;
-  committed_date: string;
+  committed_date: date_time;
   committer_email: string;
   committer_name: string;
-  created_at: string;
+  created_at: date_time;
   message: string;
   parent_ids: string list nullable;
   (*trailers: string nullable;*)
@@ -388,9 +388,9 @@ type commit_status = {
   name: string;
   target_url: string nullable;
   description: string nullable;
-  created_at: string;
-  started_at: string nullable;
-  finished_at: string nullable;
+  created_at: date_time;
+  started_at: date_time nullable;
+  finished_at: date_time nullable;
   allow_failure: bool;
   coverage: string nullable;
   author: user_short;
@@ -413,7 +413,7 @@ type line_type = [
 
 type commit_commented = {
   author: user_short;
-  created_at: string;
+  created_at: date_time;
   line_type: line_type;
   path: string;
   line: int;
@@ -437,8 +437,8 @@ type changes = {
   project_id: int;
   title: string;
   state: string; (* TODO Should be an enum *)
-  created_at: string;
-  updated_at: string;
+  created_at: date_time;
+  updated_at: date_time;
   target_branch: string;
   source_branch: string;
   upvotes: int;
@@ -499,7 +499,7 @@ type create_issue = {
   ?assignee_id: int option;
   ?assignee_ids: int option;
   ?confidential: bool option;
-  ?created_at: date_time_iso8601 option;
+  ?created_at: date_time option;
   ?description: string option;
   ?discussion_to_resolve: string option;
   ?due_date: date option;
@@ -521,10 +521,10 @@ type issue = {
   author_id: int;
   closed_at: string nullable;
   confidential: bool;
-  created_at: string;
+  created_at: date_time;
   description: string;
   discussion_locked: string nullable;
-  due_date: string nullable;
+  due_date: date nullable;
   id: int;
   iid: int;
   last_edited_at: string nullable;
@@ -537,7 +537,7 @@ type issue = {
   state_id: int;
   time_estimate: int;
   title: string;
-  updated_at: string;
+  updated_at: date_time;
   updated_by_id: string nullable;
   weight: string nullable;
   url: string;
@@ -586,7 +586,7 @@ type merge_request_attributes = {
   assignee_id: int nullable;
   assignee_ids: int list;
   author_id: int;
-  created_at: string;
+  created_at: date_time;
   description: string;
   head_pipeline_id: int nullable;
   id: int;
@@ -611,7 +611,7 @@ type merge_request_attributes = {
   target_branch: string;
   target_project_id: int;
   title: string;
-  updated_at: string;
+  updated_at: date_time;
   updated_by_id: int nullable;
   url: string;
   work_in_progress: bool;
@@ -632,8 +632,8 @@ type label = {
   title: string;
   color: string;
   project_id: int;
-  created_at: string;
-  updated_at: string;
+  created_at: date_time;
+  updated_at: date_time;
   template: bool;
   description: string nullable;
   label_type <json name="type">: string;
@@ -718,7 +718,7 @@ type issue_attributes = {
   author_id: int;
   closed_at: string nullable;
   confidential: bool;
-  created_at: string;
+  created_at: date_time;
   description: string;
   discussion_locked: string nullable;
   due_date: string nullable;
@@ -742,7 +742,7 @@ type issue_attributes = {
   time_estimate: int;
   title: string;
   total_time_spent: int;
-  updated_at: string;
+  updated_at: date_time;
   updated_by_id: int nullable;
   url: string;
   weight: int nullable;
@@ -764,7 +764,7 @@ type note_attributes = {
   author_id: int;
   change_position: string nullable;
   commit_id: string nullable;
-  created_at: string;
+  created_at: date_time;
   discussion_id: string;
   id: int;
   line_code: int nullable;
@@ -780,7 +780,7 @@ type note_attributes = {
   st_diff: string nullable;
   system: bool;
   note_attribute_type <json name="type">: string nullable;
-  updated_at: string;
+  updated_at: date_time;
   updated_by_id: string nullable;
   description: string;
   url: string;
@@ -834,7 +834,7 @@ type assets = {
 
 type release_webhook = {
   id: int;
-  created_at: string;
+  created_at: date_time;
   description: string;
   name: string;
   released_at: string;
@@ -876,7 +876,7 @@ type event = {
   target_type: event_target_type nullable;
   author_id: int;
   target_title: string nullable;
-  created_at: string;
+  created_at: date_time;
 
   ?author: user_short nullable;
   ?push_data: push_data nullable;
@@ -944,8 +944,8 @@ type note = {
   body: string;
   attachment: string nullable;
   author: user_short;
-  created_at: string;
-  updated_at: string;
+  created_at: date_time;
+  updated_at: date_time;
   system: bool;
   noteable_id: int;
   noteable_type: noteable_type;
@@ -958,8 +958,8 @@ type branch = {
   id: int;
   project_id: int;
   name: string;
-  created_at: string;
-  updated_at: string;
+  created_at: date_time;
+  updated_at: date_time;
   code_owner_approval_required: bool;
 } <ocaml field_prefix="branch_">
 
@@ -1024,7 +1024,7 @@ type personal_access_token = {
   id: int;
   name: string;
   revoked: bool;
-  created_at: string;
+  created_at: date_time;
   scopes: scope list;
   user_id: int;
   active: bool;
@@ -1037,7 +1037,7 @@ type project_access_token = {
   id: int;
   name: string;
   revoked: bool;
-  created_at: string;
+  created_at: date_time;
   scopes: scope list;
   user_id: int;
   active: bool;
