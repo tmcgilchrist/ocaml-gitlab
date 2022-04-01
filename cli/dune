@@ -5,10 +5,12 @@
  (modules main api config issue merge_request project user)
  (name main))
 
-(executable
- (name test_gitconfig)
- (modules_without_implementation gitconfig_types)
- (modules gitconfig_lexer gitconfig_types gitconfig_parser test_gitconfig))
+; Parser for Git config files
+(library
+  (name gitconfig)
+  (package lab)
+  (modules gitconfig_lexer gitconfig_types gitconfig_parser)
+  (modules_without_implementation gitconfig_types))
 
 (ocamllex gitconfig_lexer)
 

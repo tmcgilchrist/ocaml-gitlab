@@ -1,3 +1,5 @@
+open Gitconfig
+
 let print_config fmt config =
   let open Format in
   let rec print_bindings fmt = function
@@ -12,7 +14,22 @@ let print_config fmt config =
 
 
 let () =
-  let lexbuf = Lexing.from_channel stdin in
+  let lexbuf = Lexing.from_string {|[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[remote "origin"]
+	url = git@github.com:tmcgilchrist/ocaml-gitlab
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+[branch "parse_gitconfig"]
+	remote = origin
+	merge = refs/heads/parse_gitconfig
+|}
+  in
   try
     let config = Gitconfig_parser.config Gitconfig_lexer.token lexbuf in
     print_config Format.std_formatter config
