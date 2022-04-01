@@ -1,7 +1,8 @@
 (library
   (name gitconfig)
   (package lab)
-  (modules types lexer parser)
+  (modules types lexer parser resolve)
+  (libraries str)
   (modules_without_implementation types))
 
 (ocamllex lexer)
