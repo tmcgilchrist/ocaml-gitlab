@@ -165,6 +165,15 @@ module Gitlab_j_milestones : TestableJson = struct
   let to_json v = Yojson.Basic.from_string (Gitlab_j.string_of_milestones v)
 end
 
+module Gitlab_j_issues : TestableJson = struct
+  type t = Gitlab_j.issues
+
+  let name = "issues"
+
+  let of_string = Gitlab_j.issues_of_string
+
+  let to_json v = Yojson.Basic.from_string (Gitlab_j.string_of_issues v)
+end
 (* instances under test *)
 module E = Make (Gitlab_j_events)
 module U = Make (Gitlab_j_user)
@@ -177,21 +186,23 @@ module CS = Make (Gitlab_j_commit_statuses)
 module BF = Make (Gitlab_j_branches_full)
 module M = Make (Gitlab_j_milestones)
 module C = Make (Gitlab_j_commits)
+module I = Make (Gitlab_j_issues)
 
 (* Run it *)
 let () =
   let open Alcotest in
   run "GitLab"
     [
-      ("commits", C.test ());
+      ("branches", BF.test ());
       ("commit_statuses", CS.test ());
+      ("commits", C.test ());
       ("events", E.test ());
+      ("issues", I.test ());
       ("merge_requests", MR.test ());
+      ("milestones", M.test ());
       ("project_short", PS.test ());
       ("projects", P.test ());
       ("user", U.test ());
       ("user_short", US.test ());
       ("webhooks", WH.test ());
-      ("branches", BF.test ());
-      ("milestones", M.test ());
     ]
