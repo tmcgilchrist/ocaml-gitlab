@@ -141,6 +141,7 @@ struct
       Uri.of_string (Printf.sprintf "%s/users/%s/projects" api id)
 
     let merge_requests = Uri.of_string (Printf.sprintf "%s/merge_requests" api)
+    let issues = Uri.of_string (Printf.sprintf "%s/issues" api)
 
     let personal_access_tokens =
       Uri.of_string (Printf.sprintf "%s/personal_access_tokens" api)
@@ -250,6 +251,9 @@ struct
     let group_milestone ~group_id ~milestone_id =
       Uri.of_string
         (Printf.sprintf "%s/group/%i/milestones/%i" api group_id milestone_id)
+
+    let group_issues ~group_id =
+      Uri.of_string (Printf.sprintf "%s/group/%i/issues" api group_id)
 
     let external_status_checks ~id =
       Uri.of_string
@@ -1003,6 +1007,17 @@ struct
     | Some author_username ->
         Uri.add_query_param' uri ("author_username", author_username)
 
+  let assignee_id_param assignee_id uri =
+    match assignee_id with
+    | None -> uri
+    | Some assignee_id -> Uri.add_query_param' uri ("assignee_id", assignee_id)
+
+  let assignee_username_param assignee_username uri =
+    match assignee_username with
+    | None -> uri
+    | Some assignee_username ->
+        Uri.add_query_param' uri ("assignee_username", assignee_username)
+
   let my_reaction_param my_reaction uri =
     match my_reaction with
     | None -> uri
@@ -1181,6 +1196,19 @@ struct
       in
       API.get_stream ~token ~uri (fun body ->
           return (Gitlab_j.merge_requests_of_string body))
+
+    let issues ~token ?state ?assignee ?assignee_username ?milestone ?labels
+        ?author ?author_username ?scope () =
+      let uri =
+        URI.issues |> state_param state |> milestone_param milestone
+        |> labels_param labels |> author_id_param author
+        |> author_username_param author_username
+        |> assignee_id_param assignee
+        |> assignee_username_param assignee_username
+        |> scope_param scope
+      in
+      API.get_stream ~token ~uri (fun body ->
+          return (Gitlab_j.issues_of_string body))
 
     let events ~token ~id ?action ?target_type () =
       let uri =
@@ -1509,6 +1537,22 @@ struct
       in
       API.get_stream ?token ~uri (fun body ->
           return (Gitlab_j.merge_requests_of_string body))
+
+    module Issue = struct
+      let issues ~token ~group_id ?state ?assignee ?assignee_username ?milestone
+          ?labels ?author ?author_username ?scope () =
+        let uri =
+          URI.group_issues ~group_id |> state_param state
+          |> milestone_param milestone |> labels_param labels
+          |> author_id_param author
+          |> author_username_param author_username
+          |> assignee_id_param assignee
+          |> assignee_username_param assignee_username
+          |> scope_param scope
+        in
+        API.get_stream ~token ~uri (fun body ->
+            return (Gitlab_j.issues_of_string body))
+    end
 
     module Milestone = struct
       let milestones ?token ~group_id ?state ?title ?search () =
