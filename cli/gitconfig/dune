@@ -1,0 +1,10 @@
+(library
+  (name gitconfig)
+  (package lab)
+  (modules types lexer parser)
+  (modules_without_implementation types))
+
+(ocamllex lexer)
+
+(menhir
+ (modules parser))

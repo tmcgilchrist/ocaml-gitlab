@@ -1,14 +1,14 @@
 %{
 %}
 
-%token <Gitconfig_types.binding> KEYVAL
+%token <Types.binding> KEYVAL
 %token <string> SECTIONHEADER
 %token EOF
 
 %start config
 
-%type <Gitconfig_types.config> config
-%type <Gitconfig_types.binding> key_value
+%type <Types.config> config
+%type <Types.binding> key_value
 
 %%
 config:
