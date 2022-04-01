@@ -2,7 +2,7 @@
  (libraries cohttp-lwt-unix gitlab-unix cmdliner otoml)
  (package lab)
  (public_name lab)
- (modules main)
+ (modules main api config issue merge_request project user)
  (name main))
 
 (executable
