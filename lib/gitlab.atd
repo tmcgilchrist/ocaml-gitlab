@@ -530,13 +530,13 @@ type issue = {
   created_at: date_time;
   updated_at: date_time;
   closed_at: string nullable;
-  closed_by: string nullable;
+  closed_by: user_short nullable;
   labels: string list;
   milestone: string nullable;
-  assignees: int list;
+  assignees: user_short list;
   author: user_short;
   type_ <json name="type">: string;
-  assignee: string nullable;
+  assignee: user_short nullable;
   user_notes_count: int;
   merge_requests_count: int;
   upvotes: int;
@@ -548,7 +548,7 @@ type issue = {
   web_url: string;
   time_stats: time_stats;
   task_completion_status: task_completion_status;
-  weight: int nullable;
+  ?weight: int option;
   blocking_issues_count: int;
   has_tasks: bool;
   links <json name="_links">: links;
@@ -556,7 +556,7 @@ type issue = {
   severity: string;
   moved_to_id: string nullable;
   service_desk_reply_to: string nullable;
-  health_status: string nullable;
+  ?health_status: string option;
 } <ocaml field_prefix="issue_">
 
 type note_issue = {
