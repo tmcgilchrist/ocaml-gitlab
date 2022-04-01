@@ -21,4 +21,4 @@
  (public_name gitlab)
  (wrapped false)
  (modules gitlab_s gitlab_core gitlab_j gitlab_t gitlab_json)
- (libraries cohttp-lwt uri yojson atdgen str))
+ (libraries cohttp-lwt ISO8601 ezjsonm uri yojson atdgen str))

@@ -27,9 +27,10 @@ type merge_request_scope = [
 ]
 
 (* Dates as YYYY-MM-DD *)
-type date = string
+type date = string wrap <ocaml module="Gitlab_json.Date">
 
-type date_time_iso8601 = string
+(* ISO8601 Date Times *)
+type date_time_iso8601 = string wrap <ocaml module="Gitlab_json.DateTime">
 
 type user = {
   id: int <ocaml repr="int64">;
