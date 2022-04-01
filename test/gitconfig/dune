@@ -1,0 +1,5 @@
+(test
+ (name gitconfig)
+ (package lab)
+ (libraries gitconfig)
+ (modules gitconfig))
