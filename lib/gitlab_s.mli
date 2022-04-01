@@ -1,6 +1,5 @@
 module type Gitlab = sig
   type rate_limit = { limit : int; remaining : int; reset : float }
-
   type rates = { core : rate_limit option }
 
   (** Functions corresponding to direct API requests return
@@ -91,11 +90,8 @@ module type Gitlab = sig
         values bound before it. *)
 
     val ( let+ ) : 'a t -> ('a -> 'b) -> 'b t
-
     val ( and+ ) : 'a t -> 'b t -> ('a * 'b) t
-
     val ( let* ) : 'a t -> ('a -> 'b t) -> 'b t
-
     val ( and* ) : 'a t -> 'b t -> ('a * 'b) t
   end
 
@@ -935,13 +931,10 @@ module type Gitlab = sig
 
     module Issue : sig
       val list :
-        ?token:Token.t ->
-        project_id:int ->
-        unit ->
-        Gitlab_t.issue Stream.t
+        ?token:Token.t -> project_id:int -> unit -> Gitlab_t.issue Stream.t
       (** [list ?token ~project_id] Request a list of a project’s issues.
          See {{:https://docs.gitlab.com/ee/api/issues.html#list-project-issues}List project issues}.
-        *)    
+        *)
 
       val by_id :
         ?token:Token.t ->
@@ -951,7 +944,7 @@ module type Gitlab = sig
         Gitlab_t.issue Response.t Monad.t
       (** [by_id ?token ~project_id ~issue_id] Get a single project issue.
         See {{:https://docs.gitlab.com/ee/api/issues.html#single-project-issue}Single project issue}.
-        *)    
+        *)
 
       val create :
         token:Token.t ->
@@ -961,7 +954,7 @@ module type Gitlab = sig
         Gitlab_t.issue Response.t Monad.t
       (** Creates a new issue.
           See {{:https://docs.gitlab.com/ee/api/issues.html#new-issue}New issue}.
-        *)    
+        *)
     end
   end
 

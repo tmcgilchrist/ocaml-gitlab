@@ -16,11 +16,9 @@ struct
       fmt
 
   type rate_limit = { limit : int; remaining : int; reset : float }
-
   type rates = { core : rate_limit option }
 
   let empty_rates = { core = None }
-
   let rate_table : (string option, rates) Hashtbl.t = Hashtbl.create 4
 
   let string_of_message message =
@@ -43,11 +41,9 @@ struct
 
   module Response = struct
     type redirect = Temporary of Uri.t | Permanent of Uri.t
-
     type 'a t = < value : 'a ; redirects : redirect list >
 
     let value r = r#value
-
     let redirects r = r#redirects
 
     let rec final_resource = function
@@ -68,7 +64,6 @@ struct
      fun ?(redirects = []) v ->
       object
         method value = v
-
         method redirects = redirects
       end
   end
@@ -128,16 +123,15 @@ struct
 
     let authorize =
       (* IF we're given an API URL replace the api v4 part. *)
-      Uri.of_string (Printf.sprintf "%s/oauth/authorize" (replace "api/v4" "" api))
+      Uri.of_string
+        (Printf.sprintf "%s/oauth/authorize" (replace "api/v4" "" api))
 
-    let token = Uri.of_string (Printf.sprintf "%s/oauth/token" (replace "api/v4" "" api))
+    let token =
+      Uri.of_string (Printf.sprintf "%s/oauth/token" (replace "api/v4" "" api))
 
     let events = Uri.of_string (Printf.sprintf "%s/events" api)
-
     let users = Uri.of_string (Printf.sprintf "%s/users" api)
-
     let user = Uri.of_string (Printf.sprintf "%s/user" api)
-
     let user_by_id ~id = Uri.of_string (Printf.sprintf "%s/users/%s" api id)
 
     let user_events ~id =
@@ -204,12 +198,11 @@ struct
         (Printf.sprintf "%s/projects/%i/repository/branches" api project_id)
 
     let project_issues project_id =
-      Uri.of_string
-        (Printf.sprintf "%s/projects/%i/issues" api project_id)  
+      Uri.of_string (Printf.sprintf "%s/projects/%i/issues" api project_id)
 
     let project_issue_id project_id issue_id =
       Uri.of_string
-        (Printf.sprintf "%s/projects/%i/issues/%i" api project_id issue_id)  
+        (Printf.sprintf "%s/projects/%i/issues/%i" api project_id issue_id)
 
     let project_merge_requests ~id =
       Uri.of_string (Printf.sprintf "%s/projects/%i/merge_requests" api id)
@@ -333,7 +326,6 @@ struct
                    sprintf "JSON body:\n%s" (Yojson.Basic.pretty_to_string j)))
 
     let error err = Err err
-
     let response r = Response r
 
     let request ?token:_ ?(params = []) ({ uri; _ } as req) reqfn =
@@ -368,9 +360,7 @@ struct
       | state, (Err _ as x) -> Lwt.return (state, x)
 
     let return r state = Lwt.return (state, Response r)
-
     let map f m = bind (fun x -> return (f x)) m
-
     let initial_state = { user_agent = None; token = None }
 
     let run th =
@@ -382,27 +372,16 @@ struct
       | _, Err e -> Lwt.(error_to_string e >>= fun err -> fail (Failure err))
 
     let both p1 p2 = bind (fun x -> bind (fun y -> return (x, y)) p2) p1
-
     let ( >>= ) m f = bind f m
-
     let ( let* ) m f = bind f m
-
     let ( and* ) m n = both m n
-
     let ( >|= ) m f = map f m
-
     let ( let+ ) m f = map f m
-
     let ( and+ ) m n = both m n
-
     let ( >>~ ) m f = m >|= Response.value >>= f
-
     let ( >|~ ) m f = m >|= Response.value >|= f
-
     let ( *> ) p1 p2 = p1 >>= fun _ -> p2
-
     let embed lw = Lwt.(fun state -> lw >>= fun v -> return (state, Response v))
-
     let fail exn _state = Lwt.fail exn
 
     let catch try_ with_ state =
@@ -425,11 +404,12 @@ struct
 
     let create_url ~client_id ~redirect_uri ~state ~scopes () =
       let q =
-        [ "client_id", client_id
-        ; "state", state
-        ; "response_type", "code"
-        ; "redirect_uri", Uri.to_string redirect_uri
-        ; "code_challenge_method", "S256"
+        [
+          ("client_id", client_id);
+          ("state", state);
+          ("response_type", "code");
+          ("redirect_uri", Uri.to_string redirect_uri);
+          ("code_challenge_method", "S256");
         ]
       in
       let query_strings =
@@ -439,15 +419,17 @@ struct
       in
       Uri.with_query' URI.authorize query_strings
 
-    let of_code ~client_id ~client_secret ?(grant_type = AuthorizationCode) ~redirect_uri ~code () =
+    let of_code ~client_id ~client_secret ?(grant_type = AuthorizationCode)
+        ~redirect_uri ~code () =
       let uri =
-        Uri.with_query' URI.token [
-          "client_id", client_id;
-          "client_secret", client_secret;
-          "grant_type", grant_type_to_string grant_type;
-          "redirect_uri", redirect_uri;
-          "code", code;
-        ]
+        Uri.with_query' URI.token
+          [
+            ("client_id", client_id);
+            ("client_secret", client_secret);
+            ("grant_type", grant_type_to_string grant_type);
+            ("redirect_uri", redirect_uri);
+            ("code", code);
+          ]
       in
       log "Requesting %s" (Uri.to_string uri);
       CL.post uri >>= fun (_res, body) ->
@@ -461,7 +443,7 @@ struct
           }
         in
         return (Some (OAuthToken oauth))
-      with exn -> 
+      with exn ->
         log "Token.of_code body: %s exn: %s" body (Printexc.to_string exn);
         return None
 
@@ -494,7 +476,6 @@ struct
     type t = { uri : Uri.t; version : Version.t option }
 
     let empty = { uri = Uri.empty; version = None }
-
     let poll_after : (string, float) Hashtbl.t = Hashtbl.create 8
 
     let update_poll_after uri { C.Response.headers; _ } =
@@ -596,7 +577,6 @@ struct
       aux [] s
 
     let of_list buffer = { empty with buffer; refill = None }
-
     let poll stream = stream.restart stream.endpoint
 
     let since stream version =
@@ -609,7 +589,6 @@ struct
   end
 
   type 'a parse = string -> 'a Lwt.t
-
   type 'a handler = (C.Response.t * string -> bool) * 'a
 
   module API = struct
@@ -685,8 +664,7 @@ struct
       | `Moved_permanently -> Response.Permanent target
       | _ -> Response.Temporary target
 
-    let rec request ?(redirects = []) ~token resp_handlers
-        req =
+    let rec request ?(redirects = []) ~token resp_handlers req =
       Lwt.(
         if List.length redirects > max_redirects then
           Lwt.fail
@@ -1185,7 +1163,8 @@ struct
           return (Gitlab_j.users_of_string body))
 
     let current_user ~token () =
-      API.get ~token ~uri:URI.user (fun body -> return (Gitlab_j.user_of_string body))
+      API.get ~token ~uri:URI.user (fun body ->
+          return (Gitlab_j.user_of_string body))
 
     let projects ~id () =
       let uri = URI.user_projects ~id in
@@ -1407,8 +1386,8 @@ struct
           Uri.add_query_params' uri
             [
               ("name", name);
-              ("external_url", external_url);
-              (* ; ("protected_branch_ids", protected_branch_ids) *)
+              ("external_url", external_url)
+              (* ; ("protected_branch_ids", protected_branch_ids) *);
             ]
         in
         API.post ~token ~uri ~expected_code:`Created (fun body ->
@@ -1490,7 +1469,8 @@ struct
     module Issue = struct
       let list ?token ~project_id () =
         let uri = URI.project_issues project_id in
-        API.get_stream ?token ~uri (fun body -> return (Gitlab_j.issues_of_string body))
+        API.get_stream ?token ~uri (fun body ->
+            return (Gitlab_j.issues_of_string body))
 
       let by_id ?token ~project_id ~issue_id () =
         let uri = URI.project_issue_id project_id issue_id in
@@ -1499,7 +1479,8 @@ struct
       let create ~token ~project_id create_issue () =
         let uri = URI.project_issues project_id in
         let body = Gitlab_j.string_of_create_issue create_issue in
-        API.post ~token ~uri ~body ~expected_code: `Created (fun s -> Lwt.return (Gitlab_j.issue_of_string s))
+        API.post ~token ~uri ~body ~expected_code:`Created (fun s ->
+            Lwt.return (Gitlab_j.issue_of_string s))
     end
   end
 
