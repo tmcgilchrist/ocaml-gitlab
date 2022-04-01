@@ -446,6 +446,23 @@ module type Gitlab = sig
         See {{:https://docs.gitlab.com/14.0/ee/api/merge_requests.html#list-merge-requests}List merge requests}.
     *)
 
+    val issues :
+      token:Token.t ->
+      ?state:Gitlab_t.state ->
+      ?assignee:string ->
+      ?assignee_username:string ->
+      ?milestone:string ->
+      ?labels:string list ->
+      ?author:string ->
+      ?author_username:string ->
+      ?scope:Gitlab_t.merge_request_scope ->
+      unit ->
+      Gitlab_t.issue Stream.t
+    (** [issues ~token ()] returns a list of project issues.
+
+         See {{:https://docs.gitlab.com/ee/api/issues.html#list-issues}List issues}.
+       *)
+
     val events :
       token:Token.t ->
       id:string ->
@@ -1054,6 +1071,29 @@ module type Gitlab = sig
 
           See {{:https://docs.gitlab.com/ee/api/milestones.html#delete-group-milestone}Delete a milestone}.
         *)
+    end
+
+    (** [Issue] operates on a [Group]'s issues.
+       There is a separate [User] and [Project] issue module.
+    *)
+    module Issue : sig
+      val issues :
+        token:Token.t ->
+        group_id:int ->
+        ?state:Gitlab_t.state ->
+        ?assignee:string ->
+        ?assignee_username:string ->
+        ?milestone:string ->
+        ?labels:string list ->
+        ?author:string ->
+        ?author_username:string ->
+        ?scope:Gitlab_t.merge_request_scope ->
+        unit ->
+        Gitlab_t.issue Stream.t
+      (** [issues ~token ~group_id ()] returns a list of group issues.
+
+        See {{:https://docs.gitlab.com/ee/api/issues.html#list-group-issues}List group issues}.
+      *)
     end
   end
 end
