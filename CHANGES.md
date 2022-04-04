@@ -1,4 +1,4 @@
-# Unreleased
+# 0.1.3 - 2022-04-04
 
 ## Added
  * Various changes to rework lab cli client. (#50 #51 @maiste @tmcgilchrist @OlivierNicole)
