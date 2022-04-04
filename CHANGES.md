@@ -1,3 +1,19 @@
+# Unreleased
+
+## Added
+ * Various changes to rework lab cli client. (#50 #51 @maiste @tmcgilchrist @OlivierNicole)
+
+## Bug fixes
+ * Strip api/v4 from authorize and token url during OAuth. (#48 @tmcgilchrist)
+ * Serialise milestone_id is an int. (#48 @tmcgilchrist)
+ * Various merge_request webhook deserialisation fixes. (#47 @tmcgilchrist)
+ * Fix incorrect field name, detected with atdgen 2.3.x (#46 @mjambon)
+ * Fix commit_short_webhook prefix typo (#45 @MisterDA)
+ * Update GHA to use windows-2022  (#44 @MisterDA)
+ * Fix subcommands names and document env vars (#44 @MisterDA)
+ * Document GITLAB_ env vars via Cmdliner (#44 @MisterDA)
+ * Update cmdliner 1.1.0 API (#41 @MisterDA)
+
 # 0.1.2 - 2022-02-02
 
 ## Added
