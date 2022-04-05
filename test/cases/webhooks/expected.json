@@ -1206,5 +1206,77 @@
         "email": "[REDACTED]"
       }
     ]
+  },
+    {
+  "object_kind": "push",
+  "event_name": "push",
+  "before": "35fe32a515ded5bd38e21f2846e5b42c30531ba5",
+  "after": "4f1b5bd859e1f49f44b6c5bf6c707d8573b49996",
+  "ref": "refs/heads/andrea@scoru-l2-operator",
+  "checkout_sha": "4f1b5bd859e1f49f44b6c5bf6c707d8573b49996",
+  "message": null,
+  "user_id": 10777971,
+  "user_name": "Andrea Cerone",
+  "user_username": "andrea.cerone",
+  "user_email": null,
+  "user_avatar": "https://secure.gravatar.com/avatar/e29066827f6712d6fe49ba97e0e3b750?s=80&d=identicon",
+  "project_id": 3836952,
+  "project": {
+    "id": 3836952,
+    "name": "tezos",
+    "description": "",
+    "web_url": "https://gitlab.com/tezos/tezos",
+    "avatar_url": "https://gitlab.com/uploads/-/system/project/avatar/3836952/latin_small_letter_tz.png",
+    "git_ssh_url": "git@gitlab.com:tezos/tezos.git",
+    "git_http_url": "https://gitlab.com/tezos/tezos.git",
+    "namespace": "Tezos",
+    "visibility_level": 20,
+    "path_with_namespace": "tezos/tezos",
+    "default_branch": "master",
+    "ci_config_path": "",
+    "homepage": "https://gitlab.com/tezos/tezos",
+    "url": "git@gitlab.com:tezos/tezos.git",
+    "ssh_url": "git@gitlab.com:tezos/tezos.git",
+    "http_url": "https://gitlab.com/tezos/tezos.git"
+  },
+  "commits": [
+    {
+      "id": "4f1b5bd859e1f49f44b6c5bf6c707d8573b49996",
+      "message": "Scoru: Rollup node: add configuration for connecting to l1 node\n",
+      "title": "Scoru: Rollup node: add configuration for connecting to l1 node",
+      "timestamp": "2022-04-05T00:11:56+01:00",
+      "url": "https://gitlab.com/tezos/tezos/-/commit/4f1b5bd859e1f49f44b6c5bf6c707d8573b49996",
+      "author": {
+        "name": "Andrea Cerone",
+        "email": "andrea.cerone@trili.tech"
+      },
+      "added": [
+
+      ],
+      "modified": [
+        "src/proto_alpha/bin_sc_rollup_node/configuration.ml",
+        "src/proto_alpha/bin_sc_rollup_node/configuration.mli",
+        "src/proto_alpha/bin_sc_rollup_node/daemon.ml",
+        "src/proto_alpha/bin_sc_rollup_node/layer1.ml",
+        "src/proto_alpha/bin_sc_rollup_node/layer1.mli",
+        "src/proto_alpha/bin_sc_rollup_node/main_sc_rollup_node_alpha.ml"
+      ],
+      "removed": [
+
+      ]
+    }
+  ],
+  "total_commits_count": 1,
+  "push_options": {
+  },
+  "repository": {
+    "name": "tezos",
+    "url": "git@gitlab.com:tezos/tezos.git",
+    "description": "",
+    "homepage": "https://gitlab.com/tezos/tezos",
+    "git_http_url": "https://gitlab.com/tezos/tezos.git",
+    "git_ssh_url": "git@gitlab.com:tezos/tezos.git",
+    "visibility_level": 20
   }
+}
 ]
