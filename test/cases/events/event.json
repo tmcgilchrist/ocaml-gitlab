@@ -1,401 +1,792 @@
 [
   {
-    "id": 1476293560,
-    "project_id": 1066316,
+    "id": 1813020076,
+    "project_id": 3836952,
     "action_name": "pushed to",
     "target_id": null,
     "target_iid": null,
     "target_type": null,
-    "author_id": 490393,
+    "author_id": 10774865,
     "target_title": null,
-    "created_at": "2021-09-23T01:20:27.846Z",
+    "created_at": "2022-04-05T04:54:06.928Z",
     "author": {
-      "id": 490393,
-      "name": "Tim McGilchrist",
-      "username": "tmcgilchrist",
+      "id": 10774865,
+      "username": "xf6",
+      "name": "X",
       "state": "active",
       "avatar_url":
-        "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
-      "web_url": "https://gitlab.com/tmcgilchrist"
+        "https://secure.gravatar.com/avatar/e10670647075a14ad41bb15234785f64?s=80&d=identicon",
+      "web_url": "https://gitlab.com/xf6"
     },
     "push_data": {
       "commit_count": 1,
       "action": "pushed",
       "ref_type": "branch",
-      "commit_from": "5f3c1d9f895bdd3bb70289e1a9168fd3b7873098",
-      "commit_to": "8d97942a62c9f17dd47e23cf806221230deabaab",
-      "ref": "master",
-      "commit_title": "Update .gitlab-ci.yml file",
+      "commit_from": "80de031130be069006d76ef99af4e7aed0f26dc0",
+      "commit_to": "020082b727b924adf7440d449e056412d67df437",
+      "ref": "dxf-event-v1-nonpolymorphic-extend-evaloop",
+      "commit_title": "Michelson: event types and emission",
       "ref_count": null
     },
-    "author_username": "tmcgilchrist"
+    "author_username": "xf6"
   },
   {
-    "id": 1476292994,
-    "project_id": 1066316,
+    "id": 1812901739,
+    "project_id": 3836952,
     "action_name": "pushed to",
     "target_id": null,
     "target_iid": null,
     "target_type": null,
-    "author_id": 490393,
+    "author_id": 10774865,
     "target_title": null,
-    "created_at": "2021-09-23T01:19:26.686Z",
+    "created_at": "2022-04-05T02:46:27.688Z",
     "author": {
-      "id": 490393,
-      "name": "Tim McGilchrist",
-      "username": "tmcgilchrist",
+      "id": 10774865,
+      "username": "xf6",
+      "name": "X",
       "state": "active",
       "avatar_url":
-        "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
-      "web_url": "https://gitlab.com/tmcgilchrist"
+        "https://secure.gravatar.com/avatar/e10670647075a14ad41bb15234785f64?s=80&d=identicon",
+      "web_url": "https://gitlab.com/xf6"
     },
     "push_data": {
-      "commit_count": 1,
+      "commit_count": 228,
       "action": "pushed",
       "ref_type": "branch",
-      "commit_from": "f332bc71b0407c19e416c5813cc9334ebf65826e",
-      "commit_to": "5f3c1d9f895bdd3bb70289e1a9168fd3b7873098",
-      "ref": "master",
-      "commit_title": "Update .gitlab-ci.yml file",
+      "commit_from": "719e52047d8d85b99bcca6450278660c161d6c12",
+      "commit_to": "80de031130be069006d76ef99af4e7aed0f26dc0",
+      "ref": "dxf-event-v1-nonpolymorphic-extend-evaloop",
+      "commit_title": "Michelson: event types and emission",
       "ref_count": null
     },
-    "author_username": "tmcgilchrist"
+    "author_username": "xf6"
   },
   {
-    "id": 1476290247,
-    "project_id": 1066316,
-    "action_name": "created",
-    "target_id": 971969,
-    "target_iid": 971969,
-    "target_type": "WikiPage::Meta",
-    "author_id": 490393,
-    "target_title": "home",
-    "created_at": "2021-09-23T01:14:17.826Z",
-    "author": {
-      "id": 490393,
-      "name": "Tim McGilchrist",
-      "username": "tmcgilchrist",
-      "state": "active",
-      "avatar_url":
-        "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
-      "web_url": "https://gitlab.com/tmcgilchrist"
-    },
-    "wiki_page": { "format": "markdown", "slug": "home", "title": "home" },
-    "author_username": "tmcgilchrist"
-  },
-  {
-    "id": 1476290246,
-    "project_id": 1066316,
-    "action_name": "created",
-    "target_id": 971968,
-    "target_iid": 971968,
-    "target_type": "WikiPage::Meta",
-    "author_id": 490393,
-    "target_title": "home",
-    "created_at": "2021-09-23T01:14:17.822Z",
-    "author": {
-      "id": 490393,
-      "name": "Tim McGilchrist",
-      "username": "tmcgilchrist",
-      "state": "active",
-      "avatar_url":
-        "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
-      "web_url": "https://gitlab.com/tmcgilchrist"
-    },
-    "wiki_page": { "format": "markdown", "slug": "home", "title": "home" },
-    "author_username": "tmcgilchrist"
-  },
-  {
-    "id": 1476239003,
-    "project_id": 29798678,
-    "action_name": "pushed new",
-    "target_id": null,
-    "target_iid": null,
-    "target_type": null,
-    "author_id": 490393,
-    "target_title": null,
-    "created_at": "2021-09-22T23:45:06.053Z",
-    "author": {
-      "id": 490393,
-      "name": "Tim McGilchrist",
-      "username": "tmcgilchrist",
-      "state": "active",
-      "avatar_url":
-        "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
-      "web_url": "https://gitlab.com/tmcgilchrist"
-    },
-    "push_data": {
-      "commit_count": 1,
-      "action": "created",
-      "ref_type": "tag",
-      "commit_from": null,
-      "commit_to": "17c21e9100af56e53888eac3114bd3278f72d129",
-      "ref": "v0.0.1",
-      "commit_title": "Initial commit",
-      "ref_count": null
-    },
-    "author_username": "tmcgilchrist"
-  },
-  {
-    "id": 1474314364,
-    "project_id": 29798678,
-    "action_name": "pushed new",
-    "target_id": null,
-    "target_iid": null,
-    "target_type": null,
-    "author_id": 490393,
-    "target_title": null,
-    "created_at": "2021-09-22T04:59:05.083Z",
-    "author": {
-      "id": 490393,
-      "name": "Tim McGilchrist",
-      "username": "tmcgilchrist",
-      "state": "active",
-      "avatar_url":
-        "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
-      "web_url": "https://gitlab.com/tmcgilchrist"
-    },
-    "push_data": {
-      "commit_count": 1,
-      "action": "created",
-      "ref_type": "branch",
-      "commit_from": null,
-      "commit_to": "9d2cb7f1f974b14913d146b64e045633e5617c84",
-      "ref": "main",
-      "commit_title": "Initial commit",
-      "ref_count": null
-    },
-    "author_username": "tmcgilchrist"
-  },
-  {
-    "id": 1474314353,
-    "project_id": 29798678,
-    "action_name": "created",
-    "target_id": null,
-    "target_iid": null,
-    "target_type": null,
-    "author_id": 490393,
-    "target_title": null,
-    "created_at": "2021-09-22T04:59:04.527Z",
-    "author": {
-      "id": 490393,
-      "name": "Tim McGilchrist",
-      "username": "tmcgilchrist",
-      "state": "active",
-      "avatar_url":
-        "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
-      "web_url": "https://gitlab.com/tmcgilchrist"
-    },
-    "author_username": "tmcgilchrist"
-  },
-  {
-    "id": 1474158126,
-    "project_id": 1066316,
-    "action_name": "opened",
-    "target_id": 94071379,
-    "target_iid": 1,
-    "target_type": "Issue",
-    "author_id": 490393,
-    "target_title": "Test issue",
-    "created_at": "2021-09-22T01:21:45.357Z",
-    "author": {
-      "id": 490393,
-      "name": "Tim McGilchrist",
-      "username": "tmcgilchrist",
-      "state": "active",
-      "avatar_url":
-        "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
-      "web_url": "https://gitlab.com/tmcgilchrist"
-    },
-    "author_username": "tmcgilchrist"
-  },
-  {
-    "id": 1467348911,
-    "project_id": 1066316,
+    "id": 1812808166,
+    "project_id": 3836952,
     "action_name": "commented on",
-    "target_id": 680137735,
-    "target_iid": 680137735,
+    "target_id": 900358702,
+    "target_iid": 900358702,
     "target_type": "Note",
-    "author_id": 490393,
-    "target_title": "Update freer.cabal",
-    "created_at": "2021-09-17T04:40:17.737Z",
+    "author_id": 4984456,
+    "target_title": "Remove gnuplot",
+    "created_at": "2022-04-05T00:31:38.217Z",
     "note": {
-      "id": 680137735,
+      "id": 900358702,
       "type": null,
-      "body": "Test merge request to generate GitLab events.",
+      "body":
+        "Thank you for your contribution 🙏, I have one remark:\n\n* ❓ There is one touched file that contains nonstandard \"TODO\" and \"FIXME\" comments:\n    * → `templates.yml`\n    * Please help stadardize these as described in the tezos [documentation](https://tezos.gitlab.io/developer/guidelines.html#todo-fixme-comments).\n\n------\n\nI, 🤖 👮, ran this inspection on `Tue, 05 Apr 2022 00:31:35 +0000`.\nI usually run inspections every 6 hours and will try to edit my own comment if I have any updates.\nFor more information see the Tezos [documentation](http://tezos.gitlab.io/developer/contributing.html#the-merge-request-bot).",
       "attachment": null,
       "author": {
-        "id": 490393,
-        "name": "Tim McGilchrist",
-        "username": "tmcgilchrist",
+        "id": 4984456,
+        "username": "tezbocop",
+        "name": "Tezos Merbocop",
         "state": "active",
         "avatar_url":
-          "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
-        "web_url": "https://gitlab.com/tmcgilchrist"
+          "https://gitlab.com/uploads/-/system/user/avatar/4984456/avatar.png",
+        "web_url": "https://gitlab.com/tezbocop"
       },
-      "created_at": "2021-09-17T04:40:17.652Z",
-      "updated_at": "2021-09-17T04:40:17.652Z",
+      "created_at": "2022-04-05T00:31:36.271Z",
+      "updated_at": "2022-04-05T00:31:36.271Z",
       "system": false,
-      "noteable_id": 117243068,
+      "noteable_id": 148682806,
       "noteable_type": "MergeRequest",
       "resolvable": false,
       "confidential": false,
-      "noteable_iid": 1,
+      "noteable_iid": 4942,
       "commands_changes": {}
     },
     "author": {
-      "id": 490393,
-      "name": "Tim McGilchrist",
-      "username": "tmcgilchrist",
+      "id": 4984456,
+      "username": "tezbocop",
+      "name": "Tezos Merbocop",
       "state": "active",
       "avatar_url":
-        "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
-      "web_url": "https://gitlab.com/tmcgilchrist"
+        "https://gitlab.com/uploads/-/system/user/avatar/4984456/avatar.png",
+      "web_url": "https://gitlab.com/tezbocop"
     },
-    "author_username": "tmcgilchrist"
+    "author_username": "tezbocop"
   },
   {
-    "id": 1467348510,
-    "project_id": 1066316,
-    "action_name": "opened",
-    "target_id": 117243068,
-    "target_iid": 1,
-    "target_type": "MergeRequest",
-    "author_id": 490393,
-    "target_title": "Update freer.cabal",
-    "created_at": "2021-09-17T04:39:49.586Z",
-    "author": {
-      "id": 490393,
-      "name": "Tim McGilchrist",
-      "username": "tmcgilchrist",
-      "state": "active",
-      "avatar_url":
-        "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
-      "web_url": "https://gitlab.com/tmcgilchrist"
-    },
-    "author_username": "tmcgilchrist"
-  },
-  {
-    "id": 1467348174,
-    "project_id": 1066316,
-    "action_name": "pushed new",
+    "id": 1812751285,
+    "project_id": 3836952,
+    "action_name": "pushed to",
     "target_id": null,
     "target_iid": null,
     "target_type": null,
-    "author_id": 490393,
+    "author_id": 10777971,
     "target_title": null,
-    "created_at": "2021-09-17T04:39:23.127Z",
+    "created_at": "2022-04-04T23:12:21.674Z",
     "author": {
-      "id": 490393,
-      "name": "Tim McGilchrist",
-      "username": "tmcgilchrist",
+      "id": 10777971,
+      "username": "andrea.cerone",
+      "name": "Andrea Cerone",
       "state": "active",
       "avatar_url":
-        "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
-      "web_url": "https://gitlab.com/tmcgilchrist"
+        "https://secure.gravatar.com/avatar/e29066827f6712d6fe49ba97e0e3b750?s=80&d=identicon",
+      "web_url": "https://gitlab.com/andrea.cerone"
     },
     "push_data": {
       "commit_count": 1,
-      "action": "created",
+      "action": "pushed",
       "ref_type": "branch",
-      "commit_from": null,
-      "commit_to": "1de710b32f7302934655ab94b6e5ceef87f681f2",
-      "ref": "tmcgilchrist-master-patch-54782",
-      "commit_title": "Update freer.cabal",
+      "commit_from": "35fe32a515ded5bd38e21f2846e5b42c30531ba5",
+      "commit_to": "4f1b5bd859e1f49f44b6c5bf6c707d8573b49996",
+      "ref": "andrea@scoru-l2-operator",
+      "commit_title":
+        "Scoru: Rollup node: add configuration for connecting to l1 node",
       "ref_count": null
     },
-    "author_username": "tmcgilchrist"
+    "author_username": "andrea.cerone"
   },
   {
-    "id": 1517046373,
-    "project_id": 30561150,
+    "id": 1812708286,
+    "project_id": 3836952,
     "action_name": "deleted",
     "target_id": null,
     "target_iid": null,
     "target_type": null,
-    "author_id": 9920770,
+    "author_id": 9133781,
     "target_title": null,
-    "created_at": "2021-10-18T21:13:24.836Z",
+    "created_at": "2022-04-04T22:19:30.615Z",
     "author": {
-      "id": 9920770,
-      "name": "Patrick Ferris",
-      "username": "patrickferris",
+      "id": 9133781,
+      "username": "shrmtv",
+      "name": "Fedor Sheremetyev",
       "state": "active",
-      "avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/9920770/avatar.png",
-      "web_url": "https://gitlab.com/patrickferris"
+      "avatar_url":
+        "https://secure.gravatar.com/avatar/bd20ec12968c994c66daf746a12ec019?s=80&d=identicon",
+      "web_url": "https://gitlab.com/shrmtv"
     },
     "push_data": {
       "commit_count": 0,
       "action": "removed",
       "ref_type": "branch",
-      "commit_from": "c6917df5431ddd6e50e1f65d60e0c940614b0f48",
+      "commit_from": "21cde87f39bd44c419b97626331904af660486de",
       "commit_to": null,
-      "ref": "update-readme",
+      "ref": "shrmtv@update-changelog",
       "commit_title": null,
       "ref_count": null
     },
-    "author_username": "patrickferris"
+    "author_username": "shrmtv"
   },
   {
-    "id": 1517046361,
-    "project_id": 30561150,
+    "id": 1812708232,
+    "project_id": 3836952,
+    "action_name": "pushed to",
+    "target_id": null,
+    "target_iid": null,
+    "target_type": null,
+    "author_id": 8770486,
+    "target_title": null,
+    "created_at": "2022-04-04T22:19:27.351Z",
+    "author": {
+      "id": 8770486,
+      "username": "nomadic-margebot",
+      "name": "Marge Bot",
+      "state": "active",
+      "avatar_url":
+        "https://gitlab.com/uploads/-/system/user/avatar/8770486/avatar.png",
+      "web_url": "https://gitlab.com/nomadic-margebot"
+    },
+    "push_data": {
+      "commit_count": 2,
+      "action": "pushed",
+      "ref_type": "branch",
+      "commit_from": "9c8ba92cee2a689afa972234ce380a416443e54c",
+      "commit_to": "ba966216f3e861af53021858d4be4a9f6731a241",
+      "ref": "master",
+      "commit_title": "Merge branch 'shrmtv@update-changelog' into 'master'",
+      "ref_count": null
+    },
+    "author_username": "nomadic-margebot"
+  },
+  {
+    "id": 1812708228,
+    "project_id": 3836952,
     "action_name": "accepted",
-    "target_id": 121831146,
-    "target_iid": 1,
+    "target_id": 144460780,
+    "target_iid": 4682,
     "target_type": "MergeRequest",
-    "author_id": 9920770,
-    "target_title": "update readme",
-    "created_at": "2021-10-18T21:13:24.256Z",
+    "author_id": 8770486,
+    "target_title": "Doc: Update Alpha changelog",
+    "created_at": "2022-04-04T22:19:26.778Z",
     "author": {
-      "id": 9920770,
-      "name": "Patrick Ferris",
-      "username": "patrickferris",
+      "id": 8770486,
+      "username": "nomadic-margebot",
+      "name": "Marge Bot",
       "state": "active",
-      "avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/9920770/avatar.png",
-      "web_url": "https://gitlab.com/patrickferris"
+      "avatar_url":
+        "https://gitlab.com/uploads/-/system/user/avatar/8770486/avatar.png",
+      "web_url": "https://gitlab.com/nomadic-margebot"
     },
-    "author_username": "patrickferris"
+    "author_username": "nomadic-margebot"
   },
   {
-    "id": 1554587781,
-    "project_id": 30561150,
+    "id": 1812651987,
+    "project_id": 3836952,
     "action_name": "commented on",
-    "target_id": 728166612,
-    "target_iid": 728166612,
-    "target_type": "Note",
-    "author_id": 9920770,
-    "target_title": "Needs more tests",
-    "created_at": "2021-11-09T15:45:08.247Z",
-    "author": {
-      "id": 9920770,
-      "username": "patrickferris",
-      "name": "Patrick Ferris",
-      "state": "active",
-      "avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/9920770/avatar.png",
-      "web_url": "https://gitlab.com/patrickferris"
-    },
+    "target_id": 900269716,
+    "target_iid": 900269716,
+    "target_type": "DiffNote",
+    "author_id": 5263657,
+    "target_title": "Shell: Prechecking of blocks",
+    "created_at": "2022-04-04T21:24:29.275Z",
     "note": {
-      "id": 728166612,
-      "type": null,
-      "body": "Another comment for good measure !",
+      "id": 900269716,
+      "type": "DiffNote",
+      "body":
+        "Yeap indeed. I skimmed a bit other error cases, and I don't see other right now, but probably a deeper change is required. But since it is deeper, I would avoid to make this MR too complex and go step by step. I think a first step would be to make the shell workers more unit testable. Probably by following what we did for the `prevalidator`, because currently, I don't see any better way.",
       "attachment": null,
       "author": {
-        "id": 9920770,
-        "username": "patrickferris",
-        "name": "Patrick Ferris",
+        "id": 5263657,
+        "username": "Saroupille",
+        "name": "François Thiré",
         "state": "active",
-        "avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/9920770/avatar.png",
-        "web_url": "https://gitlab.com/patrickferris"
+        "avatar_url":
+          "https://secure.gravatar.com/avatar/dcecc9a8d97b503a3d28025c9b78e8ab?s=80&d=identicon",
+        "web_url": "https://gitlab.com/Saroupille"
       },
-      "created_at": "2021-11-09T15:45:08.016Z",
-      "updated_at": "2021-11-09T15:45:08.016Z",
+      "created_at": "2022-04-04T21:24:27.796Z",
+      "updated_at": "2022-04-04T21:24:27.796Z",
       "system": false,
-      "noteable_id": 95644992,
-      "noteable_type": "Issue",
+      "noteable_id": 148103291,
+      "noteable_type": "MergeRequest",
+      "commit_id": null,
+      "position": {
+        "base_sha": "bfc858f951fee3d06ae28209eebb0a50f3fc3002",
+        "start_sha": "385d48a179b94de33263c0437a04aca49381a4f0",
+        "head_sha": "71c81c6250c44a1ec201d1024c1c97e7a1dd69b4",
+        "old_path": "src/lib_shell/block_validator.ml",
+        "new_path": "src/lib_shell/block_validator.ml",
+        "position_type": "text",
+        "old_line": null,
+        "new_line": 284,
+        "line_range": {
+          "start": {
+            "line_code": "eade25e8c5dff5dc254bae1d756ac9ceb4b9972e_285_284",
+            "type": "new",
+            "old_line": null,
+            "new_line": 284
+          },
+          "end": {
+            "line_code": "eade25e8c5dff5dc254bae1d756ac9ceb4b9972e_285_287",
+            "type": "new",
+            "old_line": null,
+            "new_line": 287
+          }
+        }
+      },
+      "resolvable": true,
+      "resolved": false,
+      "resolved_by": null,
+      "resolved_at": null,
+      "confidential": false,
+      "noteable_iid": 4910,
+      "commands_changes": {}
+    },
+    "author": {
+      "id": 5263657,
+      "username": "Saroupille",
+      "name": "François Thiré",
+      "state": "active",
+      "avatar_url":
+        "https://secure.gravatar.com/avatar/dcecc9a8d97b503a3d28025c9b78e8ab?s=80&d=identicon",
+      "web_url": "https://gitlab.com/Saroupille"
+    },
+    "author_username": "Saroupille"
+  },
+  {
+    "id": 1812649818,
+    "project_id": 3836952,
+    "action_name": "pushed to",
+    "target_id": null,
+    "target_iid": null,
+    "target_type": null,
+    "author_id": 8770486,
+    "target_title": null,
+    "created_at": "2022-04-04T21:22:31.211Z",
+    "author": {
+      "id": 8770486,
+      "username": "nomadic-margebot",
+      "name": "Marge Bot",
+      "state": "active",
+      "avatar_url":
+        "https://gitlab.com/uploads/-/system/user/avatar/8770486/avatar.png",
+      "web_url": "https://gitlab.com/nomadic-margebot"
+    },
+    "push_data": {
+      "commit_count": 16,
+      "action": "pushed",
+      "ref_type": "branch",
+      "commit_from": "6c8fd14f60aa4efa0633510cabd0823847808a40",
+      "commit_to": "21cde87f39bd44c419b97626331904af660486de",
+      "ref": "shrmtv@update-changelog",
+      "commit_title": "Doc: Update Alpha changelog",
+      "ref_count": null
+    },
+    "author_username": "nomadic-margebot"
+  },
+  {
+    "id": 1812648963,
+    "project_id": 3836952,
+    "action_name": "pushed to",
+    "target_id": null,
+    "target_iid": null,
+    "target_type": null,
+    "author_id": 8770486,
+    "target_title": null,
+    "created_at": "2022-04-04T21:21:53.094Z",
+    "author": {
+      "id": 8770486,
+      "username": "nomadic-margebot",
+      "name": "Marge Bot",
+      "state": "active",
+      "avatar_url":
+        "https://gitlab.com/uploads/-/system/user/avatar/8770486/avatar.png",
+      "web_url": "https://gitlab.com/nomadic-margebot"
+    },
+    "push_data": {
+      "commit_count": 3,
+      "action": "pushed",
+      "ref_type": "branch",
+      "commit_from": "3728e51b8cf0b2e26f53017b9b8431efe47d89db",
+      "commit_to": "9c8ba92cee2a689afa972234ce380a416443e54c",
+      "ref": "master",
+      "commit_title":
+        "Merge branch 'functori@tx-rollup-no-commit-empty' into 'master'",
+      "ref_count": null
+    },
+    "author_username": "nomadic-margebot"
+  },
+  {
+    "id": 1812648962,
+    "project_id": 3836952,
+    "action_name": "accepted",
+    "target_id": 147899096,
+    "target_iid": 4892,
+    "target_type": "MergeRequest",
+    "author_id": 8770486,
+    "target_title": "Tx_rollup,Node: Don't commit empty context",
+    "created_at": "2022-04-04T21:21:53.082Z",
+    "author": {
+      "id": 8770486,
+      "username": "nomadic-margebot",
+      "name": "Marge Bot",
+      "state": "active",
+      "avatar_url":
+        "https://gitlab.com/uploads/-/system/user/avatar/8770486/avatar.png",
+      "web_url": "https://gitlab.com/nomadic-margebot"
+    },
+    "author_username": "nomadic-margebot"
+  },
+  {
+    "id": 1812629816,
+    "project_id": 3836952,
+    "action_name": "pushed to",
+    "target_id": null,
+    "target_iid": null,
+    "target_type": null,
+    "author_id": 9953201,
+    "target_title": null,
+    "created_at": "2022-04-04T21:06:25.351Z",
+    "author": {
+      "id": 9953201,
+      "username": "novalis_dt",
+      "name": "David Turner",
+      "state": "active",
+      "avatar_url":
+        "https://secure.gravatar.com/avatar/7af0a4685e93e44ffcd2935fa31ff1c4?s=80&d=identicon",
+      "web_url": "https://gitlab.com/novalis_dt"
+    },
+    "push_data": {
+      "commit_count": 83,
+      "action": "pushed",
+      "ref_type": "branch",
+      "commit_from": "211827383b4ea49ae6285603c95377e404b29bda",
+      "commit_to": "3e3bd0aa91442b6915c09aa1299e676ef5c39842",
+      "ref": "tx_rollup@inbox-clarity",
+      "commit_title": "Proto,tx_rollup: remove an unreachable case",
+      "ref_count": null
+    },
+    "author_username": "novalis_dt"
+  },
+  {
+    "id": 1812618577,
+    "project_id": 3836952,
+    "action_name": "commented on",
+    "target_id": 900247823,
+    "target_iid": 900247823,
+    "target_type": "DiffNote",
+    "author_id": 2919839,
+    "target_title": "Shell: Prechecking of blocks",
+    "created_at": "2022-04-04T20:58:11.714Z",
+    "note": {
+      "id": 900247823,
+      "type": "DiffNote",
+      "body":
+        "Ah, I missed the case of bootstrap pipeline.\notherwise,  `predecessor is known invalid` would not happen if there was no other way to mark the predecessor invalid.",
+      "attachment": null,
+      "author": {
+        "id": 2919839,
+        "username": "julien.t",
+        "name": "Julien",
+        "state": "active",
+        "avatar_url":
+          "https://gitlab.com/uploads/-/system/user/avatar/2919839/avatar.png",
+        "web_url": "https://gitlab.com/julien.t"
+      },
+      "created_at": "2022-04-04T20:58:10.556Z",
+      "updated_at": "2022-04-04T20:58:10.556Z",
+      "system": false,
+      "noteable_id": 148103291,
+      "noteable_type": "MergeRequest",
+      "commit_id": null,
+      "position": {
+        "base_sha": "bfc858f951fee3d06ae28209eebb0a50f3fc3002",
+        "start_sha": "385d48a179b94de33263c0437a04aca49381a4f0",
+        "head_sha": "71c81c6250c44a1ec201d1024c1c97e7a1dd69b4",
+        "old_path": "src/lib_shell/block_validator.ml",
+        "new_path": "src/lib_shell/block_validator.ml",
+        "position_type": "text",
+        "old_line": null,
+        "new_line": 284,
+        "line_range": {
+          "start": {
+            "line_code": "eade25e8c5dff5dc254bae1d756ac9ceb4b9972e_285_284",
+            "type": "new",
+            "old_line": null,
+            "new_line": 284
+          },
+          "end": {
+            "line_code": "eade25e8c5dff5dc254bae1d756ac9ceb4b9972e_285_287",
+            "type": "new",
+            "old_line": null,
+            "new_line": 287
+          }
+        }
+      },
+      "resolvable": true,
+      "resolved": false,
+      "resolved_by": null,
+      "resolved_at": null,
+      "confidential": false,
+      "noteable_iid": 4910,
+      "commands_changes": {}
+    },
+    "author": {
+      "id": 2919839,
+      "username": "julien.t",
+      "name": "Julien",
+      "state": "active",
+      "avatar_url":
+        "https://gitlab.com/uploads/-/system/user/avatar/2919839/avatar.png",
+      "web_url": "https://gitlab.com/julien.t"
+    },
+    "author_username": "julien.t"
+  },
+  {
+    "id": 1812617972,
+    "project_id": 3836952,
+    "action_name": "commented on",
+    "target_id": 900247273,
+    "target_iid": 900247273,
+    "target_type": "Note",
+    "author_id": 3222789,
+    "target_title": "Remove gnuplot",
+    "created_at": "2022-04-04T20:57:40.294Z",
+    "note": {
+      "id": 900247273,
+      "type": null,
+      "body":
+        "@raphael-proust sorry for the extra work, feel free to reassign if too busy",
+      "attachment": null,
+      "author": {
+        "id": 3222789,
+        "username": "igarnier",
+        "name": "Ilias Garnier",
+        "state": "active",
+        "avatar_url":
+          "https://gitlab.com/uploads/-/system/user/avatar/3222789/avatar.png",
+        "web_url": "https://gitlab.com/igarnier"
+      },
+      "created_at": "2022-04-04T20:57:39.289Z",
+      "updated_at": "2022-04-04T20:57:39.289Z",
+      "system": false,
+      "noteable_id": 148682806,
+      "noteable_type": "MergeRequest",
       "resolvable": false,
       "confidential": false,
-      "noteable_iid": 2
+      "noteable_iid": 4942,
+      "commands_changes": {}
     },
-    "author_username": "patrickferris"
-  }
+    "author": {
+      "id": 3222789,
+      "username": "igarnier",
+      "name": "Ilias Garnier",
+      "state": "active",
+      "avatar_url":
+        "https://gitlab.com/uploads/-/system/user/avatar/3222789/avatar.png",
+      "web_url": "https://gitlab.com/igarnier"
+    },
+    "author_username": "igarnier"
+  },
+  {
+    "id": 1812617085,
+    "project_id": 3836952,
+    "action_name": "opened",
+    "target_id": 148682806,
+    "target_iid": 4942,
+    "target_type": "MergeRequest",
+    "author_id": 3222789,
+    "target_title": "Remove gnuplot",
+    "created_at": "2022-04-04T20:57:01.413Z",
+    "author": {
+      "id": 3222789,
+      "username": "igarnier",
+      "name": "Ilias Garnier",
+      "state": "active",
+      "avatar_url":
+        "https://gitlab.com/uploads/-/system/user/avatar/3222789/avatar.png",
+      "web_url": "https://gitlab.com/igarnier"
+    },
+    "author_username": "igarnier"
+  },
+  {
+    "id": 1812612631,
+    "project_id": 3836952,
+    "action_name": "pushed new",
+    "target_id": null,
+    "target_iid": null,
+    "target_type": null,
+    "author_id": 3222789,
+    "target_title": null,
+    "created_at": "2022-04-04T20:53:32.775Z",
+    "author": {
+      "id": 3222789,
+      "username": "igarnier",
+      "name": "Ilias Garnier",
+      "state": "active",
+      "avatar_url":
+        "https://gitlab.com/uploads/-/system/user/avatar/3222789/avatar.png",
+      "web_url": "https://gitlab.com/igarnier"
+    },
+    "push_data": {
+      "commit_count": 2,
+      "action": "created",
+      "ref_type": "branch",
+      "commit_from": null,
+      "commit_to": "bea3a09d7de2ed61659e76d75f26999040f15784",
+      "ref": "igarnier-remove-gnuplot",
+      "commit_title": "DNM: use NL runners",
+      "ref_count": null
+    },
+    "author_username": "igarnier"
+  },
+  {
+    "id": 1812610187,
+    "project_id": 3836952,
+    "action_name": "commented on",
+    "target_id": 900241945,
+    "target_iid": 900241945,
+    "target_type": "DiffNote",
+    "author_id": 9209826,
+    "target_title": "Draft: Proto: document some interfaces",
+    "created_at": "2022-04-04T20:51:33.860Z",
+    "note": {
+      "id": 900241945,
+      "type": "DiffNote",
+      "body": "OK, seems reasonable :smile:",
+      "attachment": null,
+      "author": {
+        "id": 9209826,
+        "username": "naih",
+        "name": "Nicolas Ayache",
+        "state": "active",
+        "avatar_url":
+          "https://secure.gravatar.com/avatar/be94d4aeefccb7284cd629f8d53ce9c3?s=80&d=identicon",
+        "web_url": "https://gitlab.com/naih"
+      },
+      "created_at": "2022-04-04T20:51:32.875Z",
+      "updated_at": "2022-04-04T20:51:32.875Z",
+      "system": false,
+      "noteable_id": 146714972,
+      "noteable_type": "MergeRequest",
+      "commit_id": null,
+      "position": {
+        "base_sha": "bfc858f951fee3d06ae28209eebb0a50f3fc3002",
+        "start_sha": "26d88d35d7a78d8ed6a82d4fb6ce17ce26f860da",
+        "head_sha": "0a7bb86ad197e083ec13001cf30736f5def47f0e",
+        "old_path": "src/proto_alpha/lib_protocol/script_map.mli",
+        "new_path": "src/proto_alpha/lib_protocol/script_map.mli",
+        "position_type": "text",
+        "old_line": null,
+        "new_line": 50,
+        "line_range": {
+          "start": {
+            "line_code": "08e5e6853b347706cb19111d34a488413958c80c_38_48",
+            "type": "new",
+            "old_line": null,
+            "new_line": 48
+          },
+          "end": {
+            "line_code": "08e5e6853b347706cb19111d34a488413958c80c_38_50",
+            "type": "new",
+            "old_line": null,
+            "new_line": 50
+          }
+        }
+      },
+      "resolvable": true,
+      "resolved": false,
+      "resolved_by": null,
+      "resolved_at": null,
+      "confidential": false,
+      "noteable_iid": 4818,
+      "commands_changes": {}
+    },
+    "author": {
+      "id": 9209826,
+      "username": "naih",
+      "name": "Nicolas Ayache",
+      "state": "active",
+      "avatar_url":
+        "https://secure.gravatar.com/avatar/be94d4aeefccb7284cd629f8d53ce9c3?s=80&d=identicon",
+      "web_url": "https://gitlab.com/naih"
+    },
+    "author_username": "naih"
+  },
+  {
+    "id": 1812603994,
+    "project_id": 3836952,
+    "action_name": "deleted",
+    "target_id": null,
+    "target_iid": null,
+    "target_type": null,
+    "author_id": 7921723,
+    "target_title": null,
+    "created_at": "2022-04-04T20:47:03.172Z",
+    "author": {
+      "id": 7921723,
+      "username": "lthms",
+      "name": "Thomas Letan",
+      "state": "active",
+      "avatar_url":
+        "https://gitlab.com/uploads/-/system/user/avatar/7921723/avatar.png",
+      "web_url": "https://gitlab.com/lthms"
+    },
+    "push_data": {
+      "commit_count": 0,
+      "action": "removed",
+      "ref_type": "branch",
+      "commit_from": "8743372c2ab6e9232aa9638681e65bba65098b4e",
+      "commit_to": null,
+      "ref": "tx_rollup@lazy-slashing",
+      "commit_title": null,
+      "ref_count": null
+    },
+    "author_username": "lthms"
+  },
+  {
+    "id": 1812603903,
+    "project_id": 3836952,
+    "action_name": "accepted",
+    "target_id": 148255498,
+    "target_iid": 4917,
+    "target_type": "MergeRequest",
+    "author_id": 8770486,
+    "target_title":
+      "Proto,tx_rollup: Add lazy slashing for rejected commitment’s successors",
+    "created_at": "2022-04-04T20:47:00.557Z",
+    "author": {
+      "id": 8770486,
+      "username": "nomadic-margebot",
+      "name": "Marge Bot",
+      "state": "active",
+      "avatar_url":
+        "https://gitlab.com/uploads/-/system/user/avatar/8770486/avatar.png",
+      "web_url": "https://gitlab.com/nomadic-margebot"
+    },
+    "author_username": "nomadic-margebot"
+  },
+  {
+    "id": 1812603902,
+    "project_id": 3836952,
+    "action_name": "pushed to",
+    "target_id": null,
+    "target_iid": null,
+    "target_type": null,
+    "author_id": 8770486,
+    "target_title": null,
+    "created_at": "2022-04-04T20:47:00.509Z",
+    "author": {
+      "id": 8770486,
+      "username": "nomadic-margebot",
+      "name": "Marge Bot",
+      "state": "active",
+      "avatar_url":
+        "https://gitlab.com/uploads/-/system/user/avatar/8770486/avatar.png",
+      "web_url": "https://gitlab.com/nomadic-margebot"
+    },
+    "push_data": {
+      "commit_count": 2,
+      "action": "pushed",
+      "ref_type": "branch",
+      "commit_from": "f646ae0d63507e5d799b61b018425e24271dbc85",
+      "commit_to": "3728e51b8cf0b2e26f53017b9b8431efe47d89db",
+      "ref": "master",
+      "commit_title": "Merge branch 'tx_rollup@lazy-slashing' into 'master'",
+      "ref_count": null
+    },
+    "author_username": "nomadic-margebot"
+  },
+  {
+    "id": 1815155932,
+    "project_id": 3836952,
+    "action_name": "commented on",
+    "target_id": 901733651,
+    "target_iid": 901733651,
+    "target_type": "DiscussionNote",
+    "author_id": 9209826,
+    "target_title": "Draft: Proto: document some interfaces",
+    "created_at": "2022-04-05T21:27:27.118Z",
+    "note": {
+      "id": 901733651,
+      "type": "DiscussionNote",
+      "body":
+        "OK, thanks! I was going to wait until this is merged but I'm fine this way :)\n\nSome interfaces will probably be documented by other people in separated merge requests.",
+      "attachment": null,
+      "author": {
+        "id": 9209826,
+        "username": "naih",
+        "name": "Nicolas Ayache",
+        "state": "active",
+        "avatar_url":
+          "https://secure.gravatar.com/avatar/be94d4aeefccb7284cd629f8d53ce9c3?s=80&d=identicon",
+        "web_url": "https://gitlab.com/naih"
+      },
+      "created_at": "2022-04-05T21:27:26.124Z",
+      "updated_at": "2022-04-05T21:27:26.124Z",
+      "system": false,
+      "noteable_id": 146714972,
+      "noteable_type": "MergeRequest",
+      "resolvable": true,
+      "resolved": false,
+      "resolved_by": null,
+      "resolved_at": null,
+      "confidential": false,
+      "noteable_iid": 4818,
+      "commands_changes": {}
+    },
+    "author": {
+      "id": 9209826,
+      "username": "naih",
+      "name": "Nicolas Ayache",
+      "state": "active",
+      "avatar_url":
+        "https://secure.gravatar.com/avatar/be94d4aeefccb7284cd629f8d53ce9c3?s=80&d=identicon",
+      "web_url": "https://gitlab.com/naih"
+    },
+    "author_username": "naih"
+  }        
 ]

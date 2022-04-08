@@ -37,7 +37,7 @@ type user = {
   username: string;
   name: string;
   state: string;
-  avatar_url: string;
+  avatar_url: string nullable;
   web_url: string;
   created_at: date_time;
   ?bio: string option;
@@ -62,7 +62,7 @@ type user_short = {
   name: string;
   username: string;
   ?state: string nullable;
-  avatar_url: string;
+  avatar_url: string nullable;
   ?web_url: string nullable;
   ?email: string nullable;
 } <ocaml field_prefix="user_short_">
@@ -82,7 +82,7 @@ type namespace = {
   kind: string;
   full_path: string;
   parent_id: int nullable;
-  avatar_url: string;
+  avatar_url: string nullable;
   web_url: string;
 } <ocaml field_prefix="namespace_">
 
@@ -306,6 +306,19 @@ type task_completion_status = {
   completed_count: int;
 } <ocaml field_prefix="time_completion_status_">
 
+type merge_request_short = {
+  id: int;
+  iid: int;
+  title: string;
+  source_branch: string;
+  source_project_id: int;
+  target_branch: string;
+  target_project_id: int;
+  state: state;
+  merge_status: merge_status;
+  url: string;
+} <ocaml field_prefix="merge_request_short_">
+
 type merge_request = {
   id: int;
   iid: int;
@@ -352,7 +365,7 @@ type merge_request = {
   references: references;
   time_stats: time_stats;
   squash: bool;
-  task_completion_status: task_completion_status;
+  task_completion_status: task_completion_status nullable;
 } <ocaml field_prefix="merge_request_">
 
 type merge_requests = merge_request list
@@ -617,10 +630,6 @@ type project_webhook = {
   path_with_namespace: string;
   visibility_level: int;
   default_branch: string;
-  ?homepage: string option;
-  ?url: string option;
-  ?ssh_url: string option;
-  ?http_url: string option;
 } <ocaml field_prefix="project_webhook_">
 
 type merge_request_attributes = {
@@ -707,11 +716,6 @@ type merge_request_changes = {
   ?updated_at: updated_at option;
   ?assignees: assignees option;
 } <ocaml field_prefix="merge_request_changes_">
-
-type author_short = {
-  name: string;
-  email: string;
-} <ocaml field_prefix="author_short_">
 
 (* TODO Rename these *)
 type commit_webhook = {
@@ -888,6 +892,133 @@ type release_webhook = {
   commit: commit_short_webhook;
 } <ocaml field_prefix="release_webhook_">
 
+type runner = {
+  id: int;
+  description: string;
+  runner_type: string; (* TODO Possible variant *)
+  active: bool;
+  is_shared: bool;
+  tags: string list;
+} <ocaml field_prefix="runner_">
+
+type job_webhook_commit = {
+  id: int;
+  sha: string;
+  message: string;
+  author_name: string;
+  author_email: string;
+  author_url: string;
+  status: string; (* TODO Possible variant *)
+  duration: float nullable;
+  started_at: date_time;
+  finished_at: date_time nullable;
+}
+
+type job_webhook = {
+  ref: string;
+  tag: bool;
+  before_sha: string;
+  sha: string;
+  build_id: int;
+  build_name: string;
+  build_stage: string;
+  build_status: string; (* TODO Make this a variant *)
+  build_created_at: date_time;
+  build_started_at: date_time;
+  build_finished_at: date_time;
+  build_duration: float;
+  build_queued_duration: float;
+  build_allow_failure: bool;
+  build_failure_reason: string; (* TODO Possible variant *)
+  pipeline_id: int;
+  runner: runner;
+  project_id: int;
+  project_name: string;
+  user: user_short;
+  commit: job_webhook_commit;
+  repository: repository;
+  environment: string nullable;
+} <ocaml field_prefix="job_webhook_">
+
+type artifacts_file = {
+  filename: string nullable;
+  size: int nullable;
+} <ocaml field_prefix="artifacts_file_">
+
+type pipeline_build = {
+  id: int;
+  stage: string;
+  name: string;
+  status: string; (* TODO Possible variant *)
+  created_at: date_time;
+  started_at: date_time nullable;
+  finished_at: date_time nullable;
+  duration: float nullable;
+  queued_duration: float nullable;
+  when: string; (* TODO Possible variant *)
+  manual: bool;
+  allow_failure: bool;
+  user: user_short;
+  runner: runner nullable;
+  artifacts_file: artifacts_file;
+  environment: string nullable;
+} <ocaml field_prefix="pipeline_build_">
+
+type pipeline_attributes = {
+  id: int;
+  ref: string;
+  tag: bool;
+  sha: string;
+  before_sha: string;
+  source: string;
+  status: string; (* TODO Possible variant *)
+  detailed_status: string;
+  stages: string list;
+  created_at: date_time;
+  finished_at: date_time;
+  duration: int;
+  queued_duration: int;
+  variables: string list;
+} <ocaml field_prefix="pipeline_attributes_">
+
+type pipeline_webhook = {
+  attributes<json name="object_attributes">: pipeline_attributes;
+  merge_request: merge_request_short;
+  user: user_short;
+  project: project_webhook;
+  commit: commit_short_webhook;
+  builds: pipeline_build list;
+} <ocaml field_prefix="pipeline_webhook_">
+
+type deployment_webhook = {
+  status: string; (* TODO Possible variant *)
+  status_changed_at: date_time;
+  deployment_id: int;
+  deployable_id: int;
+  deployable_url: string;
+  environment: string;
+  project: project_webhook;
+  short_sha: string;
+  user: user_short;
+  user_url: string;
+  commit_url: string;
+  commit_title: string;
+}
+
+type feature_flag_attributes = {
+  id: int;
+  name: string;
+  description: string;
+  active: bool;
+}
+
+type feature_flag_webhook = {
+  project: project_webhook;
+  user: user_short;
+  user_url: string;
+  object_attributes: feature_flag_attributes; 
+}
+
 (* https://docs.gitlab.com/ee/user/project/integrations/webhooks.html#events *)
 type webhooks = webhook list
 
@@ -898,12 +1029,10 @@ type webhook = [
   | Note <json name="note"> of note_webhook
   | WikiPage <json name="wiki_page"> of wiki_page_webhook
   | Release <json name="release"> of release_webhook
-  (* TODO Add support for these webhooks.
-  | Pipeline
-  | Job
-  | Deployment
-  | FeatureFlag
-   *)
+  | Job <json name="build"> of job_webhook
+  | Pipeline <json name="pipeline"> of pipeline_webhook
+  | Deployment <json name="deployment"> of deployment_webhook
+  | FeatureFlag <json name="feature_flag"> of feature_flag_webhook
 ] <ocaml field_prefix="webhook_">
   <json adapter.ocaml="Gitlab_json.Adapter.WebhookEvent">
 
@@ -936,6 +1065,8 @@ type event_target_type = [
   | Snippet <json name="Snippet">
   | User <json name="User">
   | WikiPage <json name="WikiPage::Meta">
+  | DiffNote <json name="DiffNote">
+  | DiscussionNote <json name="DiscussionNote">
 ]
 
 type wiki_page = {

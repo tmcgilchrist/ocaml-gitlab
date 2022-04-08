@@ -979,6 +979,8 @@ struct
       | `Snippet -> "snippet"
       | `User -> "user"
       | `WikiPage -> "WikiPage::Meta"
+      | `DiffNote -> "DiffNote"
+      | `DiscussionNote -> "DiscussionNote"
     in
     match target_type with
     | None -> uri

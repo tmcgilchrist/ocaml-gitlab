@@ -81,6 +81,22 @@ let project_branches_cmd config =
   let term = Term.(const project_branches $ project_id) in
   Cmd.v info term
 
+let project_events_cmd config =
+  let project_events project_id =
+    let cmd =
+      let open Gitlab in
+      let open Monad in
+      let config = config () in
+      Project.events ~token:config.token ~project_id () >|~ fun events ->
+      printf "%s\n" (Yojson.Basic.prettify @@ Gitlab_j.string_of_events events)
+    in
+    Lwt_main.run @@ Gitlab.Monad.run cmd
+  in
+  let doc = "List all project events." in
+  let info = Cmd.info ~envs ~doc "events" in
+  let term =  Term.(const project_events $ project_id) in
+  Cmd.v info term
+
 let cmd config = 
   let doc = "Create, clone, fork, and view projects." in
   let default = Term.(ret (const (`Help (`Pager, None)))) in
@@ -90,4 +106,5 @@ let cmd config =
     [ project_branches_cmd config;
       project_create_cmd config;
       status_checks_cmd config;
+      project_events_cmd config;    
     ]
