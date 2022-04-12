@@ -97,7 +97,7 @@ let project_events_cmd config =
   let term =  Term.(const project_events $ project_id) in
   Cmd.v info term
 
-let cmd config = 
+let cmd config =
   let doc = "Create, clone, fork, and view projects." in
   let default = Term.(ret (const (`Help (`Pager, None)))) in
   let man = [ ] in
@@ -106,5 +106,5 @@ let cmd config =
     [ project_branches_cmd config;
       project_create_cmd config;
       status_checks_cmd config;
-      project_events_cmd config;    
+      project_events_cmd config;
     ]

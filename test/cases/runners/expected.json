@@ -1,0 +1,23 @@
+[
+    {
+    "id": 22239730,
+    "description": "65ae6fd8b80f",
+    "runner_type": "project_type",
+    "active": false,
+    "is_shared": false
+},
+    {
+    "id": 1338659,
+    "description": "aws_arm_1",
+    "runner_type": "group_type",
+    "active": false,
+    "is_shared": false
+},
+    {
+    "id": 51131359,
+    "description": "AWS-Runner-x86_64",
+    "runner_type": "project_type",
+    "active": false,
+    "is_shared": false
+}
+]

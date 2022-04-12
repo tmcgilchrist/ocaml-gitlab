@@ -274,6 +274,9 @@ struct
         (Printf.sprintf
            "%s/projects/%i/merge_requests/%s/status_check_responses" api id
            merge_request_iid)
+
+    let runners =
+      Uri.of_string (Printf.sprintf "%s/runners" api)
   end
 
   module C = Cohttp
@@ -1595,5 +1598,12 @@ struct
         let uri = URI.group_milestone ~group_id ~milestone_id in
         API.delete ~token ~uri ~expected_code:`No_content (fun _ -> return ())
     end
+  end
+  module Runners = struct
+    open Lwt
+
+    let list ~token () =
+      let uri = URI.runners in
+      API.get ~token ~uri (fun body -> return (Gitlab_j.runners_of_string body))
   end
 end

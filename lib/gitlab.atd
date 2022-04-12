@@ -892,14 +892,22 @@ type release_webhook = {
   commit: commit_short_webhook;
 } <ocaml field_prefix="release_webhook_">
 
+type runner_type = [
+ | Project <json name="project_type">
+ | Instance <json name="instance_type">
+ | Group <json name="group_type">
+]
+
 type runner = {
   id: int;
   description: string;
-  runner_type: string; (* TODO Possible variant *)
+  runner_type: runner_type;
   active: bool;
   is_shared: bool;
-  tags: string list;
+  ?tags: string list option;
 } <ocaml field_prefix="runner_">
+
+type runners = runner list
 
 type job_webhook_commit = {
   id: int;
@@ -912,7 +920,7 @@ type job_webhook_commit = {
   duration: float nullable;
   started_at: date_time;
   finished_at: date_time nullable;
-}
+} <ocaml field_prefix="job_webhook_commit_">
 
 type job_webhook = {
   ref: string;
