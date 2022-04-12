@@ -33,7 +33,7 @@ let list_cmd config =
   Cmd.v info term
 
 let cmd config =
-  let doc = "Manage runner." in
+  let doc = "Manage runners." in
   let default = Term.(ret (const (`Help (`Pager, None)))) in
   let man = [] in
   let info = Cmd.info ~envs "runner" ~doc ~man in
