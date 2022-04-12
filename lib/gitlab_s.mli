@@ -258,6 +258,7 @@ module type Gitlab = sig
         will be available unless GitLab violates its API specification. *)
   end
 
+  (** Perform GitLab API requests. *)
   module API : sig
     val code_handler : expected_code:Cohttp.Code.status_code -> 'a -> 'a handler
     (** [code_handler ~expected_code parse] is a response handler that
@@ -386,6 +387,8 @@ module type Gitlab = sig
         message that GitLab generated in [message]. *)
   end
 
+  (** User contribution {{:https://docs.gitlab.com/ee/api/events.html}events}.
+  *)
   module Event : sig
     val all :
       token:Token.t ->
@@ -403,7 +406,7 @@ module type Gitlab = sig
     *)
   end
 
-  (** The [User] module provides access to User {{:https://docs.gitlab.com/14.0/ee/api/users.html}API}.
+  (** The [User] module provides access to {{:https://docs.gitlab.com/14.0/ee/api/users.html}User API}.
    *)
   module User : sig
     val by_id : id:string -> unit -> Gitlab_t.user Response.t Monad.t
@@ -1096,6 +1099,9 @@ module type Gitlab = sig
       *)
     end
   end
+
+  (** The [Runners] module provides access to {{:https://docs.gitlab.com/ee/api/runners.html}Runners API}.
+  *)
   module Runners : sig
     val list:
       token: Token.t ->

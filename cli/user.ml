@@ -20,7 +20,7 @@ let owner_name =
 
 let json =
   let doc = "Print output as formatted json" in
-  Arg.(value & opt bool false & info [ "json" ] ~doc)
+  Arg.(value & flag & info [ "json" ] ~doc)
 
 let user_cmd =
   let user_list user =
