@@ -27,6 +27,7 @@ let cmds =
     Merge_request.cmd config;
     Project.cmd config;
     User.cmd config;
+    Runner.cmd config;
   ]
 
 let () =

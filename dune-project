@@ -67,7 +67,8 @@ This library installs the JavaScript version, which uses [js_of_ocaml](http://oc
   (gitlab-unix (>= 0.1.3))
   (cohttp-lwt-unix (>= 4.0))
   (otoml (>= 0.9.0))
- (mdx :with-test))
+  (fmt (>= 0.9.0))
+  (mdx :with-test))
  (synopsis "GitLab cli")
  (description "Experimental GitLab cli in the style of GitHub's gh and hub commands."))
 

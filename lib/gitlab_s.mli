@@ -1096,6 +1096,13 @@ module type Gitlab = sig
       *)
     end
   end
+  module Runners : sig
+    val list:
+      token: Token.t ->
+      unit ->
+      Gitlab_t.runners Response.t Monad.t
+    (** [list ~token] Get a list of specific runners available to the user.*)
+  end
 end
 
 (** A module of this type is required in order to construct a

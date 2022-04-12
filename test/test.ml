@@ -174,6 +174,17 @@ module Gitlab_j_issues : TestableJson = struct
 
   let to_json v = Yojson.Basic.from_string (Gitlab_j.string_of_issues v)
 end
+
+module Gitlab_j_runners : TestableJson = struct
+  type t = Gitlab_j.runners
+
+  let name = "runners"
+
+  let of_string = Gitlab_j.runners_of_string
+
+  let to_json v = Yojson.Basic.from_string (Gitlab_j.string_of_runners v)
+end
+
 (* instances under test *)
 module E = Make (Gitlab_j_events)
 module U = Make (Gitlab_j_user)
@@ -187,6 +198,7 @@ module BF = Make (Gitlab_j_branches_full)
 module M = Make (Gitlab_j_milestones)
 module C = Make (Gitlab_j_commits)
 module I = Make (Gitlab_j_issues)
+module R = Make (Gitlab_j_runners)
 
 (* Run it *)
 let () =
@@ -202,6 +214,7 @@ let () =
       ("milestones", M.test ());
       ("project_short", PS.test ());
       ("projects", P.test ());
+      ("runners", R.test ());
       ("user", U.test ());
       ("user_short", US.test ());
       ("webhooks", WH.test ());
