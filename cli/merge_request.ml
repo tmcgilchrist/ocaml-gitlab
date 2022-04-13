@@ -36,24 +36,61 @@ let state =
 
 let envs = Gitlab.Env.envs
 
-let merge_requests_cmd config =
+type mr_error =
+  | GitRepoMissing of string
+  | GitParsingError of string
+
+let pp_error f err = match err with
+  | GitRepoMissing str -> Fmt.pf f "%s" str
+  | GitParsingError str -> Fmt.pf f "%s" str
+
+let get_git_project =
+  let open Result in
+  let ( let* ) = bind in
+
+  let* dot = Gitconfig.Resolve.parse_dot_git () |> map_error (fun x -> GitParsingError x) in
+  let git_repo = Gitconfig.Resolve.gitlab_project_name ~remote:"origin" dot
+          |> Option.map (String.split_on_char '/')
+          |> Option.value ~default:[] in
+  match git_repo with
+  | (owner::name::[]) ->
+     ok (owner, name)
+  | _ ->
+     error (GitRepoMissing "No gitlab project name found in .git/config.")
+
+let merge_requests_list_cmd config : unit Cmd.t =
+
+  (* Pretty print line for merge request. *)
+  let pp f (mr : Gitlab_j.merge_request) =
+    Fmt.pf f "#%-19i %-20s %-20s"
+      mr.merge_request_id
+      mr.merge_request_title
+      mr.merge_request_source_branch
+  in
+
   let merge_requests_list () =
     let cmd =
       let open Gitlab in
       let open Monad in
       let config = config () in
-      let* mr = return (User.merge_requests ~token:config.token ()) in
-      Stream.iter
-        (fun merge_request ->
-          printf "#%i %s\n" merge_request.Gitlab_t.merge_request_id
-            merge_request.Gitlab_t.merge_request_title;
-          return ())
-        mr
+      let token = config.token in
+      match get_git_project with
+      | Ok (owner, name) ->
+         (* TODO Project by_name should return (project option) type not list. *)
+         Project.by_name ~token ~owner ~name () >>~ fun projects ->
+         let project = List.hd projects in (* TODO fail gracefully with not a gitlab project error. *)
+         let id = project.Gitlab_j.project_short_id in
+
+         let* _ = Monad.embed (Lwt_io.printf "\nShowing open pull requests in %s\n\n" project.Gitlab_j.project_short_path_with_namespace) in
+         Project.merge_requests ~state:`Opened ~token ~id ()
+         |> Stream.iter (fun merge_request -> return @@ Fmt.pr "%a\n" pp merge_request)
+      | Error err ->
+         return @@ Fmt.epr "Error: %a" pp_error err
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
   let doc = "List user's merge requests." in
-  let info = Cmd.info ~envs ~doc "merge-requests" in
+  let info = Cmd.info ~envs ~doc "list" in
   let term = Term.(const merge_requests_list $ const ()) in
   Cmd.v info term
 
@@ -117,6 +154,7 @@ let cmd config =
   let man = [] in
   let info = Cmd.info ~envs "mr" ~doc ~man in
   Cmd.group ~default info
-    [
-      merge_requests_cmd config; ci_status_cmd config; ci_status_set_cmd config;
+    [ merge_requests_list_cmd config;
+      ci_status_cmd config;
+      ci_status_set_cmd config;
     ]
