@@ -238,6 +238,9 @@ struct
         (Printf.sprintf "%s/projects/%i/merge_requests/%s/notes/%i" api project_id
            merge_request_iid note_id)
 
+    let project_pipelines ~id =
+      Uri.of_string (Printf.sprintf "%s/projects/%i/pipelines" api id)
+
     let project_events ~id =
       Uri.of_string (Printf.sprintf "%s/projects/%i/events" api id)
 
@@ -965,6 +968,52 @@ struct
     | None -> uri
     | Some state -> Uri.add_query_param' uri ("state", show state)
 
+  let pipeline_status_param (status : Gitlab_t.pipeline_status option) uri =
+    let show = function
+      | `Created -> "created"
+      | `WaitingForResource -> "waiting_for_resource"
+      | `Preparing -> "preparing"
+      | `Pending -> "pending"
+      | `Running -> "running"
+      | `Success -> "success"
+      | `Failed -> "failed"
+      | `Canceled -> "canceled"
+      | `Skipped -> "skipped"
+      | `Manual -> "manual"
+      | `Scheduled -> "scheduled"
+    in
+    match status with
+    | None -> uri
+    | Some status -> Uri.add_query_param' uri ("status", show status)
+
+  let per_page_param (per_page : int option) uri =
+    match per_page with
+    | None -> uri
+    | Some per_page ->
+        Uri.add_query_param' uri ("per_page", string_of_int per_page)
+
+  let pipeline_source_param (source : Gitlab_t.pipeline_source option) uri =
+    let show = function
+      | `Push -> "push"
+      | `Web -> "web"
+      | `Trigger -> "trigger"
+      | `Schedule -> "schedule"
+      | `Api -> "api"
+      | `External -> "external"
+      | `Pipeline -> "pipeline"
+      | `Chat -> "chat"
+      | `Webide -> "webide"
+      | `Merge_Request_Event -> "merge_request_event"
+      | `External_Pull_Request_Event -> "external_pull_request_event"
+      | `Parent_Pipeline -> "parent_pipeline"
+      | `Ondemand_Dast_Scan -> "ondemand_dast_scan"
+      | `Ondemand_Dast_Validation -> "ondemand_dast_validation"
+    in
+    match source with
+    | None -> uri
+    | Some source -> Uri.add_query_param' uri ("state", show source)
+
+
   let action_param (action : Gitlab_t.event_action_name option) uri =
     let show = function
       | `Accepted -> "accepted"
@@ -1040,6 +1089,12 @@ struct
     | Some assignee_username ->
         Uri.add_query_param' uri ("assignee_username", assignee_username)
 
+  let username_param username uri =
+    match username with
+    | None -> uri
+    | Some username ->
+        Uri.add_query_param' uri ("username", username)
+
   let my_reaction_param my_reaction uri =
     match my_reaction with
     | None -> uri
@@ -1054,6 +1109,14 @@ struct
     match scope with
     | None -> uri
     | Some scope -> Uri.add_query_param' uri ("scope", show scope)
+
+  let opt_add_query_param_opt param value_opt uri =
+    Option.fold ~none:uri
+      ~some:(fun value -> Uri.add_query_param' uri (param, value))
+      value_opt
+
+  let updated_after_param = opt_add_query_param_opt "updated_after"
+  let updated_before_param = opt_add_query_param_opt "updated_before"
 
   let name_param name uri =
     match name with
@@ -1095,6 +1158,11 @@ struct
     match ref_name with
     | None -> uri
     | Some ref_name -> Uri.add_query_param' uri ("ref", ref_name)
+
+  let sha_param sha uri =
+    match sha with
+    | None -> uri
+    | Some sha -> Uri.add_query_param' uri ("sha", sha)
 
   let stage_param stage uri =
     match stage with
@@ -1282,6 +1350,34 @@ struct
       in
       API.get ?token ~uri ~fail_handlers (fun body ->
           return (Some (Gitlab_j.project_short_of_string body)))
+
+    let pipelines ~token ~project_id ?per_page ?status ?source ?sha ?ref_
+        ?username ?updated_after ?updated_before ?sort ?order_by () =
+      let order_by_param order uri =
+        let show = function
+          | `Id -> "id"
+          | `Status -> "status"
+          | `Ref -> "ref"
+          | `Updated_at -> "updated_at"
+          | `User_id -> "user_id"
+        in
+        match order with
+        | None -> uri
+        | Some order -> Uri.add_query_param' uri ("order_by", show order)
+      in
+      let uri =
+        URI.project_pipelines ~id:project_id
+        |> per_page_param per_page
+        |> pipeline_status_param status
+        |> username_param username
+        |> pipeline_source_param source
+        |> sha_param sha |> ref_param ref_
+        |> updated_after_param updated_after
+        |> updated_before_param updated_before
+        |> order_by_param order_by |> sort_param sort
+      in
+      API.get_stream ~token ~uri (fun body ->
+          return (Gitlab_j.pipelines_of_string body))
 
     let merge_requests ?token ?state ?milestone ?labels ?author ?author_username
         ?my_reaction ?scope ~id () =

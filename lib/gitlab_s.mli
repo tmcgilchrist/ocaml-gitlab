@@ -603,6 +603,26 @@ module type Gitlab = sig
        *)
     end
 
+    val pipelines :
+      token:Token.t ->
+      project_id:int ->
+      ?per_page:int ->
+      ?status:Gitlab_t.pipeline_status ->
+      ?source:Gitlab_t.pipeline_source ->
+      ?sha:string ->
+      ?ref_:string ->
+      ?username:string ->
+      ?updated_after:string ->
+      ?updated_before:string ->
+      ?sort:Gitlab_t.sort ->
+      ?order_by:[`Id | `Ref | `Status | `Updated_at | `User_id ] ->
+      unit ->
+      Gitlab_t.pipeline Stream.t
+    (** [pipelines ~token ~project_id ()] list all pipelines the authenticated user has access to in [project_id].
+
+        See {{:https://docs.gitlab.com/ee/api/pipelines.html#list-project-pipelines}List project pipelines}.
+     *)
+
     val merge_requests :
       ?token:Token.t ->
       ?state:Gitlab_t.state ->
