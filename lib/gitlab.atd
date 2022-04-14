@@ -1318,3 +1318,49 @@ type create_project_hook = {
   ?wiki_page_events: bool option;
   ?token: string option;
 }
+
+type pipeline_status = [
+ | Created <json name="created">
+ | WaitingForResource <json name="waiting_for_resource">
+ | Preparing <json name="preparing">
+ | Pending <json name="pending">
+ | Running <json name="running">
+ | Success <json name="success">
+ | Failed <json name="failed">
+ | Canceled <json name="canceled">
+ | Skipped <json name="skipped">
+ | Manual <json name="manual">
+ | Scheduled <json name="scheduled">
+]
+
+type pipeline_source = [
+  | Push <json name="push">
+  | Web <json name="web">
+  | Trigger <json name="trigger">
+  | Schedule <json name="schedule">
+  | Api <json name="api">
+  | External <json name="external">
+  | Pipeline <json name="pipeline">
+  | Chat <json name="chat">
+  | Webide <json name="webide">
+  | Merge_Request_Event <json name="merge_request_event">
+  | External_Pull_Request_Event <json name="external_pull_request_event">
+  | Parent_Pipeline <json name="parent_pipeline">
+  | Ondemand_Dast_Scan <json name="ondemand_dast_scan">
+  | Ondemand_Dast_Validation <json name="ondemand_dast_validation">
+]
+
+type pipeline = {
+    id : int;
+    iid : int;
+    project_id : int;
+    status : pipeline_status;
+    source : pipeline_source;
+    ref : string;
+    sha : string;
+    web_url : string;
+    created_at : date_time;
+    updated_at : date_time;
+}
+
+type pipelines = pipeline list
