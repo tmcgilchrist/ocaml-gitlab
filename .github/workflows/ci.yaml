@@ -50,3 +50,6 @@ jobs:
       - name: Opam Lint
         run: |
           opam lint gitlab-unix.opam gitlab.opam lab.opam
+          
+      - name: Populate PR in Changelog
+        uses: tarides/pr-number-action@v1.1
