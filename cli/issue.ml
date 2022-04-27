@@ -98,9 +98,11 @@ let issue_list_cmd config =
       group_issue_subcmd config;
     ]
 
+let group_name = "issue"
+
 let cmd config =
   let doc = "Manage issues." in
-  let default = Term.(ret (const (`Help (`Pager, None)))) in
+  let default = Term.(ret (const (`Help (`Pager, Some group_name)))) in
   let man = [] in
-  let info = Cmd.info ~envs "issue" ~doc ~man in
+  let info = Cmd.info ~envs group_name ~doc ~man in
   Cmd.group ~default info [ issue_list_cmd config ]
