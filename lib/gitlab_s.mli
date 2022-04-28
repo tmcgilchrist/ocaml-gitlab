@@ -446,6 +446,7 @@ module type Gitlab = sig
       ?author_username:string ->
       ?my_reaction:string ->
       ?scope:Gitlab_t.merge_request_scope ->
+      ?with_merge_status_recheck:bool ->
       unit ->
       Gitlab_t.merge_request Stream.t
     (** [merge_requests ()] list all merge requests the authenticated user has access to.
@@ -692,6 +693,7 @@ module type Gitlab = sig
       ?updated_before:string ->
       ?sort:Gitlab_t.sort ->
       ?order_by:[ `Created_at | `Title | `Updated_at ] ->
+      ?with_merge_status_recheck:bool ->
       id:int ->
       unit ->
       Gitlab_t.merge_request Stream.t

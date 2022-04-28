@@ -58,7 +58,18 @@ let get_git_project =
   | _ ->
      error (GitRepoMissing "No gitlab project name found in .git/config.")
 
-let merge_requests_list_cmd config : unit Cmd.t =
+exception NotGitlabProject of string
+
+let get_project token owner name : Gitlab_j.project_short Gitlab.Monad.t =
+  let open Gitlab in
+  let open Monad in
+
+  Project.by_name ~token ~owner ~name () >>~ fun projects ->
+  try return @@ List.hd projects
+  with Failure _ -> fail @@ NotGitlabProject (owner ^ " " ^ name)
+
+
+let merge_requests_list_cmd config =
 
   (* Pretty print line for merge request. *)
   let pp f (mr : Gitlab_j.merge_request) =
@@ -76,14 +87,13 @@ let merge_requests_list_cmd config : unit Cmd.t =
       let token = config.token in
       match get_git_project with
       | Ok (owner, name) ->
-         (* TODO Project by_name should return (project option) type not list. *)
-         Project.by_name ~token ~owner ~name () >>~ fun projects ->
-         let project = List.hd projects in (* TODO fail gracefully with not a gitlab project error. *)
+         let* project = get_project token owner name in
          let id = project.Gitlab_j.project_short_id in
-
-         let* _ = Monad.embed (Lwt_io.printf "\nShowing open pull requests in %s\n\n" project.Gitlab_j.project_short_path_with_namespace) in
+         let* _ = Monad.embed (
+             Lwt_io.printf "\nShowing open pull requests in %s\n\n" project.Gitlab_j.project_short_path_with_namespace) in
          Project.merge_requests ~state:`Opened ~token ~id ()
-         |> Stream.iter (fun merge_request -> return @@ Fmt.pr "%a\n" pp merge_request)
+         |> Stream.iter (fun merge_request ->
+             return @@ Fmt.pr "%a\n" pp merge_request)
       | Error err ->
          return @@ Fmt.epr "Error: %a" pp_error err
     in
@@ -93,6 +103,45 @@ let merge_requests_list_cmd config : unit Cmd.t =
   let info = Cmd.info ~envs ~doc "list" in
   let term = Term.(const merge_requests_list $ const ()) in
   Cmd.v info term
+
+let mr_status_cmd config =
+  let pp f (mr : Gitlab_j.merge_request) =
+    let pp_state = function
+      | `Unchecked -> "unchecked"
+      | `Checking -> "checking"
+      | `CanBeMerged -> "can_be_merged"
+      | `CannotBeMerged -> "cannot_be_merged"
+      | `CannotBeMergedRecheck -> "cannot_be_merged_recheck"
+      | `Preparing -> "preparing"
+    in
+    Fmt.pf f "#%-19i %-20s %-20s %-20s"
+      mr.merge_request_id
+      mr.merge_request_title
+      mr.merge_request_source_branch
+      (pp_state mr.merge_request_merge_status)
+  in
+  let mr_status () =
+    let cmd =
+      let open Gitlab in
+      let open Monad in
+      let config = config () in
+      let token = config.token in
+      match get_git_project with
+      | Ok (owner, name) ->
+        let* project = get_project token owner name in
+        let id = project.Gitlab_j.project_short_id in
+        Project.merge_requests ~state:`Opened ~token ~id ~with_merge_status_recheck:true ()
+        |> Stream.iter (fun merge_request ->
+          return @@ Fmt.pr "%a\n" pp merge_request)
+      | Error err -> 
+        return @@ Fmt.epr "Error: %a" pp_error err
+    in
+    Lwt_main.run @@ Gitlab.Monad.run cmd 
+  in
+  let doc = "Show status of relevant merge requests" in
+  let info = Cmd.info ~envs ~doc "status" in
+  let term = Term.(const mr_status $ const ()) in
+  Cmd.v info term  
 
 let ci_status_cmd config =
   let ci_status project_id sha _verbose =
@@ -148,13 +197,26 @@ let ci_status_set_cmd config =
   let term = Term.(const ci_status $ project_id $ commit_sha $ state) in
   Cmd.v info term
 
+(* let mr_show_cmd config =  *)
+(*   let show mr_id = *)
+(*     Lwt_main.run *)
+(*   in *)
+(*   let doc = "Set or update the build status of a commit." in *)
+(*   let info = Cmd.info ~envs ~doc "set-ci-status" in *)
+(*   let term = Term.(const show $ mr_id) in *)
+(*   Cmd.v info term *)
+
+let group_name = "mr"
+
 let cmd config =
   let doc = "Work with GitLab merge requests." in
-  let default = Term.(ret (const (`Help (`Pager, None)))) in
-  let man = [] in
-  let info = Cmd.info ~envs "mr" ~doc ~man in
+  let default = Term.(ret (const (`Help (`Pager, Some group_name)))) in
+  let man = [ ] in
+  let info = Cmd.info ~envs group_name ~doc ~man in
   Cmd.group ~default info
     [ merge_requests_list_cmd config;
       ci_status_cmd config;
       ci_status_set_cmd config;
+      mr_status_cmd config;
+      (* mr_show_cmd config; *)
     ]
