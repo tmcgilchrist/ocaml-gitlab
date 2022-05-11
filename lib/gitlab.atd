@@ -1365,6 +1365,21 @@ type pipeline = {
 
 type pipelines = pipeline list
 
+type single_pipeline = {
+    id : int;
+    iid : int;
+    project_id : int;
+    status : pipeline_status;
+    source : pipeline_source;
+    ref : string;
+    sha : string;
+    web_url : string;
+    started_at : date_time nullable;
+    created_at : date_time nullable;
+    updated_at : date_time nullable;
+    finished_at : date_time nullable;
+}
+
 type pipeline_job_scope = [
  | Created <json name="created">
  | Pending <json name="pending">

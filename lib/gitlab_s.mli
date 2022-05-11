@@ -623,6 +623,17 @@ module type Gitlab = sig
         See {{:https://docs.gitlab.com/ee/api/pipelines.html#list-project-pipelines}List project pipelines}.
      *)
 
+    val pipeline :
+      token:Token.t ->
+      project_id:int ->
+      pipeline_id:int ->
+      unit ->
+      Gitlab_t.single_pipeline Response.t Monad.t
+    (** [pipeline ~token ~project_id ~pipeline_id ()] get one single pipeline [pipeline_id] in [project_id].
+
+        See {{:https://docs.gitlab.com/ee/api/pipelines.html#get-a-single-pipeline} Get a single pipeline}.
+     *)
+
     val pipeline_jobs :
       token:Token.t ->
       project_id:int ->
