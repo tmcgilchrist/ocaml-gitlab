@@ -238,6 +238,10 @@ struct
         (Printf.sprintf "%s/projects/%i/merge_requests/%s/notes/%i" api project_id
            merge_request_iid note_id)
 
+    let project_pipeline ~id ~pipeline_id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/pipelines/%i" api id pipeline_id)
+
     let project_pipelines ~id =
       Uri.of_string (Printf.sprintf "%s/projects/%i/pipelines" api id)
 
@@ -1381,6 +1385,11 @@ struct
       in
       API.get ?token ~uri ~fail_handlers (fun body ->
           return (Some (Gitlab_j.project_short_of_string body)))
+
+    let pipeline ~token ~project_id ~pipeline_id () =
+      let uri = URI.project_pipeline ~id:project_id ~pipeline_id in
+      API.get ~token ~uri (fun body ->
+          return (Gitlab_j.single_pipeline_of_string body))
 
     let pipelines ~token ~project_id ?per_page ?status ?source ?sha ?ref_
         ?username ?updated_after ?updated_before ?sort ?order_by () =
