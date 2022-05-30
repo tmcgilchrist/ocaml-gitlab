@@ -1,1 +1,3 @@
-version=0.20.1
+profile = default
+version = 0.21.0
+ocaml-version = 4.08.0
