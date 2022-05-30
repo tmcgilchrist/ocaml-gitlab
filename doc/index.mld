@@ -66,7 +66,7 @@ The GitLab API functions come in two flavours:
   {- Streaming paginated request that return many responses that would not fit into a single response. ['a Stream.t]}
   }
 
-For simple request use {!val: bind} and the helper {!val: >>~} from {!module: Gitlab_s.Gitlab.Monad}.
+For simple request use {!val: Gitlab_s.Gitlab.Monad.bind} and the helper {!val: Gitlab_s.Gitlab.Monad.>>~} from {!module: Gitlab_s.Gitlab.Monad}.
 For streaming responses the {!module: Gitlab_s.Gitlab.Stream} provides an abstraction to GitLab's paginated
 endpoints. For a more detailed example using the API look at the
 {{:https://github.com/tmcgilchrist/ocaml-gitlab/blob/master/cli/lab.ml}lab} command line tool.
