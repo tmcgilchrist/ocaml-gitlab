@@ -228,6 +228,16 @@ struct
         (Printf.sprintf "%s/projects/%i/merge_requests/%s/changes" api id
            merge_request_iid)
 
+    let project_merge_request_notes ~project_id ~merge_request_iid =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/merge_requests/%s/notes" api project_id
+           merge_request_iid)
+
+    let project_merge_request_note_id ~project_id ~merge_request_iid ~note_id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/merge_requests/%s/notes/%i" api project_id
+           merge_request_iid note_id)
+
     let project_events ~id =
       Uri.of_string (Printf.sprintf "%s/projects/%i/events" api id)
 
@@ -1538,7 +1548,25 @@ struct
         let body = Gitlab_j.string_of_create_project_hook create_project_hook in
         API.post ~token ~uri ~body ~expected_code:`Created (fun s ->
             Lwt.return (Gitlab_j.project_hook_of_string s))
+    end
 
+    module Notes = struct
+      module Merge_request = struct
+        let list ?token ~project_id ~merge_request_iid ?sort () =
+          let uri = URI.project_merge_request_notes ~project_id ~merge_request_iid |> sort_param sort in
+          API.get_stream ?token ~uri (fun body ->
+              return (Gitlab_j.notes_of_string body))
+
+        let by_id ?token ~project_id ~merge_request_iid ~note_id () =
+          let uri = URI.project_merge_request_note_id ~project_id ~merge_request_iid ~note_id in
+          API.get ?token ~uri (fun body -> return (Gitlab_j.note_of_string body))
+
+        let create ~token ~project_id ~merge_request_iid ~create_note () =
+          let uri = URI.project_merge_request_notes ~project_id ~merge_request_iid in
+          let body = Gitlab_j.string_of_create_note create_note in
+          API.post ~token ~uri ~body ~expected_code:`Created (fun s ->
+              Lwt.return (Gitlab_j.note_of_string s))
+      end
     end
   end
 
