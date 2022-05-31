@@ -103,6 +103,16 @@ module Gitlab_j_project_short : TestableJson = struct
   let to_json v = Yojson.Basic.from_string (Gitlab_j.string_of_project_short v)
 end
 
+module Gitlab_j_project_hook: TestableJson = struct
+  type t = Gitlab_j.project_hook
+
+  let name = "project_hook"
+
+  let of_string = Gitlab_j.project_hook_of_string
+
+  let to_json v = Yojson.Basic.from_string (Gitlab_j.string_of_project_hook v)
+end
+
 module Gitlab_j_webhooks : TestableJson = struct
   type t = Gitlab_j.webhooks
 
@@ -191,6 +201,7 @@ module U = Make (Gitlab_j_user)
 module US = Make (Gitlab_j_user_short)
 module P = Make (Gitlab_j_projects)
 module PS = Make (Gitlab_j_project_short)
+module PH = Make (Gitlab_j_project_hook)
 module WH = Make (Gitlab_j_webhooks)
 module MR = Make (Gitlab_j_merge_requests)
 module CS = Make (Gitlab_j_commit_statuses)
@@ -218,4 +229,5 @@ let () =
       ("user", U.test ());
       ("user_short", US.test ());
       ("webhooks", WH.test ());
+      ("project_hook", PH.test ());
     ]
