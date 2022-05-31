@@ -976,6 +976,34 @@ module type Gitlab = sig
           See {{:https://docs.gitlab.com/ee/api/issues.html#new-issue}New issue}.
         *)
     end
+    module Hook: sig
+      val list :
+        ?token:Token.t -> project_id:int -> unit -> Gitlab_t.project_hook Stream.t
+      (** [list ?token ~project_id] Request a list of a project’s hooks.
+        See {{:https://docs.gitlab.com/ee/api/projects.html#list-project-hooks}List project hooks}.
+        *)
+
+      val by_id :
+        ?token:Token.t ->
+        project_id:int ->
+        hook_id:int ->
+        unit ->
+        Gitlab_t.project_hook Response.t Monad.t
+      (** [by_id ?token ~project_id ~hook_id] Get a single project hook.
+        See {{:https://docs.gitlab.com/ee/api/projects.html#get-project-hook}Get project hook}.
+        *)
+
+      val create :
+        token:Token.t ->
+        project_id:int ->
+        Gitlab_t.create_project_hook ->
+        unit ->
+        Gitlab_t.project_hook Response.t Monad.t
+      (** Creates a new webhook.
+        See {{:https://docs.gitlab.com/ee/api/projects.html#add-project-hook}Add project hook}.
+        *)
+      
+    end
   end
 
   (** The [Group] module provides access to {{:https://docs.gitlab.com/ee/api/groups.html}Group API}. *)
