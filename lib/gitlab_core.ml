@@ -239,6 +239,13 @@ struct
         (Printf.sprintf "%s/projects/%i/milestones/%i" api project_id
            milestone_id)
 
+    let project_hooks ~project_id =
+      Uri.of_string (Printf.sprintf "%s/projects/%i/hooks" api project_id)
+
+    let project_hook_id ~project_id ~hook_id =
+      Uri.of_string (Printf.sprintf "%s/projects/%i/hooks/%i" api project_id hook_id)
+
+
     let group_projects ~id =
       Uri.of_string (Printf.sprintf "%s/groups/%s/projects" api id)
 
@@ -1514,6 +1521,24 @@ struct
         let body = Gitlab_j.string_of_create_issue create_issue in
         API.post ~token ~uri ~body ~expected_code:`Created (fun s ->
             Lwt.return (Gitlab_j.issue_of_string s))
+    end
+
+    module Hook = struct
+      let list ?token ~project_id () =
+        let uri = URI.project_hooks ~project_id in
+        API.get_stream ?token ~uri (fun body ->
+            return (Gitlab_j.project_hooks_of_string body))
+
+      let by_id ?token ~project_id ~hook_id () =
+        let uri = URI.project_hook_id ~project_id ~hook_id in
+        API.get ?token ~uri (fun body -> return (Gitlab_j.project_hook_of_string body))
+
+      let create ~token ~project_id create_project_hook () =
+        let uri = URI.project_hooks ~project_id in
+        let body = Gitlab_j.string_of_create_project_hook create_project_hook in
+        API.post ~token ~uri ~body ~expected_code:`Created (fun s ->
+            Lwt.return (Gitlab_j.project_hook_of_string s))
+
     end
   end
 

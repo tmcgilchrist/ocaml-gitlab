@@ -1260,3 +1260,48 @@ type new_milestone = {
   ?due_date: string nullable;
   ?start_date: string nullable;
 }
+
+type project_hook = {
+  id: int;
+  url: string;
+  created_at: date_time;
+  push_events: bool;
+  tag_push_events: bool;
+  merge_requests_events: bool;
+  repository_update_events: bool;
+  enable_ssl_verification: bool;
+  project_id: int;
+  issues_events: bool;
+  confidential_issues_events: bool;
+  note_events: bool;
+  pipeline_events: bool;
+  wiki_page_events: bool;
+  deployment_events: bool;
+  job_events: bool;
+  releases_events: bool;
+  confidential_note_events: bool nullable;
+  push_events_branch_filter: string nullable;
+}
+
+type project_hooks = project_hook list 
+
+type create_project_hook = {
+  ?id: int option;
+  url: string;
+  ?confidential_issues_events: bool option;
+  ?confidential_note_events: bool option;
+  ?deployment_events: bool option;
+  ?enable_ssl_verification: bool option;
+  ?issues_events: bool option;
+  ?job_events: bool option;
+  ?merge_requests_events: bool option;
+  ?note_events: bool option;
+  ?pipeline_events: bool option;
+  ?push_events_branch_filter: string option;
+  ?push_events: bool option;
+  ?releases_events: bool option;
+  ?tag_push_events: bool option;
+  ?repository_update_events: bool option;
+  ?wiki_page_events: bool option;
+  ?token: string option;
+}
