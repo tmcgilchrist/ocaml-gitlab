@@ -145,7 +145,7 @@ module type Gitlab = sig
       scopes:Gitlab_t.scope list ->
       unit ->
       Uri.t
-    (** Create URL for Authorisation code flow. {{:https://docs.gitlab.com/ee/api/oauth2.html#authorization-code-flow}} 
+    (** Create URL for Authorisation code flow. {{:https://docs.gitlab.com/ee/api/oauth2.html#authorization-code-flow}}
       *)
 
     val of_code :
@@ -976,6 +976,7 @@ module type Gitlab = sig
           See {{:https://docs.gitlab.com/ee/api/issues.html#new-issue}New issue}.
         *)
     end
+
     module Hook: sig
       val list :
         ?token:Token.t -> project_id:int -> unit -> Gitlab_t.project_hooks Response.t Monad.t
@@ -1002,7 +1003,58 @@ module type Gitlab = sig
       (** Creates a new webhook.
         See {{:https://docs.gitlab.com/ee/api/projects.html#add-project-hook}Add project hook}.
         *)
-      
+    end
+
+    (** The [Notes] module provides access to
+        {{:https://docs.gitlab.com/ee/api/notes.html#merge-requests}Notes
+        API}.
+     *)
+    module Notes : sig
+
+      (** The [Merge_request] module provides access to
+          {{:https://docs.gitlab.com/ee/api/notes.html#merge-requests}Merge
+          requests notes API}.
+       *)
+      module Merge_request : sig
+        val list :
+          ?token:Token.t ->
+          project_id:int ->
+          merge_request_iid:string ->
+          ?sort:Gitlab_t.sort ->
+          unit ->
+          Gitlab_t.note Stream.t
+        (** [list ?token ~project_id ~merge_request_iid]
+            Request a list of a merge request notes. See
+            {{:https://docs.gitlab.com/ee/api/notes.html#list-all-merge-request-notes}List
+            all merge request notes}.
+         *)
+
+        val by_id :
+          ?token:Token.t ->
+          project_id:int ->
+          merge_request_iid:string ->
+          note_id:int ->
+          unit ->
+          Gitlab_t.note Response.t Monad.t
+        (** [by_id ?token ~project_id ~merge_request_iid ~note_id]
+            Get a single note for a given merge request. See
+            {{:https://docs.gitlab.com/ee/api/notes.html#get-single-merge-request-note}Get
+            single merge request note}.
+         *)
+
+        val create :
+          token:Token.t ->
+          project_id:int ->
+          merge_request_iid:string ->
+          create_note:Gitlab_t.create_note ->
+          unit ->
+          Gitlab_t.note Response.t Monad.t
+        (** [create ?token ~project_id ~merge_request_iid ~body]
+            Creates a new note. See
+            {{:https://docs.gitlab.com/ee/api/notes.html#create-new-merge-request-note}Create
+            new merge request note}.
+         *)
+      end
     end
   end
 

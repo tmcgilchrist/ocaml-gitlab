@@ -62,7 +62,7 @@ type user_short = {
   name: string;
   username: string;
   ?state: string nullable;
-  avatar_url: string nullable;
+  ?avatar_url: string nullable;
   ?web_url: string nullable;
   ?email: string nullable;
 } <ocaml field_prefix="user_short_">
@@ -1024,7 +1024,7 @@ type feature_flag_webhook = {
   project: project_webhook;
   user: user_short;
   user_url: string;
-  object_attributes: feature_flag_attributes; 
+  object_attributes: feature_flag_attributes;
 }
 
 (* https://docs.gitlab.com/ee/user/project/integrations/webhooks.html#events *)
@@ -1119,9 +1119,10 @@ type noteable_type = [
   | Issue <json name="Issue">
 ]
 
+type notes = note list
+
 type note = {
   id: int;
-  note_type <json name="type"> : string nullable;
   body: string;
   attachment: string nullable;
   author: user_short;
@@ -1134,6 +1135,12 @@ type note = {
   confidential: bool;
   noteable_iid: int;
 } <ocaml field_prefix="note_">
+
+type create_note = {
+  body: string;
+  created_at: date_time option;
+  merge_request_diff_sha: string option;
+} <ocaml field_prefix="create_note_">
 
 type branch = {
   id: int;
@@ -1228,9 +1235,9 @@ type project_access_token = {
 type project_access_tokens = project_access_token list
 
 
-(** Types for creating new resources via API. 
+(** Types for creating new resources via API.
     This reuses the enum serialisation code.
-  *)  
+  *)
 type new_token = {
   name : string;
   expires_at : string;
@@ -1283,7 +1290,7 @@ type project_hook = {
   push_events_branch_filter: string nullable;
 }
 
-type project_hooks = project_hook list 
+type project_hooks = project_hook list
 
 type create_project_hook = {
   ?id: int option;

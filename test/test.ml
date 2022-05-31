@@ -133,6 +133,16 @@ module Gitlab_j_merge_requests : TestableJson = struct
   let to_json v = Yojson.Basic.from_string (Gitlab_j.string_of_merge_requests v)
 end
 
+module Gitlab_j_notes : TestableJson = struct
+  type t = Gitlab_j.notes
+
+  let name = "notes"
+
+  let of_string = Gitlab_j.notes_of_string
+
+  let to_json v = Yojson.Basic.from_string (Gitlab_j.string_of_notes v)
+end
+
 module Gitlab_j_commit_statuses : TestableJson = struct
   type t = Gitlab_j.commit_statuses
 
@@ -204,6 +214,7 @@ module PS = Make (Gitlab_j_project_short)
 module PH = Make (Gitlab_j_project_hook)
 module WH = Make (Gitlab_j_webhooks)
 module MR = Make (Gitlab_j_merge_requests)
+module N = Make (Gitlab_j_notes)
 module CS = Make (Gitlab_j_commit_statuses)
 module BF = Make (Gitlab_j_branches_full)
 module M = Make (Gitlab_j_milestones)
@@ -222,6 +233,7 @@ let () =
       ("events", E.test ());
       ("issues", I.test ());
       ("merge_requests", MR.test ());
+      ("notes", N.test ());
       ("milestones", M.test ());
       ("project_short", PS.test ());
       ("projects", P.test ());
