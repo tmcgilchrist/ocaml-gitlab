@@ -2,7 +2,7 @@
  (libraries cohttp-lwt-unix gitlab-unix cmdliner otoml fmt)
  (package lab)
  (public_name lab)
- (modules main api config issue merge_request project user runner)
+ (modules main api config issue merge_request project user runner project_hook)
  (name main))
 
 (mdx
