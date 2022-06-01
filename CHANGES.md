@@ -1,3 +1,15 @@
+# 0.1.4 - 2022-06-02
+
+## Added
+
+ * Add support for project hooks (#58 @novemberkilo)
+ * Support listing and creating Notes in merge requests. (#59 @MisterDA)
+ * Parse more webhooks and events including project, job, deployment and feature flag (#53 @tmcgilchrist)
+
+## Bug fixes
+
+ * Documentation fixes (#53 @tmcgilchrist) (#57 @MisterDA)
+
 # 0.1.3 - 2022-04-04
 
 ## Added
