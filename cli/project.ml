@@ -97,11 +97,13 @@ let project_events_cmd config =
   let term =  Term.(const project_events $ project_id) in
   Cmd.v info term
 
+let group_name = "project"
+
 let cmd config =
   let doc = "Create, clone, fork, and view projects." in
-  let default = Term.(ret (const (`Help (`Pager, None)))) in
+  let default = Term.(ret (const (`Help (`Pager, Some group_name)))) in
   let man = [ ] in
-  let info = Cmd.info ~envs "project" ~doc ~man in
+  let info = Cmd.info ~envs group_name ~doc ~man in
   Cmd.group ~default info
     [ project_branches_cmd config;
       project_create_cmd config;

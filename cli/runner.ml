@@ -32,9 +32,11 @@ let list_cmd config =
   let term = Term.(const list $ json) in
   Cmd.v info term
 
+let group_name = "runner"
+
 let cmd config =
   let doc = "Manage runners." in
-  let default = Term.(ret (const (`Help (`Pager, None)))) in
+  let default = Term.(ret (const (`Help (`Pager, Some group_name)))) in
   let man = [] in
-  let info = Cmd.info ~envs "runner" ~doc ~man in
+  let info = Cmd.info ~envs group_name ~doc ~man in
   Cmd.group ~default info [ list_cmd config ]

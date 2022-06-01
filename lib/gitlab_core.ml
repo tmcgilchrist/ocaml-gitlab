@@ -1055,6 +1055,11 @@ struct
     | None -> uri
     | Some scope -> Uri.add_query_param' uri ("scope", show scope)
 
+  let with_merge_status_recheck_param recheck uri =
+    match recheck with
+    | None -> uri
+    | Some recheck -> Uri.add_query_param' uri ("with_merge_status_recheck", Bool.to_string recheck)
+
   let name_param name uri =
     match name with
     | None -> uri
@@ -1208,13 +1213,14 @@ struct
       API.get ~uri (fun body -> return (Gitlab_j.projects_short_of_string body))
 
     let merge_requests ~token ?state ?milestone ?labels ?author ?author_username
-        ?my_reaction ?scope () =
+        ?my_reaction ?scope ?with_merge_status_recheck () =
       let uri =
         URI.merge_requests |> state_param state |> milestone_param milestone
         |> labels_param labels |> author_id_param author
         |> author_username_param author_username
         |> my_reaction_param my_reaction
         |> scope_param scope
+        |> with_merge_status_recheck_param with_merge_status_recheck
       in
       API.get_stream ~token ~uri (fun body ->
           return (Gitlab_j.merge_requests_of_string body))
@@ -1284,7 +1290,7 @@ struct
           return (Some (Gitlab_j.project_short_of_string body)))
 
     let merge_requests ?token ?state ?milestone ?labels ?author ?author_username
-        ?my_reaction ?scope ~id () =
+        ?my_reaction ?scope ?with_merge_status_recheck ~id () =
       let uri =
         URI.project_merge_requests ~id
         |> state_param state |> milestone_param milestone |> labels_param labels
@@ -1292,6 +1298,7 @@ struct
         |> author_username_param author_username
         |> my_reaction_param my_reaction
         |> scope_param scope
+        |> with_merge_status_recheck_param with_merge_status_recheck
       in
       API.get_stream ?token ~uri (fun body ->
           return (Gitlab_j.merge_requests_of_string body))

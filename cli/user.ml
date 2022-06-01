@@ -92,11 +92,13 @@ let user_events_cmd config =
   let term =  Term.(const user_projects_list $ owner_id) in
   Cmd.v info term
 
+let group_name = "user"
+
 let cmd config =
   let doc = "Work with GitLab users." in
-  let default = Term.(ret (const (`Help (`Pager, None)))) in
+  let default = Term.(ret (const (`Help (`Pager, Some group_name)))) in
   let man = [ ] in
-  let info = Cmd.info ~envs "user" ~doc ~man in
+  let info = Cmd.info ~envs group_name ~doc ~man in
   Cmd.group ~default info
     [ user_cmd;
       user_name_cmd;
