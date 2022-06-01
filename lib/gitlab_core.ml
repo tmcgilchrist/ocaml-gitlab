@@ -1526,7 +1526,7 @@ struct
     module Hook = struct
       let list ?token ~project_id () =
         let uri = URI.project_hooks ~project_id in
-        API.get_stream ?token ~uri (fun body ->
+        API.get ?token ~uri (fun body ->
             return (Gitlab_j.project_hooks_of_string body))
 
       let by_id ?token ~project_id ~hook_id () =

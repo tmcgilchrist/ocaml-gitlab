@@ -978,7 +978,7 @@ module type Gitlab = sig
     end
     module Hook: sig
       val list :
-        ?token:Token.t -> project_id:int -> unit -> Gitlab_t.project_hook Stream.t
+        ?token:Token.t -> project_id:int -> unit -> Gitlab_t.project_hooks Response.t Monad.t
       (** [list ?token ~project_id] Request a list of a project’s hooks.
         See {{:https://docs.gitlab.com/ee/api/projects.html#list-project-hooks}List project hooks}.
         *)

@@ -28,6 +28,7 @@ let cmds =
     Project.cmd config;
     User.cmd config;
     Runner.cmd config;
+    Project_hook.cmd config;
   ]
 
 let () =
