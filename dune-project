@@ -64,7 +64,7 @@ This library installs the JavaScript version, which uses [js_of_ocaml](http://oc
  (depends
   (ocaml (>= 4.08.0))
   (cmdliner (>= 1.1.0))
-  (gitlab-unix (>= 0.1.3))
+  (gitlab-unix (= :version))
   (cohttp-lwt-unix (>= 4.0))
   (otoml (>= 0.9.0))
   (fmt (>= 0.9.0))
