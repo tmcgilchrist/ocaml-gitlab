@@ -1049,11 +1049,38 @@ module type Gitlab = sig
           create_note:Gitlab_t.create_note ->
           unit ->
           Gitlab_t.note Response.t Monad.t
-        (** [create ?token ~project_id ~merge_request_iid ~body]
+        (** [create ?token ~project_id ~merge_request_iid ~create_note]
             Creates a new note. See
             {{:https://docs.gitlab.com/ee/api/notes.html#create-new-merge-request-note}Create
             new merge request note}.
          *)
+
+        val update :
+          token:Token.t ->
+          project_id:int ->
+          merge_request_iid:string ->
+          note_id:int ->
+          body:string ->
+          unit ->
+          Gitlab_t.note Response.t Monad.t
+      (** [update ?token ~project_id ~merge_request_iid ~note_id ~body]
+          Updates a note. See
+          {{:https://docs.gitlab.com/ee/api/notes.html#modify-existing-merge-request-note}Modify
+          existing note of a merge request}.
+       *)
+
+        val delete :
+          token:Token.t ->
+          project_id:int ->
+          merge_request_iid:string ->
+          note_id:int ->
+          unit ->
+          unit Response.t Monad.t
+      (** [delete ?token ~project_id ~merge_request_iid ~note_id]
+          Deletes a note. See
+          {{:https://docs.gitlab.com/ee/api/notes.html#delete-a-merge-request-note}Delete
+          a merge request note}.
+       *)
       end
     end
   end

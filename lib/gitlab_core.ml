@@ -1566,6 +1566,16 @@ struct
           let body = Gitlab_j.string_of_create_note create_note in
           API.post ~token ~uri ~body ~expected_code:`Created (fun s ->
               Lwt.return (Gitlab_j.note_of_string s))
+
+        let update ~token ~project_id ~merge_request_iid ~note_id ~body () =
+          let uri = URI.project_merge_request_note_id ~project_id ~merge_request_iid ~note_id in
+          let body = Yojson.Safe.(to_string (`Assoc ["body", `String body])) in
+          API.put ~token ~uri ~body ~expected_code:`Created (fun s ->
+              Lwt.return (Gitlab_j.note_of_string s))
+
+        let delete ~token ~project_id ~merge_request_iid ~note_id () =
+          let uri = URI.project_merge_request_note_id ~project_id ~merge_request_iid ~note_id in
+          API.delete ~token ~uri ~expected_code:`Created (fun _ -> return ())
       end
     end
   end

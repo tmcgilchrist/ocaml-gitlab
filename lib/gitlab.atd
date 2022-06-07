@@ -1114,6 +1114,10 @@ type event_action_name = [
   | Updated <json name="updated">
 ]
 
+type command_changes = {
+  ?promote_to_epic: bool option;
+}
+
 type noteable_type = [
   | MergeRequest <json name="MergeRequest">
   | Issue <json name="Issue">
@@ -1123,6 +1127,7 @@ type notes = note list
 
 type note = {
   id: int;
+  ?note_type <json name="type">: string nullable;
   body: string;
   attachment: string nullable;
   author: user_short;
@@ -1134,6 +1139,7 @@ type note = {
   resolvable: bool;
   confidential: bool;
   noteable_iid: int;
+  ?commands_changes: command_changes option;
 } <ocaml field_prefix="note_">
 
 type create_note = {
