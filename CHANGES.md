@@ -1,3 +1,9 @@
+# Unreleased
+
+## Added
+
+  * Depend on atd >= 2.8 to get codegen fixes. (#63 @MisterDA)
+
 # 0.1.4 - 2022-06-02
 
 ## Added

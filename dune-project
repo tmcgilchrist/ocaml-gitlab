@@ -16,7 +16,7 @@
   (ocaml (>= 4.08.0))
   (uri (>= 1.9.0))
   (cohttp-lwt (>= 4.0))
-  (atdgen (>= 2.0.0))
+  (atdgen (>= 2.8.0))
   (yojson (>= 1.7.0))
   ezjsonm
   (ISO8601 (>= 0.2.6))
