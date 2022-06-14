@@ -241,6 +241,11 @@ struct
     let project_pipelines ~id =
       Uri.of_string (Printf.sprintf "%s/projects/%i/pipelines" api id)
 
+    let project_pipeline_jobs ~project_id ~pipeline_id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/pipelines/%d/jobs" api project_id
+           pipeline_id)
+
     let project_job_trace id ~job_id =
       Uri.of_string
         (Printf.sprintf "%s/projects/%i/jobs/%d/trace" api id job_id)
@@ -1017,6 +1022,29 @@ struct
     | None -> uri
     | Some source -> Uri.add_query_param' uri ("state", show source)
 
+  let pipeline_job_scope_param (scope : Gitlab_t.pipeline_job_scope option) uri
+      =
+    let show = function
+      | `Created -> "created"
+      | `Preparing -> "preparing"
+      | `Pending -> "pending"
+      | `Running -> "running"
+      | `Failed -> "failed"
+      | `Success -> "success"
+      | `Canceled -> "canceled"
+      | `Skipped -> "skipped"
+      | `Manual -> "manual"
+    in
+    match scope with
+    | None -> uri
+    | Some scope -> Uri.add_query_param' uri ("scope", show scope)
+
+  let pipeline_job_include_retried_param (include_retried : bool option) uri =
+    match include_retried with
+    | Some b ->
+        Uri.add_query_param' uri
+          ("include_retried", if b then "true" else "false")
+    | None -> uri
 
   let action_param (action : Gitlab_t.event_action_name option) uri =
     let show = function
@@ -1096,8 +1124,7 @@ struct
   let username_param username uri =
     match username with
     | None -> uri
-    | Some username ->
-        Uri.add_query_param' uri ("username", username)
+    | Some username -> Uri.add_query_param' uri ("username", username)
 
   let my_reaction_param my_reaction uri =
     match my_reaction with
@@ -1382,6 +1409,17 @@ struct
       in
       API.get_stream ~token ~uri (fun body ->
           return (Gitlab_j.pipelines_of_string body))
+
+    let pipeline_jobs ~token ~project_id ?per_page ?scope ?include_retried
+        ~pipeline_id () =
+      let uri =
+        URI.project_pipeline_jobs ~project_id ~pipeline_id
+        |> per_page_param per_page
+        |> pipeline_job_scope_param scope
+        |> pipeline_job_include_retried_param include_retried
+      in
+      API.get_stream ~token ~uri (fun body ->
+          return (Gitlab_j.pipeline_jobs_of_string body))
 
     let job_trace ~token ~project_id ~job_id () =
       let uri = URI.project_job_trace project_id ~job_id in

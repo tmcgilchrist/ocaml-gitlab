@@ -1364,3 +1364,47 @@ type pipeline = {
 }
 
 type pipelines = pipeline list
+
+type pipeline_job_scope = [
+ | Created <json name="created">
+ | Pending <json name="pending">
+ | Running <json name="running">
+ | Failed <json name="failed">
+ | Success <json name="success">
+ | Canceled <json name="canceled">
+ | Skipped <json name="skipped">
+ | Manual <json name="manual">
+]
+
+type pipeline_job_status = [
+ | Created <json name="created">
+ | Pending <json name="pending">
+ | Running <json name="running">
+ | Failed <json name="failed">
+ | Success <json name="success">
+ | Canceled <json name="canceled">
+ | Skipped <json name="skipped">
+ | Manual <json name="manual">
+]
+
+type pipeline_job_failure_reason = [
+ | Script_failure <json name="script_failure">
+ | Runner_system_failure <json name="runner_system_failure">
+ | Job_execution_timeout <json name="job_execution_timeout">
+ | Stuck_or_timeout_failure <json name="stuck_or_timeout_failure">
+ | Unknown_failure <json name="unknown_failure">
+]
+
+type pipeline_job = {
+    id : int;
+    name : string;
+    status : pipeline_job_status;
+    ?failure_reason : pipeline_job_failure_reason option;
+    ref : string;
+    web_url : string;
+    created_at : date_time nullable;
+    started_at : date_time nullable;
+    finished_at : date_time nullable;
+}
+
+type pipeline_jobs = pipeline_job list
