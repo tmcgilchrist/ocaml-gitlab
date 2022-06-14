@@ -623,6 +623,21 @@ module type Gitlab = sig
         See {{:https://docs.gitlab.com/ee/api/pipelines.html#list-project-pipelines}List project pipelines}.
      *)
 
+    val pipeline_jobs :
+      token:Token.t ->
+      project_id:int ->
+      ?per_page:int ->
+      ?scope:Gitlab_t.pipeline_job_scope ->
+      ?include_retried:bool ->
+      pipeline_id:int ->
+      unit ->
+      Gitlab_t.pipeline_job Stream.t
+    (** [pipeline_jobs ~token ~project_id pipeline_id ()] get a list of jobs for
+        a pipeline [pipeline_id] of a project [project_id].
+
+        See {{:https://docs.gitlab.com/ee/api/jobs.html#list-pipeline-jobs}List pipeline jobs}.
+     *)
+
     val job_trace :
       token:Token.t ->
       project_id:int ->
