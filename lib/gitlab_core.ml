@@ -241,6 +241,10 @@ struct
     let project_pipelines ~id =
       Uri.of_string (Printf.sprintf "%s/projects/%i/pipelines" api id)
 
+    let project_job_trace id ~job_id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/jobs/%d/trace" api id job_id)
+
     let project_events ~id =
       Uri.of_string (Printf.sprintf "%s/projects/%i/events" api id)
 
@@ -1378,6 +1382,13 @@ struct
       in
       API.get_stream ~token ~uri (fun body ->
           return (Gitlab_j.pipelines_of_string body))
+
+    let job_trace ~token ~project_id ~job_id () =
+      let uri = URI.project_job_trace project_id ~job_id in
+      let fail_handlers =
+        [ API.code_handler ~expected_code:`Not_found (fun _ -> return None) ]
+      in
+      API.get ~token ~uri ~fail_handlers (fun body -> return (Some body))
 
     let merge_requests ?token ?state ?milestone ?labels ?author ?author_username
         ?my_reaction ?scope ~id () =

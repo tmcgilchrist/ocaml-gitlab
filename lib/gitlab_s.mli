@@ -623,6 +623,18 @@ module type Gitlab = sig
         See {{:https://docs.gitlab.com/ee/api/pipelines.html#list-project-pipelines}List project pipelines}.
      *)
 
+    val job_trace :
+      token:Token.t ->
+      project_id:int ->
+      job_id:int ->
+      unit ->
+      string option Response.t Monad.t
+    (** [job_trace ~token ~project_id job_id ()] get the log (trace) of a
+        specific job [job_id] of a project [project-id].
+
+        See {{:https://docs.gitlab.com/ee/api/jobs.html#get-a-log-file}Get a log file}.
+     *)
+
     val merge_requests :
       ?token:Token.t ->
       ?state:Gitlab_t.state ->
