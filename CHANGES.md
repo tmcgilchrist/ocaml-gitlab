@@ -3,6 +3,12 @@
 ## Added
 
   * Depend on atd >= 2.8 to get codegen fixes. (#63 @MisterDA)
+  * Add endpoints `Project.pipeline`, `Project.pipeline_jobs` , `Project.job_trace` , `Project.pipelines`.
+  * Add param `updated_after` to `Project.merge_requests`
+
+## Bug fixes
+
+  * Make the field `source_project_id` of `merge_request` nullable
 
 # 0.1.4 - 2022-06-02
 
