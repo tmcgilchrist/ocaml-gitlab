@@ -17,4 +17,17 @@
   <span>merge_request_iid:string <span class="arrow">&#45;&gt;</span></span>
   <span>create_note:<a href="../../../../../Gitlab_t/index.html#type-create_note">Gitlab_t.create_note</a> <span class="arrow">&#45;&gt;</span></span>
   <span>unit <span class="arrow">&#45;&gt;</span></span>
-  <span><span><a href="../../../../../Gitlab_t/index.html#type-note">Gitlab_t.note</a> <a href="../../../Response/index.html#type-t">Response.t</a></span> <a href="../../../Monad/index.html#type-t">Monad.t</a></span></span></code></div><div class="spec-doc"><p><code>create ?token ~project_id ~merge_request_iid ~body</code> Creates a new note. See <a href="https://docs.gitlab.com/ee/api/notes.html#create-new-merge-request-note">Create new merge request note</a>.</p></div></div></div></body></html>
+  <span><span><a href="../../../../../Gitlab_t/index.html#type-note">Gitlab_t.note</a> <a href="../../../Response/index.html#type-t">Response.t</a></span> <a href="../../../Monad/index.html#type-t">Monad.t</a></span></span></code></div><div class="spec-doc"><p><code>create ?token ~project_id ~merge_request_iid ~create_note</code> Creates a new note. See <a href="https://docs.gitlab.com/ee/api/notes.html#create-new-merge-request-note">Create new merge request note</a>.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-update" class="anchored"><a href="#val-update" class="anchor"></a><code><span><span class="keyword">val</span> update : 
+  <span>token:<a href="../../../Token/index.html#type-t">Token.t</a> <span class="arrow">&#45;&gt;</span></span>
+  <span>project_id:int <span class="arrow">&#45;&gt;</span></span>
+  <span>merge_request_iid:string <span class="arrow">&#45;&gt;</span></span>
+  <span>note_id:int <span class="arrow">&#45;&gt;</span></span>
+  <span>body:string <span class="arrow">&#45;&gt;</span></span>
+  <span>unit <span class="arrow">&#45;&gt;</span></span>
+  <span><span><a href="../../../../../Gitlab_t/index.html#type-note">Gitlab_t.note</a> <a href="../../../Response/index.html#type-t">Response.t</a></span> <a href="../../../Monad/index.html#type-t">Monad.t</a></span></span></code></div><div class="spec-doc"><p><code>update ?token ~project_id ~merge_request_iid ~note_id ~body</code> Updates a note. See <a href="https://docs.gitlab.com/ee/api/notes.html#modify-existing-merge-request-note">Modify existing note of a merge request</a>.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-delete" class="anchored"><a href="#val-delete" class="anchor"></a><code><span><span class="keyword">val</span> delete : 
+  <span>token:<a href="../../../Token/index.html#type-t">Token.t</a> <span class="arrow">&#45;&gt;</span></span>
+  <span>project_id:int <span class="arrow">&#45;&gt;</span></span>
+  <span>merge_request_iid:string <span class="arrow">&#45;&gt;</span></span>
+  <span>note_id:int <span class="arrow">&#45;&gt;</span></span>
+  <span>unit <span class="arrow">&#45;&gt;</span></span>
+  <span><span>unit <a href="../../../Response/index.html#type-t">Response.t</a></span> <a href="../../../Monad/index.html#type-t">Monad.t</a></span></span></code></div><div class="spec-doc"><p><code>delete ?token ~project_id ~merge_request_iid ~note_id</code> Deletes a note. See <a href="https://docs.gitlab.com/ee/api/notes.html#delete-a-merge-request-note">Delete a merge request note</a>.</p></div></div></div></body></html>

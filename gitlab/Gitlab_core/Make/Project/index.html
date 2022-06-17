@@ -13,7 +13,39 @@
   <span>?token:<a href="../Token/index.html#type-t">Token.t</a> <span class="arrow">&#45;&gt;</span></span>
   <span>project_id:int <span class="arrow">&#45;&gt;</span></span>
   <span>unit <span class="arrow">&#45;&gt;</span></span>
-  <span><span><span><a href="../../../Gitlab_t/index.html#type-project_short">Gitlab_t.project_short</a> option</span> <a href="../Response/index.html#type-t">Response.t</a></span> <a href="../Monad/index.html#type-t">Monad.t</a></span></span></code></div><div class="spec-doc"><p><code>by_id ~project_id</code> retrieve the project for <code>project_id</code>, returns <code>None</code> if the project doesn't exist. Supply a <code>token</code> to access private projects.</p><p>See <a href="https://docs.gitlab.com/ee/api/projects.html#get-single-project">Get a single project</a>.</p></div></div><div class="odoc-spec"><div class="spec module" id="module-Branch" class="anchored"><a href="#module-Branch" class="anchor"></a><code><span><span class="keyword">module</span> <a href="Branch/index.html">Branch</a></span><span> : <span class="keyword">sig</span> ... <span class="keyword">end</span></span></code></div></div><div class="odoc-spec"><div class="spec value" id="val-merge_requests" class="anchored"><a href="#val-merge_requests" class="anchor"></a><code><span><span class="keyword">val</span> merge_requests : 
+  <span><span><span><a href="../../../Gitlab_t/index.html#type-project_short">Gitlab_t.project_short</a> option</span> <a href="../Response/index.html#type-t">Response.t</a></span> <a href="../Monad/index.html#type-t">Monad.t</a></span></span></code></div><div class="spec-doc"><p><code>by_id ~project_id</code> retrieve the project for <code>project_id</code>, returns <code>None</code> if the project doesn't exist. Supply a <code>token</code> to access private projects.</p><p>See <a href="https://docs.gitlab.com/ee/api/projects.html#get-single-project">Get a single project</a>.</p></div></div><div class="odoc-spec"><div class="spec module" id="module-Branch" class="anchored"><a href="#module-Branch" class="anchor"></a><code><span><span class="keyword">module</span> <a href="Branch/index.html">Branch</a></span><span> : <span class="keyword">sig</span> ... <span class="keyword">end</span></span></code></div></div><div class="odoc-spec"><div class="spec value" id="val-pipelines" class="anchored"><a href="#val-pipelines" class="anchor"></a><code><span><span class="keyword">val</span> pipelines : 
+  <span>token:<a href="../Token/index.html#type-t">Token.t</a> <span class="arrow">&#45;&gt;</span></span>
+  <span>project_id:int <span class="arrow">&#45;&gt;</span></span>
+  <span>?per_page:int <span class="arrow">&#45;&gt;</span></span>
+  <span>?status:<a href="../../../Gitlab_t/index.html#type-pipeline_status">Gitlab_t.pipeline_status</a> <span class="arrow">&#45;&gt;</span></span>
+  <span>?source:<a href="../../../Gitlab_t/index.html#type-pipeline_source">Gitlab_t.pipeline_source</a> <span class="arrow">&#45;&gt;</span></span>
+  <span>?sha:string <span class="arrow">&#45;&gt;</span></span>
+  <span>?ref_:string <span class="arrow">&#45;&gt;</span></span>
+  <span>?username:string <span class="arrow">&#45;&gt;</span></span>
+  <span>?updated_after:string <span class="arrow">&#45;&gt;</span></span>
+  <span>?updated_before:string <span class="arrow">&#45;&gt;</span></span>
+  <span>?sort:<a href="../../../Gitlab_t/index.html#type-sort">Gitlab_t.sort</a> <span class="arrow">&#45;&gt;</span></span>
+  <span>?order_by:<span>[ `Id <span>| `Ref</span> <span>| `Status</span> <span>| `Updated_at</span> <span>| `User_id</span> ]</span> <span class="arrow">&#45;&gt;</span></span>
+  <span>unit <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="../../../Gitlab_t/index.html#type-pipeline">Gitlab_t.pipeline</a> <a href="../Stream/index.html#type-t">Stream.t</a></span></span></code></div><div class="spec-doc"><p><code>pipelines ~token ~project_id ()</code> list all pipelines the authenticated user has access to in <code>project_id</code>.</p><p>See <a href="https://docs.gitlab.com/ee/api/pipelines.html#list-project-pipelines">List project pipelines</a>.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-pipeline" class="anchored"><a href="#val-pipeline" class="anchor"></a><code><span><span class="keyword">val</span> pipeline : 
+  <span>token:<a href="../Token/index.html#type-t">Token.t</a> <span class="arrow">&#45;&gt;</span></span>
+  <span>project_id:int <span class="arrow">&#45;&gt;</span></span>
+  <span>pipeline_id:int <span class="arrow">&#45;&gt;</span></span>
+  <span>unit <span class="arrow">&#45;&gt;</span></span>
+  <span><span><a href="../../../Gitlab_t/index.html#type-single_pipeline">Gitlab_t.single_pipeline</a> <a href="../Response/index.html#type-t">Response.t</a></span> <a href="../Monad/index.html#type-t">Monad.t</a></span></span></code></div><div class="spec-doc"><p><code>pipeline ~token ~project_id ~pipeline_id ()</code> get one single pipeline <code>pipeline_id</code> in <code>project_id</code>.</p><p>See <a href="https://docs.gitlab.com/ee/api/pipelines.html#get-a-single-pipeline">Get a single pipeline</a>.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-pipeline_jobs" class="anchored"><a href="#val-pipeline_jobs" class="anchor"></a><code><span><span class="keyword">val</span> pipeline_jobs : 
+  <span>token:<a href="../Token/index.html#type-t">Token.t</a> <span class="arrow">&#45;&gt;</span></span>
+  <span>project_id:int <span class="arrow">&#45;&gt;</span></span>
+  <span>?per_page:int <span class="arrow">&#45;&gt;</span></span>
+  <span>?scope:<a href="../../../Gitlab_t/index.html#type-pipeline_job_scope">Gitlab_t.pipeline_job_scope</a> <span class="arrow">&#45;&gt;</span></span>
+  <span>?include_retried:bool <span class="arrow">&#45;&gt;</span></span>
+  <span>pipeline_id:int <span class="arrow">&#45;&gt;</span></span>
+  <span>unit <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="../../../Gitlab_t/index.html#type-pipeline_job">Gitlab_t.pipeline_job</a> <a href="../Stream/index.html#type-t">Stream.t</a></span></span></code></div><div class="spec-doc"><p><code>pipeline_jobs ~token ~project_id pipeline_id ()</code> get a list of jobs for a pipeline <code>pipeline_id</code> of a project <code>project_id</code>.</p><p>See <a href="https://docs.gitlab.com/ee/api/jobs.html#list-pipeline-jobs">List pipeline jobs</a>.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-job_trace" class="anchored"><a href="#val-job_trace" class="anchor"></a><code><span><span class="keyword">val</span> job_trace : 
+  <span>token:<a href="../Token/index.html#type-t">Token.t</a> <span class="arrow">&#45;&gt;</span></span>
+  <span>project_id:int <span class="arrow">&#45;&gt;</span></span>
+  <span>job_id:int <span class="arrow">&#45;&gt;</span></span>
+  <span>unit <span class="arrow">&#45;&gt;</span></span>
+  <span><span><span>string option</span> <a href="../Response/index.html#type-t">Response.t</a></span> <a href="../Monad/index.html#type-t">Monad.t</a></span></span></code></div><div class="spec-doc"><p><code>job_trace ~token ~project_id job_id ()</code> get the log (trace) of a specific job <code>job_id</code> of a project <code>project-id</code>.</p><p>See <a href="https://docs.gitlab.com/ee/api/jobs.html#get-a-log-file">Get a log file</a>.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-merge_requests" class="anchored"><a href="#val-merge_requests" class="anchor"></a><code><span><span class="keyword">val</span> merge_requests : 
   <span>?token:<a href="../Token/index.html#type-t">Token.t</a> <span class="arrow">&#45;&gt;</span></span>
   <span>?state:<a href="../../../Gitlab_t/index.html#type-state">Gitlab_t.state</a> <span class="arrow">&#45;&gt;</span></span>
   <span>?milestone:string <span class="arrow">&#45;&gt;</span></span>
@@ -22,6 +54,7 @@
   <span>?author_username:string <span class="arrow">&#45;&gt;</span></span>
   <span>?my_reaction:string <span class="arrow">&#45;&gt;</span></span>
   <span>?scope:<a href="../../../Gitlab_t/index.html#type-merge_request_scope">Gitlab_t.merge_request_scope</a> <span class="arrow">&#45;&gt;</span></span>
+  <span>?updated_after:string <span class="arrow">&#45;&gt;</span></span>
   <span>id:int <span class="arrow">&#45;&gt;</span></span>
   <span>unit <span class="arrow">&#45;&gt;</span></span>
   <span><a href="../../../Gitlab_t/index.html#type-merge_request">Gitlab_t.merge_request</a> <a href="../Stream/index.html#type-t">Stream.t</a></span></span></code></div><div class="spec-doc"><p><code>merge_requests ?token ~id ()</code> list all merge requests for project <code>id</code>.</p><p>See <a href="https://docs.gitlab.com/14.0/ee/api/merge_requests.html#list-project-merge-requests">List project merge requests</a>.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-merge_request" class="anchored"><a href="#val-merge_request" class="anchor"></a><code><span><span class="keyword">val</span> merge_request : 
