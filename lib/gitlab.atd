@@ -297,8 +297,8 @@ type references = {
 type time_stats = {
   time_estimate: int;
   total_time_spent: int;
-  human_time_estimate: int nullable;
-  human_total_time_spent: int nullable;
+  human_time_estimate: string nullable;
+  human_total_time_spent: string nullable;
 } <ocaml field_prefix="time_stats_">
 
 type task_completion_status = {
