@@ -674,7 +674,12 @@ module type Gitlab = sig
       ?author_username:string ->
       ?my_reaction:string ->
       ?scope:Gitlab_t.merge_request_scope ->
+      ?created_after:string ->
+      ?created_before:string ->
       ?updated_after:string ->
+      ?updated_before:string ->
+      ?sort:Gitlab_t.sort ->
+      ?order_by:[`Created_at | `Title | `Updated_at ] ->
       id:int ->
       unit ->
       Gitlab_t.merge_request Stream.t
