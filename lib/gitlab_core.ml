@@ -1170,6 +1170,9 @@ struct
       ~some:(fun value -> Uri.add_query_param' uri (param, value))
       value_opt
 
+  let created_after_param = opt_add_query_param_opt "created_after"
+  let created_before_param = opt_add_query_param_opt "created_before"
+
   let updated_after_param = opt_add_query_param_opt "updated_after"
   let updated_before_param = opt_add_query_param_opt "updated_before"
 
@@ -1458,7 +1461,17 @@ struct
       API.get ~token ~uri ~fail_handlers (fun body -> return (Some body))
 
     let merge_requests ?token ?state ?milestone ?labels ?author ?author_username
-        ?my_reaction ?scope ?updated_after ~id () =
+        ?my_reaction ?scope ?created_after ?created_before ?updated_after ?updated_before ?sort ?order_by ~id () =
+      let order_by_param order uri =
+        let show = function
+          | `Created_at -> "created_at"
+          | `Title -> "title"
+          | `Updated_at -> "updated_at"
+        in
+        match order with
+        | None -> uri
+        | Some order -> Uri.add_query_param' uri ("order_by", show order)
+      in
       let uri =
         URI.project_merge_requests ~id
         |> state_param state |> milestone_param milestone |> labels_param labels
@@ -1466,7 +1479,12 @@ struct
         |> author_username_param author_username
         |> my_reaction_param my_reaction
         |> scope_param scope
+        |> created_after_param created_after
+        |> created_before_param created_before
         |> updated_after_param updated_after
+        |> updated_before_param updated_before
+        |> order_by_param order_by
+        |> sort_param sort
       in
       API.get_stream ?token ~uri (fun body ->
           return (Gitlab_j.merge_requests_of_string body))
