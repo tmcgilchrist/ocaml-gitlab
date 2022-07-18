@@ -228,6 +228,11 @@ struct
         (Printf.sprintf "%s/projects/%i/merge_requests/%s/changes" api id
            merge_request_iid)
 
+    let project_merge_request_pipelines ~id ~merge_request_iid =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/merge_requests/%d/pipelines" api id
+           merge_request_iid)
+
     let project_merge_request_notes ~project_id ~merge_request_iid =
       Uri.of_string
         (Printf.sprintf "%s/projects/%i/merge_requests/%s/notes" api project_id
@@ -1511,6 +1516,13 @@ struct
         URI.project_merge_request_changes ~id:project_id ~merge_request_iid
       in
       API.get ?token ~uri (fun body -> return (Gitlab_j.changes_of_string body))
+
+    let merge_request_pipelines ?token ~project_id ~merge_request_iid () =
+      let uri =
+        URI.project_merge_request_pipelines ~id:project_id ~merge_request_iid
+      in
+      API.get_stream ?token ~uri (fun body ->
+          return (Gitlab_j.pipelines_of_string body))
 
     let events ~token ~project_id ?action ?target_type () =
       let uri =

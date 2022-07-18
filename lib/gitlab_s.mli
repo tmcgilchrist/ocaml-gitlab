@@ -732,6 +732,18 @@ module type Gitlab = sig
        See {{:https://docs.gitlab.com/ee/api/merge_requests.html#get-single-mr-changes}Get single MR changes}.
     *)
 
+    val merge_request_pipelines :
+      ?token:Token.t ->
+      project_id:int ->
+      merge_request_iid:int ->
+      unit ->
+      Gitlab_t.pipeline Stream.t
+    (** [merge_request_pipelines ?token ~project_id ~merge_request_iid ()] gets a list of merge request pipelines.
+
+       See {{:https://docs.gitlab.com/ee/api/merge_requests.html#list-mr-pipelines}List MR pipelines }.
+    *)
+
+
     val events :
       token:Token.t ->
       project_id:int ->
