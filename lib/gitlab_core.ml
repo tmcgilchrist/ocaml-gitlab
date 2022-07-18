@@ -569,6 +569,26 @@ struct
         | { buffer = h :: buffer; _ } as s ->
             return (Some (h, { s with buffer })))
 
+    let take : int -> 'a t -> 'b t = fun n s ->
+      let rec refill n' s () =
+        Monad.(
+          if n' = 0 then
+            return empty
+          else
+            next s >>= function
+            | None -> return empty
+            | Some (v, s) -> (
+              return { s with restart; buffer = [v]; refill = Some (refill (n' - 1) s) }))
+      and restart endpoint =
+        Monad.(
+          s.restart endpoint >>= function
+          | Some s ->
+             return
+               (Some { s with restart; buffer = []; refill = Some (refill n s) })
+          | None -> return None)
+      in
+      { s with restart; buffer = []; refill = Some (refill n s) }
+
     let map f s =
       let rec refill s () =
         Monad.(
