@@ -216,6 +216,10 @@ module type Gitlab = sig
     (** [map f s] is the lazy stream of [f] applied to elements of [s]
         as they are demanded. *)
 
+    val take : int -> 'a t -> 'a t
+    (** [take n s] is the lazy stream of the first [n] elements of [s]
+        as they are demanded. *)
+
     val fold : ('a -> 'b -> 'a Monad.t) -> 'a -> 'b t -> 'a Monad.t
     (** [fold f a s] is the left fold of [f] over the elements of [s]
         with a base value of [a]. {b Warning:} this function may
