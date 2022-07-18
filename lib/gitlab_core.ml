@@ -1455,7 +1455,10 @@ struct
         |> pipeline_job_scope_param scope
         |> pipeline_job_include_retried_param include_retried
       in
-      API.get_stream ~token ~uri (fun body ->
+      let fail_handlers =
+        [ API.code_handler ~expected_code:`Not_found (fun _ -> return []) ]
+      in
+      API.get_stream ~fail_handlers ~token ~uri (fun body ->
           return (Gitlab_j.pipeline_jobs_of_string body))
 
     let job_trace ~token ~project_id ~job_id () =
