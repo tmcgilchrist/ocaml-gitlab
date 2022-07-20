@@ -2,6 +2,20 @@
 
 ## Added
 
+ * `gitlab.atd`: use `date_time` instead of strings for `_at` fields
+ * `Project`: add `merge_request_pipelines`
+ * `Project.merge_requests`: add parameters `updated_after`, `updated_before`,
+   `created_after`, `created_before` and `order_by`
+
+## Bug fixes
+
+ * `Project.pipeline_jobs`: 404 means pending pipeline, not error
+ * `gitlab.atd`: `time_stats` estimates are strings
+
+# 0.1.5 - 2022-06-17
+
+## Added
+
   * Depend on atd >= 2.8 to get codegen fixes. (#63 @MisterDA)
   * Add endpoints `Project.pipeline`, `Project.pipeline_jobs` , `Project.job_trace` , `Project.pipelines`.
   * Add param `updated_after` to `Project.merge_requests`
