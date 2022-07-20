@@ -222,6 +222,52 @@ module C = Make (Gitlab_j_commits)
 module I = Make (Gitlab_j_issues)
 module R = Make (Gitlab_j_runners)
 
+module Stream_test = struct
+  let run m =
+    Lwt_main.run
+      (Gitlab.Monad.run m)
+
+  let test_take =
+    Alcotest.test_case "take" `Quick (fun () ->
+        List.iter
+          (fun (input, n, expected) ->
+            Alcotest.(check (list int))
+              "stream-take"
+              expected (run Gitlab.Stream.(
+                  input |> of_list |> take n |> to_list)))
+          [
+            ([], 0, []);
+            ([1;2;3;4;5;6], 0, []);
+            ([1;2;3;4;5;6], 10, [1;2;3;4;5;6]);
+            ([1;2;3;4;5;6], 1, [1])
+      ])
+
+  let test_map =
+    Alcotest.test_case "map" `Quick
+      (fun () ->
+        let input = [1;2;3;4] in
+        Alcotest.(check (list int))
+          "stream-map"
+          [1; 1; 2; 2; 3; 3; 4; 4]
+          (run Gitlab.Stream.(
+             input |> of_list |>
+               map (fun x -> Gitlab.Monad.return [x; x]) |> to_list)))
+
+  let test_map_take =
+    Alcotest.test_case "map-take" `Quick
+      (fun () ->
+        let input = [1;2;3;4] in
+        Alcotest.(check (list int))
+          "stream-take-map"
+          [-1; -2]
+          (run Gitlab.Stream.(
+             input |> of_list |> take 2 |>
+               map (fun i -> Gitlab.Monad.return [-i]) |> to_list)))
+
+  let tests =
+    [test_take; test_map; test_map_take]
+end
+
 (* Run it *)
 let () =
   let open Alcotest in
@@ -242,4 +288,5 @@ let () =
       ("user_short", US.test ());
       ("webhooks", WH.test ());
       ("project_hook", PH.test ());
+      ("stream_test", Stream_test.tests)
     ]

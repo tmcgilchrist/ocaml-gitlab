@@ -327,9 +327,9 @@ type merge_request = {
   description: string;
   state: state;
   merged_by: user_short nullable;
-  merged_at: string nullable;
+  merged_at: date_time nullable;
   closed_by: user_short nullable;
-  closed_at: string nullable;
+  closed_at: date_time nullable;
   created_at: date_time;
   updated_at: date_time;
   target_branch: string;
@@ -542,7 +542,7 @@ type issue = {
   state: state;
   created_at: date_time;
   updated_at: date_time;
-  closed_at: string nullable;
+  closed_at: date_time nullable;
   closed_by: user_short nullable;
   labels: string list;
   milestone: string nullable;
@@ -574,7 +574,7 @@ type issue = {
 
 type note_issue = {
   author_id: int;
-  closed_at: string nullable;
+  closed_at: date_time nullable;
   confidential: bool;
   created_at: date_time;
   description: string;
@@ -582,7 +582,7 @@ type note_issue = {
   due_date: date nullable;
   id: int;
   iid: int;
-  last_edited_at: string nullable;
+  last_edited_at: date_time nullable;
   last_edited_by_id: int nullable;
   milestone_id: int nullable;
   moved_to_id: string nullable;
@@ -642,7 +642,7 @@ type merge_request_attributes = {
   head_pipeline_id: int nullable;
   id: int;
   iid: int;
-  last_edited_at: string nullable;
+  last_edited_at: date_time nullable;
   last_edited_by_id: int nullable;
   last_commit: commit_short_webhook;
   ?oldrev: string option;
@@ -762,7 +762,7 @@ type issue_attributes = {
   assignee_id: int nullable;
   assignee_ids: int list;
   author_id: int;
-  closed_at: string nullable;
+  closed_at: date_time nullable;
   confidential: bool;
   created_at: date_time;
   description: string;
@@ -775,7 +775,7 @@ type issue_attributes = {
   id: int;
   iid: int;
   labels: string list;
-  last_edited_at: string nullable;
+  last_edited_at: date_time nullable;
   last_edited_by_id: int nullable;
   milestone_id: int nullable;
   moved_to_id: int nullable;
@@ -820,7 +820,7 @@ type note_attributes = {
   original_position: string nullable;
   position: string nullable;
   project_id: int;
-  resolved_at: string nullable;
+  resolved_at: date_time nullable;
   resolved_by_id: string nullable;
   resolved_by_push: string nullable;
   st_diff: string nullable;

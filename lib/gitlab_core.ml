@@ -228,6 +228,11 @@ struct
         (Printf.sprintf "%s/projects/%i/merge_requests/%s/changes" api id
            merge_request_iid)
 
+    let project_merge_request_pipelines ~id ~merge_request_iid =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/merge_requests/%d/pipelines" api id
+           merge_request_iid)
+
     let project_merge_request_notes ~project_id ~merge_request_iid =
       Uri.of_string
         (Printf.sprintf "%s/projects/%i/merge_requests/%s/notes" api project_id
@@ -568,6 +573,26 @@ struct
         | { buffer = []; refill = Some refill; _ } -> refill () >>= next
         | { buffer = h :: buffer; _ } as s ->
             return (Some (h, { s with buffer })))
+
+    let take : int -> 'a t -> 'b t = fun n s ->
+      let rec refill n' s () =
+        Monad.(
+          if n' = 0 then
+            return empty
+          else
+            next s >>= function
+            | None -> return empty
+            | Some (v, s) -> (
+              return { s with restart; buffer = [v]; refill = Some (refill (n' - 1) s) }))
+      and restart endpoint =
+        Monad.(
+          s.restart endpoint >>= function
+          | Some s ->
+             return
+               (Some { s with restart; buffer = []; refill = Some (refill n s) })
+          | None -> return None)
+      in
+      { s with restart; buffer = []; refill = Some (refill n s) }
 
     let map f s =
       let rec refill s () =
@@ -1150,6 +1175,9 @@ struct
       ~some:(fun value -> Uri.add_query_param' uri (param, value))
       value_opt
 
+  let created_after_param = opt_add_query_param_opt "created_after"
+  let created_before_param = opt_add_query_param_opt "created_before"
+
   let updated_after_param = opt_add_query_param_opt "updated_after"
   let updated_before_param = opt_add_query_param_opt "updated_before"
 
@@ -1427,7 +1455,10 @@ struct
         |> pipeline_job_scope_param scope
         |> pipeline_job_include_retried_param include_retried
       in
-      API.get_stream ~token ~uri (fun body ->
+      let fail_handlers =
+        [ API.code_handler ~expected_code:`Not_found (fun _ -> return []) ]
+      in
+      API.get_stream ~fail_handlers ~token ~uri (fun body ->
           return (Gitlab_j.pipeline_jobs_of_string body))
 
     let job_trace ~token ~project_id ~job_id () =
@@ -1438,7 +1469,17 @@ struct
       API.get ~token ~uri ~fail_handlers (fun body -> return (Some body))
 
     let merge_requests ?token ?state ?milestone ?labels ?author ?author_username
-        ?my_reaction ?scope ?updated_after ~id () =
+        ?my_reaction ?scope ?created_after ?created_before ?updated_after ?updated_before ?sort ?order_by ~id () =
+      let order_by_param order uri =
+        let show = function
+          | `Created_at -> "created_at"
+          | `Title -> "title"
+          | `Updated_at -> "updated_at"
+        in
+        match order with
+        | None -> uri
+        | Some order -> Uri.add_query_param' uri ("order_by", show order)
+      in
       let uri =
         URI.project_merge_requests ~id
         |> state_param state |> milestone_param milestone |> labels_param labels
@@ -1446,7 +1487,12 @@ struct
         |> author_username_param author_username
         |> my_reaction_param my_reaction
         |> scope_param scope
+        |> created_after_param created_after
+        |> created_before_param created_before
         |> updated_after_param updated_after
+        |> updated_before_param updated_before
+        |> order_by_param order_by
+        |> sort_param sort
       in
       API.get_stream ?token ~uri (fun body ->
           return (Gitlab_j.merge_requests_of_string body))
@@ -1473,6 +1519,13 @@ struct
         URI.project_merge_request_changes ~id:project_id ~merge_request_iid
       in
       API.get ?token ~uri (fun body -> return (Gitlab_j.changes_of_string body))
+
+    let merge_request_pipelines ?token ~project_id ~merge_request_iid () =
+      let uri =
+        URI.project_merge_request_pipelines ~id:project_id ~merge_request_iid
+      in
+      API.get_stream ?token ~uri (fun body ->
+          return (Gitlab_j.pipelines_of_string body))
 
     let events ~token ~project_id ?action ?target_type () =
       let uri =

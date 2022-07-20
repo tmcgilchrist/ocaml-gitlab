@@ -216,6 +216,10 @@ module type Gitlab = sig
     (** [map f s] is the lazy stream of [f] applied to elements of [s]
         as they are demanded. *)
 
+    val take : int -> 'a t -> 'a t
+    (** [take n s] is the lazy stream of the first [n] elements of [s]
+        as they are demanded. *)
+
     val fold : ('a -> 'b -> 'a Monad.t) -> 'a -> 'b t -> 'a Monad.t
     (** [fold f a s] is the left fold of [f] over the elements of [s]
         with a base value of [a]. {b Warning:} this function may
@@ -670,7 +674,12 @@ module type Gitlab = sig
       ?author_username:string ->
       ?my_reaction:string ->
       ?scope:Gitlab_t.merge_request_scope ->
+      ?created_after:string ->
+      ?created_before:string ->
       ?updated_after:string ->
+      ?updated_before:string ->
+      ?sort:Gitlab_t.sort ->
+      ?order_by:[`Created_at | `Title | `Updated_at ] ->
       id:int ->
       unit ->
       Gitlab_t.merge_request Stream.t
@@ -722,6 +731,18 @@ module type Gitlab = sig
 
        See {{:https://docs.gitlab.com/ee/api/merge_requests.html#get-single-mr-changes}Get single MR changes}.
     *)
+
+    val merge_request_pipelines :
+      ?token:Token.t ->
+      project_id:int ->
+      merge_request_iid:int ->
+      unit ->
+      Gitlab_t.pipeline Stream.t
+    (** [merge_request_pipelines ?token ~project_id ~merge_request_iid ()] gets a list of merge request pipelines.
+
+       See {{:https://docs.gitlab.com/ee/api/merge_requests.html#list-mr-pipelines}List MR pipelines }.
+    *)
+
 
     val events :
       token:Token.t ->
