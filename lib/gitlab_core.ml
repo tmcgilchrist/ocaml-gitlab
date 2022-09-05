@@ -186,6 +186,10 @@ struct
 
     let projects = Uri.of_string (Printf.sprintf "%s/projects" api)
 
+    let project_by_short_ref short_ref =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%s" api (Uri.pct_encode short_ref))
+
     let projects_by_id project_id =
       Uri.of_string (Printf.sprintf "%s/projects/%i" api project_id)
 
@@ -1405,6 +1409,14 @@ struct
       in
       API.get ?token ~uri (fun body ->
           return (Gitlab_j.projects_short_of_string body))
+
+    let by_short_ref ?token ~short_ref () =
+      let uri = URI.project_by_short_ref short_ref in
+      let fail_handlers =
+        [ API.code_handler ~expected_code:`Not_found (fun _ -> return None) ]
+      in
+      API.get ?token ~uri ~fail_handlers (fun body ->
+          return (Some (Gitlab_j.project_short_of_string body)))
 
     let by_id ?token ~project_id () =
       let uri = URI.projects_by_id project_id in
