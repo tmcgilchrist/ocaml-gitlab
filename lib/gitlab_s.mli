@@ -536,8 +536,20 @@ module type Gitlab = sig
       Gitlab_t.projects_short Response.t Monad.t
     (** [by_name ~owner ~name ()] retrieves projects owned by [owner] with a name like [name].
         Depending on the [name] used this will return 1 or more matches. Supply a [token] to access private projects.
+    *)
 
-        There is no direct fetch by name API in GitLab.
+    val by_short_ref :
+      ?token:Token.t ->
+      short_ref:string ->
+      unit ->
+      Gitlab_t.project_short option Response.t Monad.t
+    (** [by_short_ref ~short_ref ()] retrieves the project with [short_ref] (a short ref is a string on the
+        form [<namespace>/<project name>]), returns [None] if the project doesn't
+        exist.
+
+        Supply a [token] to access private projects.
+
+        See {{:https://docs.gitlab.com/ee/api/projects.html#get-single-project}Get single project}.
     *)
 
     val by_id :

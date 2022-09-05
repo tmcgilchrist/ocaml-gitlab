@@ -3,7 +3,7 @@
 ## Added
 
  * `gitlab.atd`: use `date_time` instead of strings for `_at` fields
- * `Project`: add `merge_request_pipelines`
+ * `Project`: add `merge_request_pipelines` and `by_short_ref`
  * `Project.merge_requests`: add parameters `updated_after`, `updated_before`,
    `created_after`, `created_before` and `order_by`
 
