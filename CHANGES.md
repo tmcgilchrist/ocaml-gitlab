@@ -5,6 +5,7 @@
  * `gitlab.atd`: add `scheduler_failure` to `failure_reason`
  * `gitlab.atd`: add `data_integrity_failure` to `failure_reason`
  * `gitlab.atd`: make `merge_request.approvals_before_merge` integral
+ * `gitlab.atd`: make `merge_request.sha` nullable
 
 # 0.1.7 - 2023-02-02
 
