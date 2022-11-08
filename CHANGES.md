@@ -1,16 +1,18 @@
 # Unreleased
 
+# 0.1.6 - 2022-11-08
+
 ## Added
 
- * `gitlab.atd`: use `date_time` instead of strings for `_at` fields
- * `Project`: add `merge_request_pipelines` and `by_short_ref`
+ * `gitlab.atd`: use `date_time` instead of strings for `_at` fields (#68 @arvidj)
+ * `Project`: add `merge_request_pipelines` and `by_short_ref` (#68 @arvidj)
  * `Project.merge_requests`: add parameters `updated_after`, `updated_before`,
-   `created_after`, `created_before` and `order_by`
+   `created_after`, `created_before` and `order_by` (#68 @arvidj)
 
 ## Bug fixes
 
- * `Project.pipeline_jobs`: 404 means pending pipeline, not error
- * `gitlab.atd`: `time_stats` estimates are strings
+ * `Project.pipeline_jobs`: 404 means pending pipeline, not error (#68 @arvidj)
+ * `gitlab.atd`: `time_stats` estimates are strings (#66 @MisterDA)
 
 # 0.1.5 - 2022-06-17
 
