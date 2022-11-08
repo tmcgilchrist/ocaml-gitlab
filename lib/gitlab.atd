@@ -369,7 +369,7 @@ type merge_request = {
   downvotes: int;
   author: user_short;
   assignee: user_short nullable;
-  approvals_before_merge: string nullable;
+  approvals_before_merge: int nullable;
   ?allow_collaboration: bool nullable;
   ?allow_maintainer_to_push: bool nullable;
   blocking_discussions_resolved: bool;
