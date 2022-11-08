@@ -1,5 +1,9 @@
 # Unreleased
 
+## Added
+
+ * `Project.merge_requests`: add parameter `target_branch`
+
 ## Bug fixes
 
  * `gitlab.atd`: add `scheduler_failure` to `failure_reason`

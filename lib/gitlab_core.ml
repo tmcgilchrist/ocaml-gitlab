@@ -1314,6 +1314,11 @@ struct
     | None -> uri
     | Some scope -> Uri.add_query_param' uri ("scope", scope)
 
+  let target_branch_param target_branch uri =
+    match target_branch with
+    | None -> uri
+    | Some target_branch -> Uri.add_query_param' uri ("target_branch", target_branch)
+
   module Event = struct
     open Lwt
 
@@ -1487,7 +1492,7 @@ struct
 
     let merge_requests ?token ?state ?milestone ?labels ?author ?author_username
         ?my_reaction ?scope ?created_after ?created_before ?updated_after
-        ?updated_before ?sort ?order_by ~id () =
+        ?updated_before ?sort ?order_by ?target_branch ~id () =
       let order_by_param order uri =
         let show = function
           | `Created_at -> "created_at"
@@ -1510,6 +1515,7 @@ struct
         |> updated_after_param updated_after
         |> updated_before_param updated_before
         |> order_by_param order_by |> sort_param sort
+        |> target_branch_param target_branch
       in
       API.get_stream ?token ~uri (fun body ->
           return (Gitlab_j.merge_requests_of_string body))

@@ -693,6 +693,7 @@ module type Gitlab = sig
       ?updated_before:string ->
       ?sort:Gitlab_t.sort ->
       ?order_by:[ `Created_at | `Title | `Updated_at ] ->
+      ?target_branch:string ->
       id:int ->
       unit ->
       Gitlab_t.merge_request Stream.t
