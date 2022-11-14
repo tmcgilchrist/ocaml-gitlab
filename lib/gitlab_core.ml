@@ -1309,6 +1309,13 @@ struct
     | None -> uri
     | Some sort -> Uri.add_query_param' uri ("sort", show sort)
 
+  let wip_param wip uri =
+    match wip with
+    | None -> uri
+    | Some wip ->
+       let wip = if wip then "yes" else "no" in
+       Uri.add_query_param' uri ("wip", wip)
+
   let event_scope_param scope uri =
     match scope with
     | None -> uri
@@ -1492,7 +1499,7 @@ struct
 
     let merge_requests ?token ?state ?milestone ?labels ?author ?author_username
         ?my_reaction ?scope ?created_after ?created_before ?updated_after
-        ?updated_before ?sort ?order_by ?target_branch ~id () =
+        ?updated_before ?sort ?order_by ?target_branch ?wip ~id () =
       let order_by_param order uri =
         let show = function
           | `Created_at -> "created_at"
@@ -1516,6 +1523,7 @@ struct
         |> updated_before_param updated_before
         |> order_by_param order_by |> sort_param sort
         |> target_branch_param target_branch
+        |> wip_param wip
       in
       API.get_stream ?token ~uri (fun body ->
           return (Gitlab_j.merge_requests_of_string body))

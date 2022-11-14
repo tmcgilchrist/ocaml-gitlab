@@ -694,6 +694,7 @@ module type Gitlab = sig
       ?sort:Gitlab_t.sort ->
       ?order_by:[ `Created_at | `Title | `Updated_at ] ->
       ?target_branch:string ->
+      ?wip:bool ->
       id:int ->
       unit ->
       Gitlab_t.merge_request Stream.t

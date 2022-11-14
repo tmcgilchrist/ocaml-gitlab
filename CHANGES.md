@@ -2,6 +2,7 @@
 
 ## Added
 
+ * `Project.merge_requests`: add parameter `wip`
  * `Project.merge_requests`: add parameter `target_branch`
 
 ## Bug fixes
