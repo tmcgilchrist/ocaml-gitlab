@@ -214,6 +214,8 @@ module type Gitlab = sig
         means to iterate over ordered API results which may be too
         numerous to fit into a single request/response pair. *)
 
+    val total : 'a t -> int option
+
     val map : ('a -> 'b list Monad.t) -> 'a t -> 'b t
     (** [map f s] is the lazy stream of [f] applied to elements of [s]
         as they are demanded. *)
