@@ -631,7 +631,7 @@ module type Gitlab = sig
       ?updated_after:string ->
       ?updated_before:string ->
       ?sort:Gitlab_t.sort ->
-      ?order_by:[`Id | `Ref | `Status | `Updated_at | `User_id ] ->
+      ?order_by:[ `Id | `Ref | `Status | `Updated_at | `User_id ] ->
       unit ->
       Gitlab_t.pipeline Stream.t
     (** [pipelines ~token ~project_id ()] list all pipelines the authenticated user has access to in [project_id].
@@ -691,7 +691,7 @@ module type Gitlab = sig
       ?updated_after:string ->
       ?updated_before:string ->
       ?sort:Gitlab_t.sort ->
-      ?order_by:[`Created_at | `Title | `Updated_at ] ->
+      ?order_by:[ `Created_at | `Title | `Updated_at ] ->
       id:int ->
       unit ->
       Gitlab_t.merge_request Stream.t
@@ -754,7 +754,6 @@ module type Gitlab = sig
 
        See {{:https://docs.gitlab.com/ee/api/merge_requests.html#list-mr-pipelines}List MR pipelines }.
     *)
-
 
     val events :
       token:Token.t ->
@@ -1069,9 +1068,12 @@ module type Gitlab = sig
         *)
     end
 
-    module Hook: sig
+    module Hook : sig
       val list :
-        ?token:Token.t -> project_id:int -> unit -> Gitlab_t.project_hooks Response.t Monad.t
+        ?token:Token.t ->
+        project_id:int ->
+        unit ->
+        Gitlab_t.project_hooks Response.t Monad.t
       (** [list ?token ~project_id] Request a list of a project’s hooks.
         See {{:https://docs.gitlab.com/ee/api/projects.html#list-project-hooks}List project hooks}.
         *)
@@ -1102,7 +1104,6 @@ module type Gitlab = sig
         API}.
      *)
     module Notes : sig
-
       (** The [Merge_request] module provides access to
           {{:https://docs.gitlab.com/ee/api/notes.html#merge-requests}Merge
           requests notes API}.
@@ -1155,7 +1156,7 @@ module type Gitlab = sig
           body:string ->
           unit ->
           Gitlab_t.note Response.t Monad.t
-      (** [update ?token ~project_id ~merge_request_iid ~note_id ~body]
+        (** [update ?token ~project_id ~merge_request_iid ~note_id ~body]
           Updates a note. See
           {{:https://docs.gitlab.com/ee/api/notes.html#modify-existing-merge-request-note}Modify
           existing note of a merge request}.
@@ -1168,7 +1169,7 @@ module type Gitlab = sig
           note_id:int ->
           unit ->
           unit Response.t Monad.t
-      (** [delete ?token ~project_id ~merge_request_iid ~note_id]
+        (** [delete ?token ~project_id ~merge_request_iid ~note_id]
           Deletes a note. See
           {{:https://docs.gitlab.com/ee/api/notes.html#delete-a-merge-request-note}Delete
           a merge request note}.
@@ -1302,10 +1303,7 @@ module type Gitlab = sig
   (** The [Runners] module provides access to {{:https://docs.gitlab.com/ee/api/runners.html}Runners API}.
   *)
   module Runners : sig
-    val list:
-      token: Token.t ->
-      unit ->
-      Gitlab_t.runners Response.t Monad.t
+    val list : token:Token.t -> unit -> Gitlab_t.runners Response.t Monad.t
     (** [list ~token] Get a list of specific runners available to the user.*)
   end
 end

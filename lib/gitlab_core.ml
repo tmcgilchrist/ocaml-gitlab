@@ -244,8 +244,8 @@ struct
 
     let project_merge_request_note_id ~project_id ~merge_request_iid ~note_id =
       Uri.of_string
-        (Printf.sprintf "%s/projects/%i/merge_requests/%s/notes/%i" api project_id
-           merge_request_iid note_id)
+        (Printf.sprintf "%s/projects/%i/merge_requests/%s/notes/%i" api
+           project_id merge_request_iid note_id)
 
     let project_pipeline ~id ~pipeline_id =
       Uri.of_string
@@ -278,8 +278,8 @@ struct
       Uri.of_string (Printf.sprintf "%s/projects/%i/hooks" api project_id)
 
     let project_hook_id ~project_id ~hook_id =
-      Uri.of_string (Printf.sprintf "%s/projects/%i/hooks/%i" api project_id hook_id)
-
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/hooks/%i" api project_id hook_id)
 
     let group_projects ~id =
       Uri.of_string (Printf.sprintf "%s/groups/%s/projects" api id)
@@ -317,8 +317,7 @@ struct
            "%s/projects/%i/merge_requests/%s/status_check_responses" api id
            merge_request_iid)
 
-    let runners =
-      Uri.of_string (Printf.sprintf "%s/runners" api)
+    let runners = Uri.of_string (Printf.sprintf "%s/runners" api)
   end
 
   module C = Cohttp
@@ -578,22 +577,29 @@ struct
         | { buffer = h :: buffer; _ } as s ->
             return (Some (h, { s with buffer })))
 
-    let take : int -> 'a t -> 'b t = fun n s ->
+    let take : int -> 'a t -> 'b t =
+     fun n s ->
       let rec refill n' s () =
         Monad.(
-          if n' = 0 then
-            return empty
+          if n' = 0 then return empty
           else
             next s >>= function
             | None -> return empty
-            | Some (v, s) -> (
-              return { s with restart; buffer = [v]; refill = Some (refill (n' - 1) s) }))
+            | Some (v, s) ->
+                return
+                  {
+                    s with
+                    restart;
+                    buffer = [ v ];
+                    refill = Some (refill (n' - 1) s);
+                  })
       and restart endpoint =
         Monad.(
           s.restart endpoint >>= function
           | Some s ->
-             return
-               (Some { s with restart; buffer = []; refill = Some (refill n s) })
+              return
+                (Some
+                   { s with restart; buffer = []; refill = Some (refill n s) })
           | None -> return None)
       in
       { s with restart; buffer = []; refill = Some (refill n s) }
@@ -1181,7 +1187,6 @@ struct
 
   let created_after_param = opt_add_query_param_opt "created_after"
   let created_before_param = opt_add_query_param_opt "created_before"
-
   let updated_after_param = opt_add_query_param_opt "updated_after"
   let updated_before_param = opt_add_query_param_opt "updated_before"
 
@@ -1481,7 +1486,8 @@ struct
       API.get ~token ~uri ~fail_handlers (fun body -> return (Some body))
 
     let merge_requests ?token ?state ?milestone ?labels ?author ?author_username
-        ?my_reaction ?scope ?created_after ?created_before ?updated_after ?updated_before ?sort ?order_by ~id () =
+        ?my_reaction ?scope ?created_after ?created_before ?updated_after
+        ?updated_before ?sort ?order_by ~id () =
       let order_by_param order uri =
         let show = function
           | `Created_at -> "created_at"
@@ -1503,8 +1509,7 @@ struct
         |> created_before_param created_before
         |> updated_after_param updated_after
         |> updated_before_param updated_before
-        |> order_by_param order_by
-        |> sort_param sort
+        |> order_by_param order_by |> sort_param sort
       in
       API.get_stream ?token ~uri (fun body ->
           return (Gitlab_j.merge_requests_of_string body))
@@ -1761,7 +1766,8 @@ struct
 
       let by_id ?token ~project_id ~hook_id () =
         let uri = URI.project_hook_id ~project_id ~hook_id in
-        API.get ?token ~uri (fun body -> return (Gitlab_j.project_hook_of_string body))
+        API.get ?token ~uri (fun body ->
+            return (Gitlab_j.project_hook_of_string body))
 
       let create ~token ~project_id create_project_hook () =
         let uri = URI.project_hooks ~project_id in
@@ -1773,28 +1779,45 @@ struct
     module Notes = struct
       module Merge_request = struct
         let list ?token ~project_id ~merge_request_iid ?sort () =
-          let uri = URI.project_merge_request_notes ~project_id ~merge_request_iid |> sort_param sort in
+          let uri =
+            URI.project_merge_request_notes ~project_id ~merge_request_iid
+            |> sort_param sort
+          in
           API.get_stream ?token ~uri (fun body ->
               return (Gitlab_j.notes_of_string body))
 
         let by_id ?token ~project_id ~merge_request_iid ~note_id () =
-          let uri = URI.project_merge_request_note_id ~project_id ~merge_request_iid ~note_id in
-          API.get ?token ~uri (fun body -> return (Gitlab_j.note_of_string body))
+          let uri =
+            URI.project_merge_request_note_id ~project_id ~merge_request_iid
+              ~note_id
+          in
+          API.get ?token ~uri (fun body ->
+              return (Gitlab_j.note_of_string body))
 
         let create ~token ~project_id ~merge_request_iid ~create_note () =
-          let uri = URI.project_merge_request_notes ~project_id ~merge_request_iid in
+          let uri =
+            URI.project_merge_request_notes ~project_id ~merge_request_iid
+          in
           let body = Gitlab_j.string_of_create_note create_note in
           API.post ~token ~uri ~body ~expected_code:`Created (fun s ->
               Lwt.return (Gitlab_j.note_of_string s))
 
         let update ~token ~project_id ~merge_request_iid ~note_id ~body () =
-          let uri = URI.project_merge_request_note_id ~project_id ~merge_request_iid ~note_id in
-          let body = Yojson.Safe.(to_string (`Assoc ["body", `String body])) in
+          let uri =
+            URI.project_merge_request_note_id ~project_id ~merge_request_iid
+              ~note_id
+          in
+          let body =
+            Yojson.Safe.(to_string (`Assoc [ ("body", `String body) ]))
+          in
           API.put ~token ~uri ~body ~expected_code:`Created (fun s ->
               Lwt.return (Gitlab_j.note_of_string s))
 
         let delete ~token ~project_id ~merge_request_iid ~note_id () =
-          let uri = URI.project_merge_request_note_id ~project_id ~merge_request_iid ~note_id in
+          let uri =
+            URI.project_merge_request_note_id ~project_id ~merge_request_iid
+              ~note_id
+          in
           API.delete ~token ~uri ~expected_code:`Created (fun _ -> return ())
       end
     end
@@ -1882,6 +1905,7 @@ struct
         API.delete ~token ~uri ~expected_code:`No_content (fun _ -> return ())
     end
   end
+
   module Runners = struct
     open Lwt
 

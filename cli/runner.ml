@@ -23,7 +23,8 @@ let list_cmd config =
       let open Gitlab in
       let open Monad in
       let config = config () in
-      Runners.list ~token:config.token () >|~ fun runners -> printer runners json
+      Runners.list ~token:config.token () >|~ fun runners ->
+      printer runners json
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in

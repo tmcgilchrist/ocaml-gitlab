@@ -7,9 +7,7 @@ let envs = Gitlab.Env.envs
 let owner_id =
   let doc = "Gitlab Owner Id" in
   Arg.(
-    required
-    & opt (some string) None
-    & info [ "o"; "owner" ] ~docv:"OWNER" ~doc)
+    required & opt (some string) None & info [ "o"; "owner" ] ~docv:"OWNER" ~doc)
 
 let owner_name =
   let doc = "Gitlab Ownername" in
@@ -72,7 +70,7 @@ let user_projects_cmd =
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
   let doc = "List public projects owned by the user." in
-  let info = Cmd.info ~envs ~doc "projects"  in
+  let info = Cmd.info ~envs ~doc "projects" in
   let term = Term.(const user_projects_list $ owner_id) in
   Cmd.v info term
 
@@ -89,17 +87,13 @@ let user_events_cmd config =
   in
   let doc = "List all user events." in
   let info = Cmd.info ~envs ~doc "events" in
-  let term =  Term.(const user_projects_list $ owner_id) in
+  let term = Term.(const user_projects_list $ owner_id) in
   Cmd.v info term
 
 let cmd config =
   let doc = "Work with GitLab users." in
   let default = Term.(ret (const (`Help (`Pager, None)))) in
-  let man = [ ] in
+  let man = [] in
   let info = Cmd.info ~envs "user" ~doc ~man in
   Cmd.group ~default info
-    [ user_cmd;
-      user_name_cmd;
-      user_projects_cmd;
-      user_events_cmd config;
-    ]
+    [ user_cmd; user_name_cmd; user_projects_cmd; user_events_cmd config ]
