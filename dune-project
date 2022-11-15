@@ -1,7 +1,7 @@
 (lang dune 2.9)
 (name gitlab)
 (generate_opam_files true)
-(formatting disabled)
+(formatting (enabled_for ocaml))
 (using mdx 0.1)
 
 (license BSD-3-clause)
