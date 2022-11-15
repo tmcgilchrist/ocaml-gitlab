@@ -1,5 +1,10 @@
 # Unreleased
 
+## Added
+
+ * Added `Artifacts` module
+ * Added `artifact` commands to `lab` cli client
+
 # 0.1.6 - 2022-11-08
 
 ## Added
