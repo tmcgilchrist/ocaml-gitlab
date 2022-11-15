@@ -319,6 +319,20 @@ struct
 
     let runners =
       Uri.of_string (Printf.sprintf "%s/runners" api)
+
+    let job_artifacts_get ~project_id job_id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/jobs/%i/artifacts" api project_id job_id)
+
+    let job_artifacts_get_archive ~project_id ref_name =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/jobs/artifacts/%s/download" api
+           project_id ref_name)
+
+    let job_artifacts_get_file ~project_id ~job_id artifact_path =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/jobs/%i/artifacts/%s" api project_id
+           job_id artifact_path)
   end
 
   module C = Cohttp
@@ -788,13 +802,18 @@ struct
           C.Header.add headers "Authorization"
             ("Bearer " ^ Token.to_string token)
 
-    let idempotent meth ?headers ?token ?params ~fail_handlers ~expected_code
-        ~uri fn state =
+    let idempotent meth ?headers ?media_type ?token ?params ~fail_handlers
+        ~expected_code ~uri fn state =
       Lwt.return
         ( state,
           Monad.(
             request ?token ?params
-              { meth; uri; headers = realize_headers ~token headers; body = "" })
+              {
+                meth;
+                uri;
+                headers = realize_headers ~token ?media_type headers;
+                body = "";
+              })
             (request ~token (code_handler ~expected_code fn :: fail_handlers))
         )
 
@@ -820,12 +839,13 @@ struct
 
     let map_fail_handlers f fhs = List.map (fun (p, fn) -> (p, f fn)) fhs
 
-    let get ?(fail_handlers = []) ?(expected_code = `OK) ?headers ?token ?params
-        ~uri fn =
+    let get ?(fail_handlers = []) ?(expected_code = `OK) ?media_type ?headers
+        ?token ?params ~uri fn =
       let fail_handlers =
         map_fail_handlers Lwt.(fun f x -> just_body x >>= f) fail_handlers
       in
-      idempotent `GET ~fail_handlers ~expected_code ?headers ?token ?params ~uri
+      idempotent `GET ~fail_handlers ~expected_code ?headers ?media_type ?token
+        ?params ~uri
         Lwt.(fun x -> just_body x >>= fn)
 
     let rec next_link base =
@@ -1308,6 +1328,11 @@ struct
     match scope with
     | None -> uri
     | Some scope -> Uri.add_query_param' uri ("scope", scope)
+
+  let job_token_param job_token uri =
+    match job_token with
+    | None -> uri
+    | Some job_token -> Uri.add_query_param' uri ("job_token", job_token)
 
   module Event = struct
     open Lwt
@@ -1888,5 +1913,41 @@ struct
     let list ~token () =
       let uri = URI.runners in
       API.get ~token ~uri (fun body -> return (Gitlab_j.runners_of_string body))
+  end
+
+  module Job_artifacts = struct
+    open Lwt
+
+    let media_type = "application/octet-stream"
+
+    let fail_handlers =
+      [ API.code_handler ~expected_code:`Not_found (fun _ -> return None) ]
+
+    let get ?token ~project_id ~job_id ?(job_token : string option) () :
+        string option Response.t Monad.t =
+      let uri =
+        URI.job_artifacts_get ~project_id job_id |> job_token_param job_token
+      in
+      API.get ?token ~media_type ~fail_handlers ~uri (fun body ->
+          return (Some body))
+
+    let get_archive ?token ~project_id ~ref_name ~job ?job_token () :
+        string option Response.t Monad.t =
+      let uri =
+        URI.job_artifacts_get_archive ~project_id ref_name
+        |> job_token_param job_token
+        |> fun uri -> Uri.add_query_params' uri [ ("job", job) ]
+      in
+      API.get ?token ~media_type ~fail_handlers ~uri (fun body ->
+          return (Some body))
+
+    let get_file ?token ~project_id ~job_id ~artifact_path ?job_token () :
+        string option Response.t Monad.t =
+      let uri =
+        URI.job_artifacts_get_file ~project_id ~job_id artifact_path
+        |> job_token_param job_token
+      in
+      API.get ?token ~media_type ~fail_handlers ~uri (fun body ->
+          return (Some body))
   end
 end

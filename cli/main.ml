@@ -24,6 +24,7 @@ let cmds =
   [
     Api.cmd config;
     Issue.cmd config;
+    Job_artifact.cmd config;
     Merge_request.cmd config;
     Project.cmd config;
     User.cmd config;
