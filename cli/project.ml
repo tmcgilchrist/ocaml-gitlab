@@ -13,8 +13,7 @@ let project_id =
 
 let project_name =
   let doc = "The repository name on GitLab." in
-  Arg.(
-    required & pos 0 (some string) None & info [] ~docv:"PROJECT_NAME" ~doc)
+  Arg.(required & pos 0 (some string) None & info [] ~docv:"PROJECT_NAME" ~doc)
 
 let project_description =
   let doc = "A short description of the GitLab repository." in
@@ -94,16 +93,17 @@ let project_events_cmd config =
   in
   let doc = "List all project events." in
   let info = Cmd.info ~envs ~doc "events" in
-  let term =  Term.(const project_events $ project_id) in
+  let term = Term.(const project_events $ project_id) in
   Cmd.v info term
 
 let cmd config =
   let doc = "Create, clone, fork, and view projects." in
   let default = Term.(ret (const (`Help (`Pager, None)))) in
-  let man = [ ] in
+  let man = [] in
   let info = Cmd.info ~envs "project" ~doc ~man in
   Cmd.group ~default info
-    [ project_branches_cmd config;
+    [
+      project_branches_cmd config;
       project_create_cmd config;
       status_checks_cmd config;
       project_events_cmd config;
