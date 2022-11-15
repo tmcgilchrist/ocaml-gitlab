@@ -1309,6 +1309,43 @@ module type Gitlab = sig
       Gitlab_t.runners Response.t Monad.t
     (** [list ~token] Get a list of specific runners available to the user.*)
   end
+
+  (** The [Job Artifacts] module provides access to {{:https://docs.gitlab.com/ee/api/job_artifacts.html}Job Artifacts API}.
+  *)
+  module Job_artifacts : sig
+    val get :
+      ?token:Token.t ->
+      project_id:int ->
+      job_id:int ->
+      ?job_token:string ->
+      unit ->
+      string option Response.t Monad.t
+    (** [artifacts ~project_id ~job_id ()] Get the job’s artifacts zipped archive of a project. *)
+
+    val get_archive :
+      ?token:Token.t ->
+      project_id:int ->
+      ref_name:string ->
+      job:string ->
+      ?job_token:string ->
+      unit ->
+      string option Response.t Monad.t
+    (** [archive ~project-id ~ref_name ~job] Download the artifacts zipped archive from
+        the latest successful pipeline for the given reference name [ref_name]
+        and [job], provided the job finished successfully.  *)
+
+    val get_file :
+      ?token:Token.t ->
+      project_id:int ->
+      job_id:int ->
+      artifact_path:string ->
+      ?job_token:string ->
+      unit ->
+      string option Response.t Monad.t
+    (** [archive ~project-id ~ref_name ~job] Download a single
+        artifact file from a [job_id] from inside the job’s artifacts
+        zipped archive.  *)
+  end
 end
 
 (** A module of this type is required in order to construct a
