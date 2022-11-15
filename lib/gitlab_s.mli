@@ -272,6 +272,7 @@ module type Gitlab = sig
     val get :
       ?fail_handlers:'a parse handler list ->
       ?expected_code:Cohttp.Code.status_code ->
+      ?media_type:string ->
       ?headers:Cohttp.Header.t ->
       ?token:Token.t ->
       ?params:(string * string) list ->

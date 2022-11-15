@@ -788,13 +788,18 @@ struct
           C.Header.add headers "Authorization"
             ("Bearer " ^ Token.to_string token)
 
-    let idempotent meth ?headers ?token ?params ~fail_handlers ~expected_code
-        ~uri fn state =
+    let idempotent meth ?headers ?media_type ?token ?params ~fail_handlers
+        ~expected_code ~uri fn state =
       Lwt.return
         ( state,
           Monad.(
             request ?token ?params
-              { meth; uri; headers = realize_headers ~token headers; body = "" })
+              {
+                meth;
+                uri;
+                headers = realize_headers ~token ?media_type headers;
+                body = "";
+              })
             (request ~token (code_handler ~expected_code fn :: fail_handlers))
         )
 
@@ -820,12 +825,13 @@ struct
 
     let map_fail_handlers f fhs = List.map (fun (p, fn) -> (p, f fn)) fhs
 
-    let get ?(fail_handlers = []) ?(expected_code = `OK) ?headers ?token ?params
-        ~uri fn =
+    let get ?(fail_handlers = []) ?(expected_code = `OK) ?media_type ?headers
+        ?token ?params ~uri fn =
       let fail_handlers =
         map_fail_handlers Lwt.(fun f x -> just_body x >>= f) fail_handlers
       in
-      idempotent `GET ~fail_handlers ~expected_code ?headers ?token ?params ~uri
+      idempotent `GET ~fail_handlers ~expected_code ?headers ?media_type ?token
+        ?params ~uri
         Lwt.(fun x -> just_body x >>= fn)
 
     let rec next_link base =
