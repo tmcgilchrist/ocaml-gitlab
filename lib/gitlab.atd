@@ -125,7 +125,7 @@ type visibility = [
 type project_short = {
   id: int;
   name: string;
-  description: string;
+  description: string nullable;
   name_with_namespace: string;
   path: string;
   path_with_namespace: string;
