@@ -16,7 +16,8 @@ let cmd config =
       let uri = Uri.of_string uri_str in
       API.get ~token:config.token ~uri (fun body ->
           Lwt.return (Yojson.Basic.from_string body))
-      >>~ fun json -> embed @@ Lwt_io.printf "%s" (Yojson.Basic.pretty_to_string json)
+      >>~ fun json ->
+      embed @@ Lwt_io.printf "%s" (Yojson.Basic.pretty_to_string json)
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in

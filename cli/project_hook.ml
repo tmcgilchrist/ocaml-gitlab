@@ -50,7 +50,9 @@ let project_hook_create_cmd config =
       let open Monad in
       let config = config () in
       Project.Hook.create ~token:config.token ~project_id data () >>~ fun p ->
-      embed @@ Lwt_io.printf "%s\n" (Yojson.Basic.prettify @@ Gitlab_j.string_of_project_hook p)
+      embed
+      @@ Lwt_io.printf "%s\n"
+           (Yojson.Basic.prettify @@ Gitlab_j.string_of_project_hook p)
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
@@ -66,7 +68,9 @@ let project_hooks_cmd config =
       let open Monad in
       let config = config () in
       Project.Hook.list ~token:config.token ~project_id () >>~ fun p ->
-      embed @@ Lwt_io.printf "%s\n" (Yojson.Basic.prettify @@ Gitlab_j.string_of_project_hooks p)
+      embed
+      @@ Lwt_io.printf "%s\n"
+           (Yojson.Basic.prettify @@ Gitlab_j.string_of_project_hooks p)
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
@@ -81,8 +85,11 @@ let project_hook_cmd config =
       let open Gitlab in
       let open Monad in
       let config = config () in
-      Project.Hook.by_id ~token:config.token ~project_id ~hook_id () >>~ fun p ->
-      embed @@ Lwt_io.printf "%s\n" (Yojson.Basic.prettify @@ Gitlab_j.string_of_project_hook p)
+      Project.Hook.by_id ~token:config.token ~project_id ~hook_id ()
+      >>~ fun p ->
+      embed
+      @@ Lwt_io.printf "%s\n"
+           (Yojson.Basic.prettify @@ Gitlab_j.string_of_project_hook p)
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
