@@ -1,5 +1,4 @@
 open Cmdliner
-open Printf
 open Config
 
 let envs = Gitlab.Env.envs
@@ -19,8 +18,12 @@ let group_id =
     & info [ "g"; "group-id" ] ~docv:"GROUP_ID" ~doc)
 
 let issue_printer issue =
-  Gitlab_j.(
-    printf
+  let open Gitlab in
+  let open Monad in
+  let open Gitlab_j in
+
+  embed @@ 
+  Lwt_io.printf
       "#%i / %s\n\
        \t- project_id: %i\n\
        \t- state: %s\n\
@@ -30,8 +33,8 @@ let issue_printer issue =
       (string_of_state issue.issue_state)
       (if issue.issue_labels = [] then "<none>"
       else String.concat ", " issue.issue_labels)
-      issue.issue_web_url);
-  Gitlab.Monad.return ()
+      issue.issue_web_url >>= fun _ ->
+  return ()
 
 let user_issue_subcmd config =
   let issues_list () =

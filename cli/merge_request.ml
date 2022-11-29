@@ -1,5 +1,4 @@
 open Cmdliner
-open Printf
 open Config
 
 let commit_sha =
@@ -152,14 +151,12 @@ let ci_status_cmd config =
       return @@ Project.Commit.statuses ~token:config.token ~project_id ~sha ()
       >>= fun statuses ->
       let* results = Stream.to_list statuses in
-      return
-      @@
       match List.length results > 0 with
       | true ->
-          List.iter
-            (fun status -> printf "%s\n" status.Gitlab_t.commit_status_status)
+         embed @@ Lwt_list.iter_s
+            (fun status -> Lwt_io.printf "%s\n" status.Gitlab_t.commit_status_status)
             results
-      | false -> printf "failure\n"
+      | false -> embed @@ Lwt_io.printf "failure\n"
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
@@ -186,9 +183,9 @@ let ci_status_set_cmd config =
         }
       in
       Project.Commit.status ~token:config.token ~project_id ~sha new_status ()
-      >|~ fun status ->
-      printf "%s\n"
-        (Yojson.Basic.prettify (Gitlab_j.string_of_commit_status status))
+      >>~ fun status ->
+          embed @@ Lwt_io.printf "%s\n"
+                     (Yojson.Basic.prettify (Gitlab_j.string_of_commit_status status))
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
