@@ -1,4 +1,4 @@
-(** Portable functor to the GitLab API. *)
+(** Portable Functor to the GitLab API. *)
 
 module Make
     (Env : Gitlab_s.Env)

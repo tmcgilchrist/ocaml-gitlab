@@ -1,3 +1,5 @@
+(** Abstract module type for Gitlab. *)
+
 module type Gitlab = sig
   type rate_limit = { limit : int; remaining : int; reset : float }
   type rates = { core : rate_limit option }
