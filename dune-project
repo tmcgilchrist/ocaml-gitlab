@@ -18,7 +18,6 @@
   (cohttp-lwt (>= 4.0))
   (atdgen (>= 2.8.0))
   (yojson (>= 1.7.0))
-  ezjsonm
   (ISO8601 (>= 0.2.6))
   stringext)
  (synopsis "GitLab APIv4 OCaml library")
