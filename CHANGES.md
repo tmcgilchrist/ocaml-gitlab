@@ -1,5 +1,9 @@
 # Unreleased
 
+## Bug fixes
+
+ * `gitlab.atd`: `description` is nullable (#75 @maiste)
+
 # 0.1.6 - 2022-11-08
 
 ## Added
