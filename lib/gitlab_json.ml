@@ -8,6 +8,8 @@ module Adapter = struct
   end)
 end
 
+exception Parse_error of Yojson.Safe.t * string
+
 module Date = struct
   type t = float
 
@@ -15,7 +17,7 @@ module Date = struct
     try ISO8601.Permissive.date str
     with Failure _ ->
       raise
-        (Ezjsonm.Parse_error
+        (Parse_error
            ( `String str,
              Format.sprintf "%s: Date.wrap can't parse date format YYYY-MM-DD"
                str ))
@@ -30,7 +32,7 @@ module DateTime = struct
     try ISO8601.Permissive.datetime str
     with Failure _ ->
       raise
-        (Ezjsonm.Parse_error
+        (Parse_error
            ( `String str,
              Format.sprintf "%s: DateTime.wrap can't parse ISO8601 date" str ))
 

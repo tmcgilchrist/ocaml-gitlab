@@ -25,6 +25,7 @@ depends: [
   "alcotest" {with-test}
   "odoc" {with-doc}
 ]
+dev-repo: "git+https://github.com/tmcgilchrist/ocaml-gitlab.git"
 build: [
   ["dune" "subst"] {dev}
   [
@@ -41,5 +42,5 @@ build: [
   ]
   ["dune" "install" "-p" name "--create-install-files" name]
 ]
-dev-repo: "git+https://github.com/tmcgilchrist/ocaml-gitlab.git"
+
 available: [ arch != "x86_32" & arch != "arm32" & arch != "ppc32" ]
