@@ -1,4 +1,4 @@
-# Unreleased
+# 0.1.7 - 2023-02-02
 
  * Drop ezjsonm dependency for `gitlab` (#76 @tmcgilchrist)
 
