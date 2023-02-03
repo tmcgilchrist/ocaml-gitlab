@@ -493,7 +493,7 @@ type changes = {
 type repository = {
   name: string;
   url: string;
-  description: string;
+  description: string nullable;
   homepage: string;
   ?git_http_url: string nullable;
   ?git_ssh_url: string nullable;
