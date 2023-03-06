@@ -1408,6 +1408,7 @@ type pipeline_job_failure_reason = [
  | Job_execution_timeout <json name="job_execution_timeout">
  | Stuck_or_timeout_failure <json name="stuck_or_timeout_failure">
  | Unknown_failure <json name="unknown_failure">
+ | Scheduler_failure <json name="scheduler_failure">
 ]
 
 type pipeline_job = {
