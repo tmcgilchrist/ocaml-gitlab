@@ -3,6 +3,7 @@
 ## Bug fixes
 
  * `gitlab.atd`: add `scheduler_failure` to `failure_reason`
+ * `gitlab.atd`: add `data_integrity_failure` to `failure_reason`
 
 # 0.1.7 - 2023-02-02
 
