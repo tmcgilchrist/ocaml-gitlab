@@ -1,5 +1,9 @@
 # Unreleased
 
+## Added
+
+ * `Gitlab` module now exposes `Message` exception
+
 ## Bug fixes
 
  * `gitlab.atd`: add `scheduler_failure` to `failure_reason`

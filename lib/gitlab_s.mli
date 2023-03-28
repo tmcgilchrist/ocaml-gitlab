@@ -2,6 +2,8 @@ module type Gitlab = sig
   type rate_limit = { limit : int; remaining : int; reset : float }
   type rates = { core : rate_limit option }
 
+  exception Message of Cohttp.Code.status_code * Gitlab_t.message
+
   (** Functions corresponding to direct API requests return
       {!Response.t} values inside of {!Monad.t} values so that more
       information about the request can be made
