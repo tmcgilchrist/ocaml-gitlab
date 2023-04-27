@@ -1381,6 +1381,14 @@ type pipeline_source = [
   | Ondemand_Dast_Validation <json name="ondemand_dast_validation">
 ]
 
+type pipeline_scope = [
+  | Running <json name="running">
+  | Pending <json name="pending">
+  | Finished <json name="finished">
+  | Branches <json name="branches">
+  | Tags <json name="tags">
+]
+
 type pipeline = {
     id : int;
     iid : int;

@@ -37,6 +37,10 @@
    `reached_max_descendant_pipelines_depth`, `ip_restriction_failure`,
    and `reached_max_pipeline_hierarchy_size`
 
+## Added
+
+ * `Project.pipelines`: add parameter `scope`
+
 # 0.1.7 - 2023-02-02
 
  * Drop ezjsonm dependency for `gitlab` (#76 @tmcgilchrist)

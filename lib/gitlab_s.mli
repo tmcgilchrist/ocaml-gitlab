@@ -635,6 +635,7 @@ module type Gitlab = sig
       ?updated_before:string ->
       ?sort:Gitlab_t.sort ->
       ?order_by:[ `Id | `Ref | `Status | `Updated_at | `User_id ] ->
+      ?scope:Gitlab_t.pipeline_scope ->
       unit ->
       Gitlab_t.pipeline Stream.t
     (** [pipelines ~token ~project_id ()] list all pipelines the authenticated user has access to in [project_id].
