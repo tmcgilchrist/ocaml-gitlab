@@ -1002,90 +1002,19 @@ struct
   end
 
   (* Query Parameter helpers *)
-  let state_param state uri =
-    (* TODO This pattern along with the enum in lab.ml should be generic and
-       derived off the gitlab.atd definition.
-    *)
-    let show = function
-      | `Opened -> "opened"
-      | `Closed -> "closed"
-      | `Locked -> "locked"
-      | `Merged -> "merged"
-    in
-    match state with
-    | None -> uri
-    | Some state -> Uri.add_query_param' uri ("state", show state)
+  (* Add optional query parameter with a show function. *)
+  let add_query_param_opt param show value_opt uri =
+    Option.fold ~none:uri
+      ~some:(fun value -> Uri.add_query_param' uri (param, show value))
+      value_opt
 
-  let pipeline_status_param (status : Gitlab_t.pipeline_status option) uri =
-    let show = function
-      | `Created -> "created"
-      | `WaitingForResource -> "waiting_for_resource"
-      | `Preparing -> "preparing"
-      | `Pending -> "pending"
-      | `Running -> "running"
-      | `Success -> "success"
-      | `Failed -> "failed"
-      | `Canceled -> "canceled"
-      | `Skipped -> "skipped"
-      | `Manual -> "manual"
-      | `Scheduled -> "scheduled"
-    in
-    match status with
-    | None -> uri
-    | Some status -> Uri.add_query_param' uri ("status", show status)
+  (* Add optional query parameter as a string. *)
+  let add_query_param_string_opt param value_opt uri =
+    Option.fold ~none:uri
+      ~some:(fun value -> Uri.add_query_param' uri (param, value))
+      value_opt
 
-  let per_page_param (per_page : int option) uri =
-    match per_page with
-    | None -> uri
-    | Some per_page ->
-        Uri.add_query_param' uri ("per_page", string_of_int per_page)
-
-  let pipeline_source_param (source : Gitlab_t.pipeline_source option) uri =
-    let show = function
-      | `Push -> "push"
-      | `Web -> "web"
-      | `Trigger -> "trigger"
-      | `Schedule -> "schedule"
-      | `Api -> "api"
-      | `External -> "external"
-      | `Pipeline -> "pipeline"
-      | `Chat -> "chat"
-      | `Webide -> "webide"
-      | `Merge_Request_Event -> "merge_request_event"
-      | `External_Pull_Request_Event -> "external_pull_request_event"
-      | `Parent_Pipeline -> "parent_pipeline"
-      | `Ondemand_Dast_Scan -> "ondemand_dast_scan"
-      | `Ondemand_Dast_Validation -> "ondemand_dast_validation"
-    in
-    match source with
-    | None -> uri
-    | Some source -> Uri.add_query_param' uri ("state", show source)
-
-  let pipeline_job_scope_param (scope : Gitlab_t.pipeline_job_scope option) uri
-      =
-    let show = function
-      | `Created -> "created"
-      | `Preparing -> "preparing"
-      | `Pending -> "pending"
-      | `Running -> "running"
-      | `Failed -> "failed"
-      | `Success -> "success"
-      | `Canceled -> "canceled"
-      | `Skipped -> "skipped"
-      | `Manual -> "manual"
-    in
-    match scope with
-    | None -> uri
-    | Some scope -> Uri.add_query_param' uri ("scope", show scope)
-
-  let pipeline_job_include_retried_param (include_retried : bool option) uri =
-    match include_retried with
-    | Some b ->
-        Uri.add_query_param' uri
-          ("include_retried", if b then "true" else "false")
-    | None -> uri
-
-  let action_param (action : Gitlab_t.event_action_name option) uri =
+  let action_param (action : Gitlab_t.event_action_name option) =
     let show = function
       | `Accepted -> "accepted"
       | `Approved -> "approved"
@@ -1105,11 +1034,131 @@ struct
       | `Reopened -> "reopened"
       | `Updated -> "updated"
     in
-    match action with
-    | None -> uri
-    | Some action -> Uri.add_query_param' uri ("action", show action)
+    add_query_param_opt "action" show action
 
-  let target_type_param (target_type : Gitlab_t.event_target_type option) uri =
+  let after_param = add_query_param_string_opt "after"
+  let all_param = add_query_param_opt "all" Bool.to_string
+  let assignee_id_param = add_query_param_string_opt "assignee_id"
+  let assignee_username_param = add_query_param_string_opt "assignee_username"
+  let author_id_param = add_query_param_string_opt "author_id"
+  let author_username_param = add_query_param_string_opt "author_username"
+  let before_param = add_query_param_string_opt "before"
+  let created_after_param = add_query_param_string_opt "created_after"
+  let created_before_param = add_query_param_string_opt "created_before"
+  let description_param = add_query_param_string_opt "description"
+  let due_date_param = add_query_param_string_opt "due_date"
+  let event_scope_param = add_query_param_string_opt "scope"
+  let external_url_param = add_query_param_string_opt "external_url"
+
+  let labels_param labels uri =
+    match labels with
+    | None | Some [] -> uri
+    | Some labels ->
+        Uri.add_query_param' uri ("labels", String.concat "," labels)
+
+  let milestone_param = add_query_param_string_opt "milestone"
+
+  let milestone_state_param =
+    let show = function `Active -> "active" | `Closed -> "closed" in
+    add_query_param_opt "milestone_state" show
+
+  let my_reaction_param = add_query_param_string_opt "my_reaction"
+  let name_param = add_query_param_string_opt "name"
+  let owned_param = add_query_param_opt "owned" Bool.to_string
+  let path_param = add_query_param_string_opt "path"
+  let per_page_param = add_query_param_opt "per_page" string_of_int
+
+  let pipeline_job_include_retried_param =
+    let show = function true -> "true" | false -> "false" in
+    add_query_param_opt "include_retried" show
+
+  let pipeline_job_scope_param (scope : Gitlab_t.pipeline_job_scope option) uri
+      =
+    let show = function
+      | `Created -> "created"
+      | `Preparing -> "preparing"
+      | `Pending -> "pending"
+      | `Running -> "running"
+      | `Failed -> "failed"
+      | `Success -> "success"
+      | `Canceled -> "canceled"
+      | `Skipped -> "skipped"
+      | `Manual -> "manual"
+    in
+    add_query_param_opt "scope" show scope uri
+
+  let pipeline_source_param (source : Gitlab_t.pipeline_source option) uri =
+    let show = function
+      | `Push -> "push"
+      | `Web -> "web"
+      | `Trigger -> "trigger"
+      | `Schedule -> "schedule"
+      | `Api -> "api"
+      | `External -> "external"
+      | `Pipeline -> "pipeline"
+      | `Chat -> "chat"
+      | `Webide -> "webide"
+      | `Merge_Request_Event -> "merge_request_event"
+      | `External_Pull_Request_Event -> "external_pull_request_event"
+      | `Parent_Pipeline -> "parent_pipeline"
+      | `Ondemand_Dast_Scan -> "ondemand_dast_scan"
+      | `Ondemand_Dast_Validation -> "ondemand_dast_validation"
+    in
+    add_query_param_opt "state" show source uri
+
+  let pipeline_status_param (status : Gitlab_t.pipeline_status option) uri =
+    let show = function
+      | `Created -> "created"
+      | `WaitingForResource -> "waiting_for_resource"
+      | `Preparing -> "preparing"
+      | `Pending -> "pending"
+      | `Running -> "running"
+      | `Success -> "success"
+      | `Failed -> "failed"
+      | `Canceled -> "canceled"
+      | `Skipped -> "skipped"
+      | `Manual -> "manual"
+      | `Scheduled -> "scheduled"
+    in
+    add_query_param_opt "status" show status uri
+
+  let ref_name_param = add_query_param_string_opt "ref_name"
+  let ref_param = add_query_param_string_opt "ref"
+  let search_param = add_query_param_string_opt "search"
+  let sha_param = add_query_param_string_opt "sha"
+
+  let scope_param =
+    let show = function
+      | `CreatedByMe -> "created_by_me"
+      | `AssignedToMe -> "assigned_to_me"
+      | `All -> "all"
+    in
+    add_query_param_opt "scope" show
+
+  let since_param = add_query_param_string_opt "since"
+
+  let sort_param =
+    let show = function `Asc -> "asc" | `Desc -> "desc" in
+    add_query_param_opt "sort" show
+
+  let stage_param = add_query_param_string_opt "stage"
+  let start_date_param = add_query_param_string_opt "start_date"
+
+  let state_param state uri =
+    (* TODO This pattern along with the enum in lab.ml should be generic and
+       derived off the gitlab.atd definition.
+    *)
+    let show = function
+      | `Opened -> "opened"
+      | `Closed -> "closed"
+      | `Locked -> "locked"
+      | `Merged -> "merged"
+    in
+    add_query_param_opt "state" show state uri
+
+  let stats_param = add_query_param_opt "all" Bool.to_string
+
+  let target_type_param (target_type : Gitlab_t.event_target_type option) =
     let show = function
       | `Issue -> "issue"
       | `Milestone -> "milestone"
@@ -1122,197 +1171,20 @@ struct
       | `DiffNote -> "DiffNote"
       | `DiscussionNote -> "DiscussionNote"
     in
-    match target_type with
-    | None -> uri
-    | Some target_type ->
-        Uri.add_query_param' uri ("target_type", show target_type)
+    add_query_param_opt "target_type" show target_type
 
-  let milestone_param milestone uri =
-    match milestone with
-    | None -> uri
-    | Some milestone -> Uri.add_query_param' uri ("milestone", milestone)
+  let title_param = add_query_param_string_opt "title"
+  let until_param = add_query_param_string_opt "until"
+  let updated_after_param = add_query_param_string_opt "updated_after"
+  let updated_before_param = add_query_param_string_opt "updated_before"
+  let user_id_param = add_query_param_opt "user_id" Int.to_string
+  let username_param = add_query_param_string_opt "username"
 
-  let labels_param labels uri =
-    match labels with
-    | None | Some [] -> uri
-    | Some labels ->
-        Uri.add_query_param' uri ("labels", String.concat "," labels)
+  let with_merge_status_recheck_param =
+    add_query_param_opt "with_merge_status_recheck" Bool.to_string
 
-  let author_id_param author_id uri =
-    match author_id with
-    | None -> uri
-    | Some author_id -> Uri.add_query_param' uri ("author_id", author_id)
-
-  let author_username_param author_username uri =
-    match author_username with
-    | None -> uri
-    | Some author_username ->
-        Uri.add_query_param' uri ("author_username", author_username)
-
-  let assignee_id_param assignee_id uri =
-    match assignee_id with
-    | None -> uri
-    | Some assignee_id -> Uri.add_query_param' uri ("assignee_id", assignee_id)
-
-  let assignee_username_param assignee_username uri =
-    match assignee_username with
-    | None -> uri
-    | Some assignee_username ->
-        Uri.add_query_param' uri ("assignee_username", assignee_username)
-
-  let username_param username uri =
-    match username with
-    | None -> uri
-    | Some username -> Uri.add_query_param' uri ("username", username)
-
-  let my_reaction_param my_reaction uri =
-    match my_reaction with
-    | None -> uri
-    | Some my_reaction -> Uri.add_query_param' uri ("my_reaction", my_reaction)
-
-  let scope_param scope uri =
-    let show = function
-      | `CreatedByMe -> "created_by_me"
-      | `AssignedToMe -> "assigned_to_me"
-      | `All -> "all"
-    in
-    match scope with
-    | None -> uri
-    | Some scope -> Uri.add_query_param' uri ("scope", show scope)
-
-  let opt_add_query_param_opt param value_opt uri =
-    Option.fold ~none:uri
-      ~some:(fun value -> Uri.add_query_param' uri (param, value))
-      value_opt
-
-  let created_after_param = opt_add_query_param_opt "created_after"
-  let created_before_param = opt_add_query_param_opt "created_before"
-  let updated_after_param = opt_add_query_param_opt "updated_after"
-  let updated_before_param = opt_add_query_param_opt "updated_before"
-
-  let name_param name uri =
-    match name with
-    | None -> uri
-    | Some name -> Uri.add_query_param' uri ("name", name)
-
-  let description_param description uri =
-    match description with
-    | None -> uri
-    | Some description -> Uri.add_query_param' uri ("description", description)
-
-  let external_url_param external_url uri =
-    match external_url with
-    | None -> uri
-    | Some external_url ->
-        Uri.add_query_param' uri ("external_url", external_url)
-
-  let owned_param owned uri =
-    match owned with
-    | None -> uri
-    | Some owned -> Uri.add_query_param' uri ("owned", Bool.to_string owned)
-
-  let search_param search uri =
-    match search with
-    | None -> uri
-    | Some search -> Uri.add_query_param' uri ("search", search)
-
-  let with_programming_language_param lang uri =
-    match lang with
-    | None -> uri
-    | Some lang -> Uri.add_query_param' uri ("with_programming_language", lang)
-
-  let ref_name_param ref_name uri =
-    match ref_name with
-    | None -> uri
-    | Some ref_name -> Uri.add_query_param' uri ("ref_name", ref_name)
-
-  let ref_param ref_name uri =
-    match ref_name with
-    | None -> uri
-    | Some ref_name -> Uri.add_query_param' uri ("ref", ref_name)
-
-  let sha_param sha uri =
-    match sha with
-    | None -> uri
-    | Some sha -> Uri.add_query_param' uri ("sha", sha)
-
-  let stage_param stage uri =
-    match stage with
-    | None -> uri
-    | Some stage -> Uri.add_query_param' uri ("stage", stage)
-
-  let since_param since uri =
-    match since with
-    | None -> uri
-    | Some since -> Uri.add_query_param' uri ("since", since)
-
-  let until_param until uri =
-    match until with
-    | None -> uri
-    | Some until -> Uri.add_query_param' uri ("until", until)
-
-  let path_param path uri =
-    match path with
-    | None -> uri
-    | Some path -> Uri.add_query_param' uri ("path", path)
-
-  let all_param all uri =
-    match all with
-    | None -> uri
-    | Some all -> Uri.add_query_param' uri ("all", Bool.to_string all)
-
-  let stats_param stats uri =
-    match stats with
-    | None -> uri
-    | Some stats -> Uri.add_query_param' uri ("stats", Bool.to_string stats)
-
-  let title_param title uri =
-    match title with
-    | None -> uri
-    | Some title -> Uri.add_query_param' uri ("title", title)
-
-  let milestone_state_param milestone_state uri =
-    let show = function `Active -> "active" | `Closed -> "closed" in
-    match milestone_state with
-    | None -> uri
-    | Some milestone_state ->
-        Uri.add_query_param' uri ("milestone_state", show milestone_state)
-
-  let due_date_param due_date uri =
-    match due_date with
-    | None -> uri
-    | Some due_date -> Uri.add_query_param' uri ("due_date", due_date)
-
-  let start_date_param start_date uri =
-    match start_date with
-    | None -> uri
-    | Some start_date -> Uri.add_query_param' uri ("start_date", start_date)
-
-  let user_id_param user_id uri =
-    match user_id with
-    | None -> uri
-    | Some user_id -> Uri.add_query_param' uri ("user_id", Int.to_string user_id)
-
-  let before_param before uri =
-    match before with
-    | None -> uri
-    | Some before -> Uri.add_query_param' uri ("before", before)
-
-  let after_param after uri =
-    match after with
-    | None -> uri
-    | Some after -> Uri.add_query_param' uri ("after", after)
-
-  let sort_param (sort : Gitlab_t.sort option) uri =
-    let show = function `Asc -> "asc" | `Desc -> "desc" in
-    match sort with
-    | None -> uri
-    | Some sort -> Uri.add_query_param' uri ("sort", show sort)
-
-  let event_scope_param scope uri =
-    match scope with
-    | None -> uri
-    | Some scope -> Uri.add_query_param' uri ("scope", scope)
+  let with_programming_language_param =
+    add_query_param_string_opt "with_programming_language"
 
   module Event = struct
     open Lwt
@@ -1348,13 +1220,14 @@ struct
       API.get ~uri (fun body -> return (Gitlab_j.projects_short_of_string body))
 
     let merge_requests ~token ?state ?milestone ?labels ?author ?author_username
-        ?my_reaction ?scope () =
+        ?my_reaction ?scope ?with_merge_status_recheck () =
       let uri =
         URI.merge_requests |> state_param state |> milestone_param milestone
         |> labels_param labels |> author_id_param author
         |> author_username_param author_username
         |> my_reaction_param my_reaction
         |> scope_param scope
+        |> with_merge_status_recheck_param with_merge_status_recheck
       in
       API.get_stream ~token ~uri (fun body ->
           return (Gitlab_j.merge_requests_of_string body))
@@ -1487,7 +1360,7 @@ struct
 
     let merge_requests ?token ?state ?milestone ?labels ?author ?author_username
         ?my_reaction ?scope ?created_after ?created_before ?updated_after
-        ?updated_before ?sort ?order_by ~id () =
+        ?updated_before ?sort ?order_by ?with_merge_status_recheck ~id () =
       let order_by_param order uri =
         let show = function
           | `Created_at -> "created_at"
@@ -1510,6 +1383,7 @@ struct
         |> updated_after_param updated_after
         |> updated_before_param updated_before
         |> order_by_param order_by |> sort_param sort
+        |> with_merge_status_recheck_param with_merge_status_recheck
       in
       API.get_stream ?token ~uri (fun body ->
           return (Gitlab_j.merge_requests_of_string body))

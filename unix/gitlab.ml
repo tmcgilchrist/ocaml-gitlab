@@ -11,7 +11,9 @@ module Env = struct
 
   let envs =
     let open Cmdliner in
-    let doc = "The GitLab instance to connect to." in
+    let doc =
+      "The GitLab instance to connect to eg https://gitlab.com/api/v4"
+    in
     let gitlab_url = Cmd.Env.info "GITLAB_URL" ~doc in
     let doc = "Enable debugging (anything that's not 0)." in
     let gitlab_debug = Cmd.Env.info "GITLAB_DEBUG" ~doc in

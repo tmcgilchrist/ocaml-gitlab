@@ -1,5 +1,4 @@
 open Cmdliner
-open Printf
 open Config
 
 let envs = Gitlab.Env.envs
@@ -19,19 +18,22 @@ let group_id =
     & info [ "g"; "group-id" ] ~docv:"GROUP_ID" ~doc)
 
 let issue_printer issue =
-  Gitlab_j.(
-    printf
-      "#%i / %s\n\
-       \t- project_id: %i\n\
-       \t- state: %s\n\
-       \t- label(s): %s\n\
-       \t- url: %s\n"
-      issue.issue_iid issue.issue_title issue.issue_project_id
-      (string_of_state issue.issue_state)
-      (if issue.issue_labels = [] then "<none>"
-      else String.concat ", " issue.issue_labels)
-      issue.issue_web_url);
-  Gitlab.Monad.return ()
+  let open Gitlab in
+  let open Monad in
+  let open Gitlab_j in
+  embed
+  @@ Lwt_io.printf
+       "#%i / %s\n\
+        \t- project_id: %i\n\
+        \t- state: %s\n\
+        \t- label(s): %s\n\
+        \t- url: %s\n"
+       issue.issue_iid issue.issue_title issue.issue_project_id
+       (string_of_state issue.issue_state)
+       (if issue.issue_labels = [] then "<none>"
+       else String.concat ", " issue.issue_labels)
+       issue.issue_web_url
+  >>= fun _ -> return ()
 
 let user_issue_subcmd config =
   let issues_list () =
@@ -98,9 +100,11 @@ let issue_list_cmd config =
       group_issue_subcmd config;
     ]
 
+let group_name = "issue"
+
 let cmd config =
   let doc = "Manage issues." in
-  let default = Term.(ret (const (`Help (`Pager, None)))) in
+  let default = Term.(ret (const (`Help (`Pager, Some group_name)))) in
   let man = [] in
-  let info = Cmd.info ~envs "issue" ~doc ~man in
+  let info = Cmd.info ~envs group_name ~doc ~man in
   Cmd.group ~default info [ issue_list_cmd config ]

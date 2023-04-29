@@ -1,5 +1,4 @@
 open Cmdliner
-open Printf
 open Config
 
 let envs = Gitlab.Env.envs
@@ -29,13 +28,15 @@ let status_checks_cmd config =
       let open Monad in
       let config = config () in
       Project.ExternalStatusCheck.checks ~token:config.token ~project_id ()
-      >|~ fun x ->
-      List.iter
-        (fun check ->
-          printf "%s\t%s\t%i\n" check.Gitlab_t.external_status_check_name
-            check.Gitlab_t.external_status_check_external_url
-            check.Gitlab_t.external_status_check_id)
-        x
+      >>~ fun x ->
+      embed
+      @@ Lwt_list.iter_s
+           (fun check ->
+             Lwt_io.printf "%s\t%s\t%i\n"
+               check.Gitlab_t.external_status_check_name
+               check.Gitlab_t.external_status_check_external_url
+               check.Gitlab_t.external_status_check_id)
+           x
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
@@ -50,8 +51,10 @@ let project_create_cmd config =
       let open Gitlab in
       let open Monad in
       let config = config () in
-      Project.create ~token:config.token ~name ~description () >|~ fun p ->
-      printf "%s\n" (Yojson.Basic.prettify (Gitlab_j.string_of_project_short p))
+      Project.create ~token:config.token ~name ~description () >>~ fun p ->
+      embed
+      @@ Lwt_io.printf "%s\n"
+           (Yojson.Basic.prettify (Gitlab_j.string_of_project_short p))
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
@@ -70,7 +73,8 @@ let project_branches_cmd config =
         return @@ Project.Branch.branches ~token:config.token ~project_id ()
       in
       Stream.iter
-        (fun branch -> return @@ printf "%s\n" branch.Gitlab_t.branch_full_name)
+        (fun branch ->
+          embed @@ Lwt_io.printf "%s\n" branch.Gitlab_t.branch_full_name)
         branches
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
@@ -86,8 +90,10 @@ let project_events_cmd config =
       let open Gitlab in
       let open Monad in
       let config = config () in
-      Project.events ~token:config.token ~project_id () >|~ fun events ->
-      printf "%s\n" (Yojson.Basic.prettify @@ Gitlab_j.string_of_events events)
+      Project.events ~token:config.token ~project_id () >>~ fun events ->
+      embed
+      @@ Lwt_io.printf "%s\n"
+           (Yojson.Basic.prettify @@ Gitlab_j.string_of_events events)
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in
@@ -96,11 +102,13 @@ let project_events_cmd config =
   let term = Term.(const project_events $ project_id) in
   Cmd.v info term
 
+let group_name = "project"
+
 let cmd config =
   let doc = "Create, clone, fork, and view projects." in
-  let default = Term.(ret (const (`Help (`Pager, None)))) in
+  let default = Term.(ret (const (`Help (`Pager, Some group_name)))) in
   let man = [] in
-  let info = Cmd.info ~envs "project" ~doc ~man in
+  let info = Cmd.info ~envs group_name ~doc ~man in
   Cmd.group ~default info
     [
       project_branches_cmd config;
