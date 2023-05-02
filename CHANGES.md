@@ -9,6 +9,9 @@
  * `gitlab.atd`: add `user`, `duration`, `queued_duration`, `commit`,
    `pipeline` and `artifacts` to `pipeline_job`. Make `created_at`
    field mandatory (remove `nullable`).
+ * `gitlab.atd`: add `tag`, `user`, `duration` and `queued_duration`
+   to `pipeline_job`. Make `created_at` field mandatory (remove
+   `nullable`).
 
 ## Bug fixes
 
