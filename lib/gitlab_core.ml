@@ -1392,12 +1392,14 @@ struct
       API.get_stream ~token ~uri (fun body ->
           return (Gitlab_j.issues_of_string body))
 
-    let events ~token ~id ?action ?target_type () =
+    let events ~token ~id ?action ?target_type ?per_page ?after ?sort () =
       let uri =
         URI.user_events ~id |> action_type_param action
         |> target_type_param target_type
+        |> per_page_param per_page |> after_param after |> sort_param sort
       in
-      API.get ~token ~uri (fun body -> return (Gitlab_j.events_of_string body))
+      API.get_stream ~token ~uri (fun body ->
+          return (Gitlab_j.events_of_string body))
 
     module PersonalAccessToken = struct
       let tokens ~token ?user_id () =

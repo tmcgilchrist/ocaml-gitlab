@@ -478,8 +478,11 @@ module type Gitlab = sig
       id:string ->
       ?action:Gitlab_t.event_action_type ->
       ?target_type:Gitlab_t.event_target_type ->
+      ?per_page:int ->
+      ?after:string ->
+      ?sort:Gitlab_t.sort ->
       unit ->
-      Gitlab_t.events Response.t Monad.t
+      Gitlab_t.event Stream.t
     (** [events ~token ~id] get the contribution events for the specified user.
 
         See {{:https://docs.gitlab.com/ee/api/events.html#get-user-contribution-events}Get user contribution events}.

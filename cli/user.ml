@@ -80,8 +80,13 @@ let user_events_cmd config =
       let open Gitlab in
       let open Monad in
       let config = config () in
-      User.events ~token:config.token ~id () >|~ fun events ->
-      printf "%s\n" (Yojson.Basic.prettify @@ Gitlab_j.string_of_events events)
+      let* events = return @@ User.events ~token:config.token ~id () in
+      Stream.iter
+        (fun event ->
+          return
+          @@ printf "%s\n"
+               (Yojson.Basic.prettify @@ Gitlab_j.string_of_event event))
+        events
     in
     Lwt_main.run @@ Gitlab.Monad.run cmd
   in

@@ -13,6 +13,8 @@
    to `pipeline_job`. Make `created_at` field mandatory (remove
    `nullable`).
  * `gitlab.atd`: add `event_action_type` type
+ * `User.events`: add paging and `after` parameter. Return a stream
+   instead of single list of events.
 
 ## Bug fixes
 
