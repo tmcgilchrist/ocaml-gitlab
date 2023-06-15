@@ -1499,7 +1499,7 @@ struct
 
     let merge_requests ?token ?state ?milestone ?labels ?author ?author_username
         ?my_reaction ?scope ?created_after ?created_before ?updated_after
-        ?updated_before ?sort ?order_by ?target_branch ?wip ~id () =
+        ?updated_before ?sort ?order_by ?target_branch ?wip ?per_page ~id () =
       let order_by_param order uri =
         let show = function
           | `Created_at -> "created_at"
@@ -1524,6 +1524,7 @@ struct
         |> order_by_param order_by |> sort_param sort
         |> target_branch_param target_branch
         |> wip_param wip
+        |> per_page_param per_page
       in
       API.get_stream ?token ~uri (fun body ->
           return (Gitlab_j.merge_requests_of_string body))

@@ -4,6 +4,7 @@
 
  * `Project.merge_requests`: add parameter `wip`
  * `Project.merge_requests`: add parameter `target_branch`
+ * `Project.merge_requests`: add parameter `per_page`
 
 ## Bug fixes
 
