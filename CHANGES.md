@@ -12,6 +12,7 @@
  * `gitlab.atd`: add `tag`, `user`, `duration` and `queued_duration`
    to `pipeline_job`. Make `created_at` field mandatory (remove
    `nullable`).
+ * `gitlab.atd`: add `event_action_type` type
 
 ## Bug fixes
 
@@ -36,6 +37,8 @@
    `secrets_provider_not_found`,
    `reached_max_descendant_pipelines_depth`, `ip_restriction_failure`,
    and `reached_max_pipeline_hierarchy_size`
+ * the `action` param of `Events.all` takes an `event_action_type`,
+   not an `event_action`
 
 ## Added
 

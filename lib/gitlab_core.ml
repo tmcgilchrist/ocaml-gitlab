@@ -1085,23 +1085,18 @@ struct
           ("include_retried", if b then "true" else "false")
     | None -> uri
 
-  let action_param (action : Gitlab_t.event_action_name option) uri =
+  let action_type_param (action : Gitlab_t.event_action_type option) uri =
     let show = function
-      | `Accepted -> "accepted"
       | `Approved -> "approved"
       | `Closed -> "closed"
-      | `CommentedOn -> "commented on"
+      | `Commented -> "commented"
       | `Created -> "created"
       | `Destroyed -> "destroyed"
-      | `Deleted -> "deleted"
       | `Expired -> "expired"
       | `Joined -> "joined"
       | `Left -> "left"
       | `Merged -> "merged"
-      | `Opened -> "opened"
       | `Pushed -> "pushed"
-      | `PushedTo -> "pushed to"
-      | `PushedNew -> "pushed new"
       | `Reopened -> "reopened"
       | `Updated -> "updated"
     in
@@ -1347,7 +1342,7 @@ struct
         URI.events |> before_param before |> after_param after
         |> event_scope_param scope |> sort_param sort
         |> target_type_param target_type
-        |> action_param action
+        |> action_type_param action
       in
       API.get ~token ~uri (fun body -> return (Gitlab_j.events_of_string body))
   end
@@ -1399,7 +1394,7 @@ struct
 
     let events ~token ~id ?action ?target_type () =
       let uri =
-        URI.user_events ~id |> action_param action
+        URI.user_events ~id |> action_type_param action
         |> target_type_param target_type
       in
       API.get ~token ~uri (fun body -> return (Gitlab_j.events_of_string body))
@@ -1575,7 +1570,7 @@ struct
     let events ~token ~project_id ?action ?target_type () =
       let uri =
         URI.project_events ~id:project_id
-        |> action_param action
+        |> action_type_param action
         |> target_type_param target_type
       in
       API.get ~token ~uri (fun body -> return (Gitlab_j.events_of_string body))
