@@ -32,31 +32,6 @@ type date = string wrap <ocaml module="Gitlab_json.Date">
 (* ISO8601 Date Times *)
 type date_time = string wrap <ocaml module="Gitlab_json.DateTime">
 
-type user = {
-  id: int <ocaml repr="int64">;
-  username: string;
-  name: string;
-  state: string;
-  avatar_url: string nullable;
-  web_url: string;
-  created_at: date_time;
-  ?bio: string option;
-  ?bio_html: string option;
-  ?location: string option;
-  ?public_email: string option;
-  ?skype: string option;
-  ?linkedin: string option;
-  ?twitter: string option;
-  ?website_url: string option;
-  ?organization: string option;
-  ?job_title: string option;
-  ?pronouns: string option;
-  bot: bool;
-  work_information: string nullable;
-  followers: int;
-  following: int;
-} <ocaml field_prefix="user_">
-
 type user_short = {
   id: int;
   name: string;
@@ -67,7 +42,63 @@ type user_short = {
   ?email: string nullable;
 } <ocaml field_prefix="user_short_">
 
+type user = {
+  inherit user_short;
+  created_at: date_time;
+  ?bio: string option;
+  ?bio_html: string option;
+  ?location: string option;
+  ?public_email: string option;
+  ?skype: string option;
+  ?linkedin: string option;
+  ?twitter: string option;
+  ?discord: string option;
+  ?website_url: string option;
+  ?organization: string option;
+  ?job_title: string option;
+  ?pronouns: string option;
+  bot: bool;
+  work_information: string nullable;
+  ?followers: int option;
+  ?following: int option;
+} <ocaml field_prefix="user_">
+
 type users = user_short list
+
+type scim_identity = {
+  extern_uid: string;
+  group_id: int;
+  active: bool;
+} <ocaml field_prefix="scim_identity_">
+
+type identity = {
+  provider: string;
+  extern_uid: int;
+  saml_provider_id: int nullable;
+} <ocaml field_prefix="identity_">
+
+type current_user = {
+  inherit user;
+
+  local_time: string;
+  last_sign_in_at: date_time;
+  confirmed_at: date_time;
+  last_activity_on: date;
+  theme_id: int;
+  color_scheme_id: int;
+  projects_limit: int;
+  current_sign_in_at: date_time;
+  identities: identity list;
+  can_create_group: bool;
+  can_create_project: bool;
+  two_factor_enabled: bool;
+  external: bool;
+  private_profile: bool;
+  commit_email: string;
+  shared_runners_minutes_limit: int;
+  extra_shared_runners_minutes_limit: string nullable;
+  scim_identities: scim_identity list;
+} <ocaml field_prefix="current_user_">
 
 type owner = {
   id: int;

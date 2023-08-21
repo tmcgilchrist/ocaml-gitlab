@@ -74,6 +74,14 @@ module Gitlab_j_user : TestableJson = struct
   let to_json v = Yojson.Basic.from_string (Gitlab_j.string_of_user v)
 end
 
+module Gitlab_j_current_user : TestableJson = struct
+  type t = Gitlab_j.current_user
+
+  let name = "current_user"
+  let of_string = Gitlab_j.current_user_of_string
+  let to_json v = Yojson.Basic.from_string (Gitlab_j.string_of_current_user v)
+end
+
 module Gitlab_j_projects : TestableJson = struct
   type t = Gitlab_j.projects_full
 
@@ -174,6 +182,7 @@ end
 
 (* instances under test *)
 module E = Make (Gitlab_j_events)
+module CU = Make (Gitlab_j_current_user)
 module U = Make (Gitlab_j_user)
 module US = Make (Gitlab_j_user_short)
 module P = Make (Gitlab_j_projects)
@@ -247,6 +256,7 @@ let () =
       ("project_short", PS.test ());
       ("projects", P.test ());
       ("runners", R.test ());
+      ("current user", CU.test ());
       ("user", U.test ());
       ("user_short", US.test ());
       ("webhooks", WH.test ());
