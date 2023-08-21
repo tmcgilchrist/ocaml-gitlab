@@ -1,0 +1,48 @@
+  {
+    "id": 490393,
+    "name": "Tim McGilchrist",
+    "username": "tmcgilchrist",
+    "state": "active",
+    "avatar_url": "https://secure.gravatar.com/avatar/67afd2b4c98c9befd18c19f0ee9d94dc?s=80&d=identicon",
+    "web_url": "https://gitlab.com/tmcgilchrist",
+    "email": "timmcgil@gmail.com",
+    "created_at": "2016-04-13T00:09:06.360Z",
+    "bio": "",
+    "location": "Australia",
+    "public_email": "",
+    "skype": "",
+    "linkedin": "",
+    "twitter": "@lambda_foo",
+    "discord": "",
+    "website_url": "lambdafoo.com",
+    "organization": "",
+    "job_title": "",
+    "pronouns": "",
+    "bot": false,
+    "work_information": null,
+
+    "local_time": "2:38 PM",
+    "last_sign_in_at": "2023-08-03T03:26:08.516Z",
+    "confirmed_at": "2016-04-13T00:09:06.271Z",
+    "last_activity_on": "2023-08-18",
+    "theme_id": 1,
+    "color_scheme_id": 4,
+    "projects_limit": 100000,
+    "current_sign_in_at": "2023-08-18T04:37:43.419Z",
+    "identities": [
+      {
+        "provider": "github",
+        "extern_uid": "170937",
+        "saml_provider_id": null
+      }
+    ],
+    "can_create_group": true,
+    "can_create_project": true,
+    "two_factor_enabled": true,
+    "external": false,
+    "private_profile": false,
+    "commit_email": "timmcgil@gmail.com",
+    "shared_runners_minutes_limit": 2000,
+    "extra_shared_runners_minutes_limit": null,
+    "scim_identities": []
+  }

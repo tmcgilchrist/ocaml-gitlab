@@ -1341,7 +1341,7 @@ struct
 
     let current_user ~token () =
       API.get ~token ~uri:URI.user (fun body ->
-          return (Gitlab_j.user_of_string body))
+          return (Gitlab_j.current_user_of_string body))
 
     let projects ~id () =
       let uri = URI.user_projects ~id in

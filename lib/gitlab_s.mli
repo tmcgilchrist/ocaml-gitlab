@@ -425,7 +425,8 @@ module type Gitlab = sig
         See {{:https://docs.gitlab.com/14.0/ee/api/users.html#for-user}List Users}.
       *)
 
-    val current_user : token:Token.t -> unit -> Gitlab_t.user Response.t Monad.t
+    val current_user :
+      token:Token.t -> unit -> Gitlab_t.current_user Response.t Monad.t
     (** [current_user ~token ()] is the current user for [token].
         See {{:https://docs.gitlab.com/ee/api/users.html#list-current-user-for-normal-users}Current Authenticated User.}
     *)
