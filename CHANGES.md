@@ -5,6 +5,7 @@
  * `Project.merge_requests`: add parameter `wip`
  * `Project.merge_requests`: add parameter `target_branch`
  * `Project.merge_requests`: add parameter `per_page`
+ * `Gitlab` module now exposes `Message` exception
 
 ## Bug fixes
 
@@ -12,6 +13,23 @@
  * `gitlab.atd`: add `data_integrity_failure` to `failure_reason`
  * `gitlab.atd`: make `merge_request.approvals_before_merge` integral
  * `gitlab.atd`: make `merge_request.sha` nullable
+ * `gitlab.atd`: add failure reasons: `api_failure`,
+   `missing_dependency_failure`, `runner_unsupported`,
+   `stale_schedule`, `archived_failure`, `unmet_prerequisites`,
+   `forward_deployment_failure`, `user_blocked`, `project_deleted`,
+   `ci_quota_exceeded`, `pipeline_loop_detected`,
+   `no_matching_runner`, `trace_size_exceeded`, `builds_disabled`,
+   `environment_creation_failure`, `deployment_rejected`,
+   `failed_outdated_deployment_job`, `protected_environment_failure`,
+   `insufficient_bridge_permissions`,
+   `downstream_bridge_project_not_found`, `invalid_bridge_trigger`,
+   `upstream_bridge_project_not_found`,
+   `insufficient_upstream_permissions`,
+   `bridge_pipeline_is_child_pipeline`,
+   `downstream_pipeline_creation_failed`,
+   `secrets_provider_not_found`,
+   `reached_max_descendant_pipelines_depth`, `ip_restriction_failure`,
+   and `reached_max_pipeline_hierarchy_size`
 
 # 0.1.7 - 2023-02-02
 
