@@ -2,12 +2,17 @@
 
 ## Added
 
+ * `Project.merge_requests`: add parameter `wip`
+ * `Project.merge_requests`: add parameter `target_branch`
+ * `Project.merge_requests`: add parameter `per_page`
  * `Gitlab` module now exposes `Message` exception
 
 ## Bug fixes
 
  * `gitlab.atd`: add `scheduler_failure` to `failure_reason`
  * `gitlab.atd`: add `data_integrity_failure` to `failure_reason`
+ * `gitlab.atd`: make `merge_request.approvals_before_merge` integral
+ * `gitlab.atd`: make `merge_request.sha` nullable
  * `gitlab.atd`: add failure reasons: `api_failure`,
    `missing_dependency_failure`, `runner_unsupported`,
    `stale_schedule`, `archived_failure`, `unmet_prerequisites`,

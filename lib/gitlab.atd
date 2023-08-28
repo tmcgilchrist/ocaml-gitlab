@@ -369,7 +369,7 @@ type merge_request = {
   downvotes: int;
   author: user_short;
   assignee: user_short nullable;
-  approvals_before_merge: string nullable;
+  approvals_before_merge: int nullable;
   ?allow_collaboration: bool nullable;
   ?allow_maintainer_to_push: bool nullable;
   blocking_discussions_resolved: bool;
@@ -384,7 +384,7 @@ type merge_request = {
   milestone: milestone nullable;
   merge_when_pipeline_succeeds: bool;
   merge_status: merge_status;
-  sha: string;
+  sha: string nullable;
   merge_commit_sha: string nullable;
   squash_commit_sha: string nullable;
   user_notes_count: int;
