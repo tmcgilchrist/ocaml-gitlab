@@ -6,6 +6,9 @@
  * `Project.merge_requests`: add parameter `target_branch`
  * `Project.merge_requests`: add parameter `per_page`
  * `Gitlab` module now exposes `Message` exception
+ * `gitlab.atd`: add `user`, `duration`, `queued_duration`, `commit`,
+   `pipeline` and `artifacts` to `pipeline_job`. Make `created_at`
+   field mandatory (remove `nullable`).
 
 ## Bug fixes
 

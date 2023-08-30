@@ -1479,9 +1479,15 @@ type pipeline_job = {
     ?failure_reason : pipeline_job_failure_reason option;
     ref : string;
     web_url : string;
-    created_at : date_time nullable;
+    created_at : date_time;
     started_at : date_time nullable;
     finished_at : date_time nullable;
+    user : user_short;
+    duration: float nullable;
+    queued_duration: float nullable;
+    commit : commit;
+    pipeline : pipeline;
+    artifacts: artifacts_file list;
 }
 
 type pipeline_jobs = pipeline_job list
