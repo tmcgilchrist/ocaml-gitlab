@@ -1381,6 +1381,14 @@ type pipeline_source = [
   | Ondemand_Dast_Validation <json name="ondemand_dast_validation">
 ]
 
+type pipeline_scope = [
+  | Running <json name="running">
+  | Pending <json name="pending">
+  | Finished <json name="finished">
+  | Branches <json name="branches">
+  | Tags <json name="tags">
+]
+
 type pipeline = {
     id : int;
     iid : int;
@@ -1405,10 +1413,14 @@ type single_pipeline = {
     ref : string;
     sha : string;
     web_url : string;
+    tag : bool;
     started_at : date_time nullable;
-    created_at : date_time nullable;
+    created_at : date_time;
     updated_at : date_time nullable;
     finished_at : date_time nullable;
+    user : user_short;
+    duration: float nullable;
+    queued_duration: float nullable;
 }
 
 type pipeline_job_scope = [
@@ -1479,9 +1491,15 @@ type pipeline_job = {
     ?failure_reason : pipeline_job_failure_reason option;
     ref : string;
     web_url : string;
-    created_at : date_time nullable;
+    created_at : date_time;
     started_at : date_time nullable;
     finished_at : date_time nullable;
+    user : user_short;
+    duration: float nullable;
+    queued_duration: float nullable;
+    commit : commit;
+    pipeline : pipeline;
+    artifacts: artifacts_file list;
 }
 
 type pipeline_jobs = pipeline_job list

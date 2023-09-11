@@ -1327,6 +1327,18 @@ struct
     | Some target_branch ->
         Uri.add_query_param' uri ("target_branch", target_branch)
 
+  let pipeline_scope_param pipeline_scope uri =
+    let show = function
+      | `Running -> "running"
+      | `Pending -> "pending"
+      | `Finished -> "finished"
+      | `Branches -> "branches"
+      | `Tags -> "tags"
+    in
+    match pipeline_scope with
+    | None -> uri
+    | Some scope -> Uri.add_query_param' uri ("scope", show scope)
+
   module Event = struct
     open Lwt
 
@@ -1450,7 +1462,7 @@ struct
           return (Gitlab_j.single_pipeline_of_string body))
 
     let pipelines ~token ~project_id ?per_page ?status ?source ?sha ?ref_
-        ?username ?updated_after ?updated_before ?sort ?order_by () =
+        ?username ?updated_after ?updated_before ?sort ?order_by ?scope () =
       let order_by_param order uri =
         let show = function
           | `Id -> "id"
@@ -1473,6 +1485,7 @@ struct
         |> updated_after_param updated_after
         |> updated_before_param updated_before
         |> order_by_param order_by |> sort_param sort
+        |> pipeline_scope_param scope
       in
       API.get_stream ~token ~uri (fun body ->
           return (Gitlab_j.pipelines_of_string body))

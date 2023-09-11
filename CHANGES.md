@@ -6,6 +6,12 @@
  * `Project.merge_requests`: add parameter `target_branch`
  * `Project.merge_requests`: add parameter `per_page`
  * `Gitlab` module now exposes `Message` exception
+ * `gitlab.atd`: add `user`, `duration`, `queued_duration`, `commit`,
+   `pipeline` and `artifacts` to `pipeline_job`. Make `created_at`
+   field mandatory (remove `nullable`).
+ * `gitlab.atd`: add `tag`, `user`, `duration` and `queued_duration`
+   to `pipeline_job`. Make `created_at` field mandatory (remove
+   `nullable`).
 
 ## Bug fixes
 
@@ -30,6 +36,10 @@
    `secrets_provider_not_found`,
    `reached_max_descendant_pipelines_depth`, `ip_restriction_failure`,
    and `reached_max_pipeline_hierarchy_size`
+
+## Added
+
+ * `Project.pipelines`: add parameter `scope`
 
 # 0.1.7 - 2023-02-02
 
