@@ -1145,6 +1145,21 @@ type event_action_name = [
   | Updated <json name="updated">
 ]
 
+type event_action_type = [
+  | Approved <json name="approved">
+  | Closed <json name="closed">
+  | Commented <json name="commented">
+  | Created <json name="created">
+  | Destroyed <json name="destroyed">
+  | Expired <json name="expired">
+  | Joined <json name="joined">
+  | Left <json name="left">
+  | Merged <json name="merged">
+  | Pushed <json name="pushed">
+  | Reopened <json name="reopened">
+  | Updated <json name="updated">
+]
+
 type command_changes = {
   ?promote_to_epic: bool option;
 }

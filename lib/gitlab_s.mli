@@ -403,7 +403,7 @@ module type Gitlab = sig
       ?scope:string ->
       ?sort:Gitlab_t.sort ->
       ?target_type:Gitlab_t.event_target_type ->
-      ?action:Gitlab_t.event_action_name ->
+      ?action:Gitlab_t.event_action_type ->
       unit ->
       Gitlab_t.events Response.t Monad.t
     (** [all ~token] get a list of events for the authenticated user.
@@ -476,10 +476,13 @@ module type Gitlab = sig
     val events :
       token:Token.t ->
       id:string ->
-      ?action:Gitlab_t.event_action_name ->
+      ?action:Gitlab_t.event_action_type ->
       ?target_type:Gitlab_t.event_target_type ->
+      ?per_page:int ->
+      ?after:string ->
+      ?sort:Gitlab_t.sort ->
       unit ->
-      Gitlab_t.events Response.t Monad.t
+      Gitlab_t.event Stream.t
     (** [events ~token ~id] get the contribution events for the specified user.
 
         See {{:https://docs.gitlab.com/ee/api/events.html#get-user-contribution-events}Get user contribution events}.
@@ -765,7 +768,7 @@ module type Gitlab = sig
     val events :
       token:Token.t ->
       project_id:int ->
-      ?action:Gitlab_t.event_action_name ->
+      ?action:Gitlab_t.event_action_type ->
       ?target_type:Gitlab_t.event_target_type ->
       unit ->
       Gitlab_t.events Response.t Monad.t
