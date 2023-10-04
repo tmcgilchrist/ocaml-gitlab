@@ -1,43 +1,43 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Commit (gitlab-unix.Gitlab.Project.Commit)</title><link rel="stylesheet" href="../../../../odoc.css"/><meta charset="utf-8"/><meta name="generator" content="odoc 2.1.1"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><script src="../../../../highlight.pack.js"></script><script>hljs.initHighlightingOnLoad();</script></head><body class="odoc"><nav class="odoc-nav"><a href="../index.html">Up</a> – <a href="../../../index.html">gitlab-unix</a> &#x00BB; <a href="../../index.html">Gitlab</a> &#x00BB; <a href="../index.html">Project</a> &#x00BB; Commit</nav><header class="odoc-preamble"><h1>Module <code><span>Project.Commit</span></code></h1><p><code>Commit</code> operates on a repository's <a href="https://docs.gitlab.com/ee/api/commits.html">commits</a>.</p></header><div class="odoc-content"><div class="odoc-spec"><div class="spec value" id="val-commits" class="anchored"><a href="#val-commits" class="anchor"></a><code><span><span class="keyword">val</span> commits : 
-  <span>?token:<a href="../../Token/index.html#type-t">Token.t</a> <span class="arrow">&#45;&gt;</span></span>
-  <span>project_id:int <span class="arrow">&#45;&gt;</span></span>
-  <span>?ref_name:string <span class="arrow">&#45;&gt;</span></span>
-  <span>?since:string <span class="arrow">&#45;&gt;</span></span>
-  <span>?until:string <span class="arrow">&#45;&gt;</span></span>
-  <span>?path:string <span class="arrow">&#45;&gt;</span></span>
-  <span>?all:bool <span class="arrow">&#45;&gt;</span></span>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Commit (gitlab-unix.Gitlab.Project.Commit)</title><link rel="stylesheet" href="../../../../odoc.support/odoc.css"/><meta charset="utf-8"/><meta name="generator" content="odoc v2.3.0"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><script src="../../../../odoc.support/highlight.pack.js"></script><script>hljs.initHighlightingOnLoad();</script></head><body class="odoc"><nav class="odoc-nav"><a href="../index.html">Up</a> – <a href="../../../index.html">gitlab-unix</a> &#x00BB; <a href="../../index.html">Gitlab</a> &#x00BB; <a href="../index.html">Project</a> &#x00BB; Commit</nav><header class="odoc-preamble"><h1>Module <code><span>Project.Commit</span></code></h1><p><code>Commit</code> operates on a repository's <a href="https://docs.gitlab.com/ee/api/commits.html">commits</a>.</p></header><div class="odoc-content"><div class="odoc-spec"><div class="spec value anchored" id="val-commits"><a href="#val-commits" class="anchor"></a><code><span><span class="keyword">val</span> commits : 
+  <span><span class="optlabel">?token</span>:<a href="../../Token/index.html#type-t">Token.t</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="label">project_id</span>:int <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?ref_name</span>:string <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?since</span>:string <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?until</span>:string <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?path</span>:string <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?all</span>:bool <span class="arrow">&#45;&gt;</span></span>
   <span>unit <span class="arrow">&#45;&gt;</span></span>
-  <span><a href="../../../../gitlab/Gitlab_t/index.html#type-commit">Gitlab_t.commit</a> <a href="../../Stream/index.html#type-t">Stream.t</a></span></span></code></div></div><p><code>commits ?token ~project_id ()</code> list all commits for a project.</p><p>See <a href="https://docs.gitlab.com/ee/api/commits.html#list-repository-commits">List repository commits</a>.</p><div class="odoc-spec"><div class="spec value" id="val-commit" class="anchored"><a href="#val-commit" class="anchor"></a><code><span><span class="keyword">val</span> commit : 
-  <span>?token:<a href="../../Token/index.html#type-t">Token.t</a> <span class="arrow">&#45;&gt;</span></span>
-  <span>project_id:int <span class="arrow">&#45;&gt;</span></span>
-  <span>sha:string <span class="arrow">&#45;&gt;</span></span>
-  <span>?stats:bool <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="../../../../gitlab/Gitlab_t/index.html#type-commit">Gitlab_t.commit</a> <a href="../../Stream/index.html#type-t">Stream.t</a></span></span></code></div></div><p><code>commits ?token ~project_id ()</code> list all commits for a project.</p><p>See <a href="https://docs.gitlab.com/ee/api/commits.html#list-repository-commits">List repository commits</a>.</p><div class="odoc-spec"><div class="spec value anchored" id="val-commit"><a href="#val-commit" class="anchor"></a><code><span><span class="keyword">val</span> commit : 
+  <span><span class="optlabel">?token</span>:<a href="../../Token/index.html#type-t">Token.t</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="label">project_id</span>:int <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="label">sha</span>:string <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?stats</span>:bool <span class="arrow">&#45;&gt;</span></span>
   <span>unit <span class="arrow">&#45;&gt;</span></span>
-  <span><span><a href="../../../../gitlab/Gitlab_t/index.html#type-commit">Gitlab_t.commit</a> <a href="../../Response/index.html#type-t">Response.t</a></span> <a href="../../Monad/index.html#type-t">Monad.t</a></span></span></code></div><div class="spec-doc"><p><code>commit ?token ~project_id ~sha</code> get a specified commit by the commit hash or name of a branch or tag.</p><p>See <a href="https://docs.gitlab.com/ee/api/commits.html#get-a-single-commit">Get a single commit</a>.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-comments" class="anchored"><a href="#val-comments" class="anchor"></a><code><span><span class="keyword">val</span> comments : 
-  <span>?token:<a href="../../Token/index.html#type-t">Token.t</a> <span class="arrow">&#45;&gt;</span></span>
-  <span>project_id:int <span class="arrow">&#45;&gt;</span></span>
-  <span>sha:string <span class="arrow">&#45;&gt;</span></span>
+  <span><span><a href="../../../../gitlab/Gitlab_t/index.html#type-commit">Gitlab_t.commit</a> <a href="../../Response/index.html#type-t">Response.t</a></span> <a href="../../Monad/index.html#type-t">Monad.t</a></span></span></code></div><div class="spec-doc"><p><code>commit ?token ~project_id ~sha</code> get a specified commit by the commit hash or name of a branch or tag.</p><p>See <a href="https://docs.gitlab.com/ee/api/commits.html#get-a-single-commit">Get a single commit</a>.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-comments"><a href="#val-comments" class="anchor"></a><code><span><span class="keyword">val</span> comments : 
+  <span><span class="optlabel">?token</span>:<a href="../../Token/index.html#type-t">Token.t</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="label">project_id</span>:int <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="label">sha</span>:string <span class="arrow">&#45;&gt;</span></span>
   <span>unit <span class="arrow">&#45;&gt;</span></span>
-  <span><a href="../../../../gitlab/Gitlab_t/index.html#type-commit_comment">Gitlab_t.commit_comment</a> <a href="../../Stream/index.html#type-t">Stream.t</a></span></span></code></div><div class="spec-doc"><p><code>comments ?token ~project_id ~sha</code> get comments of a commit.</p><p>See <a href="https://docs.gitlab.com/ee/api/commits.html#get-the-comments-of-a-commit">Get the comments of a commit</a>.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-comment" class="anchored"><a href="#val-comment" class="anchor"></a><code><span><span class="keyword">val</span> comment : 
-  <span>?token:<a href="../../Token/index.html#type-t">Token.t</a> <span class="arrow">&#45;&gt;</span></span>
-  <span>project_id:int <span class="arrow">&#45;&gt;</span></span>
-  <span>sha:string <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="../../../../gitlab/Gitlab_t/index.html#type-commit_comment">Gitlab_t.commit_comment</a> <a href="../../Stream/index.html#type-t">Stream.t</a></span></span></code></div><div class="spec-doc"><p><code>comments ?token ~project_id ~sha</code> get comments of a commit.</p><p>See <a href="https://docs.gitlab.com/ee/api/commits.html#get-the-comments-of-a-commit">Get the comments of a commit</a>.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-comment"><a href="#val-comment" class="anchor"></a><code><span><span class="keyword">val</span> comment : 
+  <span><span class="optlabel">?token</span>:<a href="../../Token/index.html#type-t">Token.t</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="label">project_id</span>:int <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="label">sha</span>:string <span class="arrow">&#45;&gt;</span></span>
   <span><a href="../../../../gitlab/Gitlab_t/index.html#type-new_comment">Gitlab_t.new_comment</a> <span class="arrow">&#45;&gt;</span></span>
   <span>unit <span class="arrow">&#45;&gt;</span></span>
-  <span><span><a href="../../../../gitlab/Gitlab_t/index.html#type-commit_commented">Gitlab_t.commit_commented</a> <a href="../../Response/index.html#type-t">Response.t</a></span> <a href="../../Monad/index.html#type-t">Monad.t</a></span></span></code></div><div class="spec-doc"><p><code>comment ~token ~project_id ~sha ~new_comment</code> adds a comment to a commit.</p><p>See <a href="https://docs.gitlab.com/ee/api/commits.html#post-comment-to-commit">Post comment to a commit</a>.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-statuses" class="anchored"><a href="#val-statuses" class="anchor"></a><code><span><span class="keyword">val</span> statuses : 
-  <span>?token:<a href="../../Token/index.html#type-t">Token.t</a> <span class="arrow">&#45;&gt;</span></span>
-  <span>project_id:int <span class="arrow">&#45;&gt;</span></span>
-  <span>sha:string <span class="arrow">&#45;&gt;</span></span>
-  <span>?ref_name:string <span class="arrow">&#45;&gt;</span></span>
-  <span>?stage:string <span class="arrow">&#45;&gt;</span></span>
-  <span>?name:string <span class="arrow">&#45;&gt;</span></span>
-  <span>?all:bool <span class="arrow">&#45;&gt;</span></span>
+  <span><span><a href="../../../../gitlab/Gitlab_t/index.html#type-commit_commented">Gitlab_t.commit_commented</a> <a href="../../Response/index.html#type-t">Response.t</a></span> <a href="../../Monad/index.html#type-t">Monad.t</a></span></span></code></div><div class="spec-doc"><p><code>comment ~token ~project_id ~sha ~new_comment</code> adds a comment to a commit.</p><p>See <a href="https://docs.gitlab.com/ee/api/commits.html#post-comment-to-commit">Post comment to a commit</a>.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-statuses"><a href="#val-statuses" class="anchor"></a><code><span><span class="keyword">val</span> statuses : 
+  <span><span class="optlabel">?token</span>:<a href="../../Token/index.html#type-t">Token.t</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="label">project_id</span>:int <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="label">sha</span>:string <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?ref_name</span>:string <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?stage</span>:string <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?name</span>:string <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?all</span>:bool <span class="arrow">&#45;&gt;</span></span>
   <span>unit <span class="arrow">&#45;&gt;</span></span>
-  <span><a href="../../../../gitlab/Gitlab_t/index.html#type-commit_status">Gitlab_t.commit_status</a> <a href="../../Stream/index.html#type-t">Stream.t</a></span></span></code></div><div class="spec-doc"><p><code>statuses ~token ~project_id ~sha</code> lists the statuses of a commit.</p><p>See <a href="https://docs.gitlab.com/ee/api/commits.html#list-the-statuses-of-a-commit">List the statuses of a commit in a project</a>.</p></div></div><div class="odoc-spec"><div class="spec value" id="val-status" class="anchored"><a href="#val-status" class="anchor"></a><code><span><span class="keyword">val</span> status : 
-  <span>token:<a href="../../Token/index.html#type-t">Token.t</a> <span class="arrow">&#45;&gt;</span></span>
-  <span>project_id:int <span class="arrow">&#45;&gt;</span></span>
-  <span>sha:string <span class="arrow">&#45;&gt;</span></span>
+  <span><a href="../../../../gitlab/Gitlab_t/index.html#type-commit_status">Gitlab_t.commit_status</a> <a href="../../Stream/index.html#type-t">Stream.t</a></span></span></code></div><div class="spec-doc"><p><code>statuses ~token ~project_id ~sha</code> lists the statuses of a commit.</p><p>See <a href="https://docs.gitlab.com/ee/api/commits.html#list-the-statuses-of-a-commit">List the statuses of a commit in a project</a>.</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-status"><a href="#val-status" class="anchor"></a><code><span><span class="keyword">val</span> status : 
+  <span><span class="label">token</span>:<a href="../../Token/index.html#type-t">Token.t</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="label">project_id</span>:int <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="label">sha</span>:string <span class="arrow">&#45;&gt;</span></span>
   <span><a href="../../../../gitlab/Gitlab_t/index.html#type-new_status">Gitlab_t.new_status</a> <span class="arrow">&#45;&gt;</span></span>
   <span>unit <span class="arrow">&#45;&gt;</span></span>
   <span><span><a href="../../../../gitlab/Gitlab_t/index.html#type-commit_status">Gitlab_t.commit_status</a> <a href="../../Response/index.html#type-t">Response.t</a></span> <a href="../../Monad/index.html#type-t">Monad.t</a></span></span></code></div><div class="spec-doc"><p><code>status ~token ~project_id ~sha ~state</code> adds or updates the build status of a commit.</p><p>See <a href="https://docs.gitlab.com/ee/api/commits.html#post-the-build-status-to-a-commit">Post the build status to a commit</a>.</p></div></div></div></body></html>
