@@ -557,6 +557,7 @@ struct
       buffer : 'a list;
       refill : (unit -> 'a t Monad.t) option;
       endpoint : Endpoint.t;
+      total : int option;
     }
 
     type 'a parse = string -> 'a list Lwt.t
@@ -567,6 +568,7 @@ struct
         buffer = [];
         refill = None;
         endpoint = Endpoint.empty;
+        total = Some 0;
       }
 
     let rec next =
@@ -576,6 +578,8 @@ struct
         | { buffer = []; refill = Some refill; _ } -> refill () >>= next
         | { buffer = h :: buffer; _ } as s ->
             return (Some (h, { s with buffer })))
+
+    let total s = s.total
 
     let take : int -> 'a t -> 'b t =
      fun n s ->
@@ -651,7 +655,7 @@ struct
       in
       aux [] s
 
-    let of_list buffer = { empty with buffer; refill = None }
+    let of_list buffer = { empty with buffer; refill = None; total = Some (List.length buffer) }
     let poll stream = stream.restart stream.endpoint
 
     let since stream version =
@@ -854,6 +858,7 @@ struct
                 buffer;
                 refill = None;
                 endpoint = Endpoint.empty;
+                total = None;
               })
         fhs
 
@@ -873,8 +878,13 @@ struct
               | Some uri ->
                   request ~uri (stream_next restart request uri fn endpoint))
         in
+        let total =
+          Option.bind
+            Cohttp.(Header.get envelope.Response.headers "x-total")
+            int_of_string_opt
+        in
         fn body >>= fun buffer ->
-        return { Stream.restart; buffer; refill; endpoint })
+        return { Stream.restart; buffer; refill; endpoint; total })
 
     let rec restart_stream ~fail_handlers ~expected_code ?headers ?token ?params
         fn endpoint =
@@ -939,7 +949,7 @@ struct
         Some
           (fun () -> request ~uri (stream_next restart request uri fn endpoint))
       in
-      { Stream.restart; buffer = []; refill; endpoint }
+      { Stream.restart; buffer = []; refill; endpoint; total = None }
 
     let post ?(fail_handlers = []) ~expected_code ?headers =
       let headers =
