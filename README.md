@@ -80,3 +80,12 @@ Resources
 ----------
 
  [MDX Setup in RWO](https://github.com/realworldocaml/book/blob/master/Makefile#L14)
+
+## DEBUGGING
+
+If you get this error when running test or example code
+`Fatal error: exception (Failure "No SSL or TLS support compiled into Conduit")`
+
+You need to install the ssl versions of your chosen async framework
+
+`opam install lwt_ssl async_ssl`
