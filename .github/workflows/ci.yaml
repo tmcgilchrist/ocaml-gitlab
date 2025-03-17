@@ -16,8 +16,9 @@ jobs:
 
         ocaml-compiler:
           - "ocaml-variants.4.14.2+mingw64c"
-          - "ocaml.5.1.0,ocaml-option-mingw"
-          - "ocaml.5.2.0,ocaml-option-mingw"
+          - "ocaml.5.1.1,ocaml-option-mingw"
+          - "ocaml.5.2.1,ocaml-option-mingw"
+          - "ocaml.5.3.0,ocaml-option-mingw"
 
     runs-on: ${{ matrix.os }}
 
@@ -30,8 +31,6 @@ jobs:
         with:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
           opam-repositories: |
-             dra27: https://github.com/dra27/opam-repository.git#windows-5.0
-             default: https://github.com/ocaml-opam/opam-repository-mingw.git#sunset
              standard: https://github.com/ocaml/opam-repository.git
 
       - name: Install dependencies
