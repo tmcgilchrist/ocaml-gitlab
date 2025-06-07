@@ -1760,7 +1760,7 @@ struct
         API.delete ~token ~uri ~expected_code:`No_content (fun _ -> return ())
 
       let create ~token ~project_id new_token () =
-        let uri = URI.personal_access_token project_id in
+        let uri = URI.project_access_tokens project_id in
         let body = Gitlab_j.string_of_new_token new_token in
         API.post ~token ~uri ~body ~expected_code:`Created (fun s ->
             Lwt.return (Gitlab_j.project_access_token_of_string s))
