@@ -1206,6 +1206,19 @@ struct
     | None -> uri
     | Some owned -> Uri.add_query_param' uri ("owned", Bool.to_string owned)
 
+  let membership_param membership uri =
+    match membership with
+    | None -> uri
+    | Some membership ->
+        Uri.add_query_param' uri ("membership", Bool.to_string membership)
+
+  let min_access_level_param min_access_level uri =
+    match min_access_level with
+    | None -> uri
+    | Some min_access_level ->
+        Uri.add_query_param' uri
+          ("min_access_level", Int.to_string min_access_level)
+
   let search_param search uri =
     match search with
     | None -> uri
@@ -1577,10 +1590,13 @@ struct
       in
       API.get ~token ~uri (fun body -> return (Gitlab_j.events_of_string body))
 
-    let all_projects ~token ?owned ?search ?with_programming_language () =
+    let all_projects ~token ?owned ?membership ?search
+        ?with_programming_language ?min_access_level () =
       let uri =
         URI.projects |> owned_param owned |> search_param search
         |> with_programming_language_param with_programming_language
+        |> membership_param membership
+        |> min_access_level_param min_access_level
       in
       API.get_stream ~token ~uri (fun body ->
           return (Gitlab_j.project_shorts_of_string body))

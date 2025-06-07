@@ -804,8 +804,10 @@ module type Gitlab = sig
     val all_projects :
       token:Token.t ->
       ?owned:bool ->
+      ?membership:bool ->
       ?search:string ->
       ?with_programming_language:string ->
+      ?min_access_level:int ->
       unit ->
       Gitlab_t.project_short Stream.t
     (** [all_projects ~token ()] Get a list of all visible projects across
