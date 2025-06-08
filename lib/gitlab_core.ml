@@ -161,6 +161,11 @@ struct
       Uri.of_string
         (Printf.sprintf "%s/projects/%i/access_tokens/%i" api project_id id)
 
+    let project_access_token_self_rotate project_id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/access_tokens/self/rotate" api
+           project_id)
+
     let project_commits project_id =
       Uri.of_string
         (Printf.sprintf "%s/projects/%i/repository/commits" api project_id)
@@ -1779,6 +1784,11 @@ struct
         let uri = URI.project_access_tokens project_id in
         let body = Gitlab_j.string_of_new_token new_token in
         API.post ~token ~uri ~body ~expected_code:`Created (fun s ->
+            Lwt.return (Gitlab_j.project_access_token_of_string s))
+
+      let self_rotate ~token ~project_id () =
+        let uri = URI.project_access_token_self_rotate project_id in
+        API.post ~token ~uri ~expected_code:`OK (fun s ->
             Lwt.return (Gitlab_j.project_access_token_of_string s))
     end
 

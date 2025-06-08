@@ -1102,6 +1102,16 @@ module type Gitlab = sig
       (** Create a project access token for [~project_id]. See
           {{:https://docs.gitlab.com/ee/api/resource_access_tokens.html#create-a-project-access-token}Create
            a project access token}. *)
+
+      val self_rotate :
+        token:Token.t ->
+        project_id:int ->
+        unit ->
+        Gitlab_t.project_access_token Response.t Monad.t
+      (** [self_rotate ~token ~project_id ()] Self-rotate a project access
+          token. See
+          {{:https://docs.gitlab.com/api/project_access_tokens/#self-rotate}Self-rotate
+           a project access token}. *)
     end
 
     module Issue : sig
