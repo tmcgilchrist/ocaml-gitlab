@@ -1815,6 +1815,10 @@ struct
         let body = Gitlab_j.string_of_create_project_hook create_project_hook in
         API.post ~token ~uri ~body ~expected_code:`Created (fun s ->
             Lwt.return (Gitlab_j.project_hook_of_string s))
+
+      let delete ?token ~project_id ~hook_id () =
+        let uri = URI.project_hook_id ~project_id ~hook_id in
+        API.delete ?token ~uri (fun _ -> return ())
     end
 
     module Notes = struct

@@ -1160,6 +1160,16 @@ module type Gitlab = sig
       (** Creates a new webhook. See
           {{:https://docs.gitlab.com/ee/api/projects.html#add-project-hook}Add
            project hook}. *)
+
+      val delete :
+        ?token:Token.t ->
+        project_id:int ->
+        hook_id:int ->
+        unit ->
+        unit Response.t Monad.t
+      (** [delete ?token ~project_id ~hook_id] Delete a project hook. See
+          {{:https://docs.gitlab.com/ee/api/projects.html#get-project-hook}Delete
+           project hook}. *)
     end
 
     (** The [Notes] module provides access to
