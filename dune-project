@@ -16,7 +16,7 @@
   (ocaml (>= 4.08.0))
   (uri (>= 1.9.0))
   (cohttp-lwt (>= 4.0))
-  (atdgen (>= 2.8.0))
+  (atdgen (and (>= 2.8.0) (< 2.16.0)))
   (yojson (>= 1.7.0))
   (ISO8601 (>= 0.2.6))
   stringext)
@@ -35,7 +35,7 @@ JavaScript via [js_of_ocaml](http://ocsigen.org/js_of_ocaml)."))
   (cmdliner (>= 1.1.0))
   (cohttp (>= 4.0))
   (cohttp-lwt-unix (>= 4.0))
-  (tls (>= 0.11.0))
+  (tls (and (>= 0.11.0) (< 1.0.0)))
   (lwt (>= 2.4.4))
   stringext
   base-unix
