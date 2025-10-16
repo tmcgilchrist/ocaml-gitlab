@@ -12,7 +12,7 @@ homepage: "https://github.com/tmcgilchrist/ocaml-gitlab"
 doc: "https://tmcgilchrist.github.io/ocaml-gitlab/"
 bug-reports: "https://github.com/tmcgilchrist/ocaml-gitlab/issues"
 depends: [
-  "dune" {>= "3.0"}
+  "dune" {>= "3.18"}
   "ocaml" {>= "4.08.0"}
   "gitlab" {= version}
   "cmdliner" {>= "1.1.0"}
@@ -26,6 +26,7 @@ depends: [
   "odoc" {with-doc}
 ]
 dev-repo: "git+https://github.com/tmcgilchrist/ocaml-gitlab.git"
+x-maintenance-intent: ["(latest)"]
 build: [
   ["dune" "subst"] {dev}
   [

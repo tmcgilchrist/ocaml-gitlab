@@ -1,6 +1,6 @@
 (** Portable functor to the GitLab API. *)
 
 module Make
-    (Env : Gitlab_s.Env)
-    (Time : Gitlab_s.Time)
-    (CL : Cohttp_lwt.S.Client) : Gitlab_s.Gitlab
+    (_ : Gitlab_s.Env)
+    (_ : Gitlab_s.Time)
+    (_ : Cohttp_lwt.S.Client) : Gitlab_s.Gitlab

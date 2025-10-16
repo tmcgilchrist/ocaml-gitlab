@@ -8,4 +8,4 @@
 (mdx
  (files lab.md)
  (package lab)
- (packages lab))
+ (deps (package lab)))

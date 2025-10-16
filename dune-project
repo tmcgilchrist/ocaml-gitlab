@@ -1,8 +1,9 @@
-(lang dune 3.0)
+(lang dune 3.18)
 (name gitlab)
 (generate_opam_files true)
 (formatting (enabled_for ocaml))
-(using mdx 0.1)
+(using menhir 3.0)
+(using mdx 0.4)
 
 (license BSD-3-clause)
 (maintainers "Tim McGilchrist <timmcgil@gmail.com>")
@@ -70,5 +71,3 @@ This library installs the JavaScript version, which uses [js_of_ocaml](http://oc
   (mdx (and (>= 2.1) :with-test)))
  (synopsis "GitLab cli")
  (description "Experimental GitLab cli in the style of GitHub's gh and hub commands."))
-
-(using menhir 2.1)
