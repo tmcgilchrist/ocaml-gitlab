@@ -8,7 +8,7 @@ let print_config fmt config =
   in
   config
   |> List.iter (fun (name, bindings) ->
-         fprintf fmt "[%s]\n%a" name print_bindings bindings)
+      fprintf fmt "[%s]\n%a" name print_bindings bindings)
 
 let () =
   let lexbuf =
