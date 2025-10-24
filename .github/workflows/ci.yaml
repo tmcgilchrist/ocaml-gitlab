@@ -1,10 +1,10 @@
-name: CI
+name: Builds, tests & co
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  - push
+  - pull_request
+
+permissions: read-all
 
 jobs:
   build:
@@ -12,40 +12,59 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - windows-2022
-
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
         ocaml-compiler:
-          - "ocaml-variants.4.14.1+mingw64c"
-          - "ocaml.5.0.0,ocaml-option-mingw"
-          - "ocaml.5.1.0,ocaml-option-mingw"
+          - "4.14"
+          - "5"
 
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout tree
         uses: actions/checkout@v5
 
-      - name: Use OCaml ${{ matrix.ocaml-compiler }}
-        uses: ocaml/setup-ocaml@v2
+      - name: Set-up OCaml
+        uses: ocaml/setup-ocaml@v3
         with:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
-          opam-repositories: |
-             dra27: https://github.com/dra27/opam-repository.git#windows-5.0
-             default: https://github.com/ocaml-opam/opam-repository-mingw.git#sunset
-             standard: https://github.com/ocaml/opam-repository.git
 
-      - name: Install dependencies
-        run: |
-          opam install . --deps-only --with-test
+      - run: opam install . --deps-only --with-test
 
-      - name: Build
-        run: |
-          opam exec -- dune build @all
+      - run: opam exec -- dune build
 
-      - name: Tests
-        run: |
-          opam exec -- dune build @runtest
+      - run: opam exec -- dune runtest
 
-      - name: Opam Lint
-        run: |
-          opam lint gitlab-unix.opam gitlab.opam lab.opam
+  lint-doc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout tree
+        uses: actions/checkout@v5
+      - name: Set-up OCaml
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: "5"
+      - uses: ocaml/setup-ocaml/lint-doc@v3
+
+  lint-fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout tree
+        uses: actions/checkout@v5
+      - name: Set-up OCaml
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: "5"
+      - uses: ocaml/setup-ocaml/lint-fmt@v3
+
+  lint-opam:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout tree
+        uses: actions/checkout@v5
+      - name: Set-up OCaml
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: "5"
+      - uses: ocaml/setup-ocaml/lint-opam@v3

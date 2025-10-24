@@ -29,7 +29,7 @@ let issue_printer issue =
       issue.issue_iid issue.issue_title issue.issue_project_id
       (string_of_state issue.issue_state)
       (if issue.issue_labels = [] then "<none>"
-      else String.concat ", " issue.issue_labels)
+       else String.concat ", " issue.issue_labels)
       issue.issue_web_url);
   Gitlab.Monad.return ()
 

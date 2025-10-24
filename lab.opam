@@ -10,9 +10,9 @@ homepage: "https://github.com/tmcgilchrist/ocaml-gitlab"
 doc: "https://tmcgilchrist.github.io/ocaml-gitlab/"
 bug-reports: "https://github.com/tmcgilchrist/ocaml-gitlab/issues"
 depends: [
-  "dune" {>= "3.0"}
+  "dune" {>= "3.18"}
   "ocaml" {>= "4.08.0"}
-  "cmdliner" {>= "1.1.0"}
+  "cmdliner" {>= "2.0.0"}
   "gitlab-unix" {= version}
   "cohttp-lwt-unix" {>= "4.0"}
   "otoml" {>= "0.9.0"}
@@ -35,3 +35,4 @@ build: [
   ]
 ]
 dev-repo: "git+https://github.com/tmcgilchrist/ocaml-gitlab.git"
+x-maintenance-intent: ["(latest)"]

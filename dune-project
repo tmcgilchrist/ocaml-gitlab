@@ -1,8 +1,9 @@
-(lang dune 3.0)
+(lang dune 3.18)
 (name gitlab)
 (generate_opam_files true)
 (formatting (enabled_for ocaml))
-(using mdx 0.1)
+(using menhir 3.0)
+(using mdx 0.4)
 
 (license BSD-3-clause)
 (maintainers "Tim McGilchrist <timmcgil@gmail.com>")
@@ -16,8 +17,9 @@
   (ocaml (>= 4.08.0))
   (uri (>= 1.9.0))
   (cohttp-lwt (>= 4.0))
-  (atdgen (>= 2.8.0))
-  (yojson (>= 1.7.0))
+  (atdgen (>= 2.16.0))
+  (atdgen-runtime (>= 2.16.0))
+  (yojson (>= 2.2.2))
   (ISO8601 (>= 0.2.6))
   stringext)
  (synopsis "GitLab APIv4 OCaml library")
@@ -32,10 +34,9 @@ JavaScript via [js_of_ocaml](http://ocsigen.org/js_of_ocaml)."))
  (depends
   (ocaml (>= 4.08.0))
   (gitlab (= :version))
-  (cmdliner (>= 1.1.0))
+  (cmdliner (>= 2.0.0))
   (cohttp (>= 4.0))
   (cohttp-lwt-unix (>= 4.0))
-  (tls (>= 0.11.0))
   (lwt (>= 2.4.4))
   stringext
   base-unix
@@ -62,7 +63,7 @@ This library installs the JavaScript version, which uses [js_of_ocaml](http://oc
  (name lab)
  (depends
   (ocaml (>= 4.08.0))
-  (cmdliner (>= 1.1.0))
+  (cmdliner (>= 2.0.0))
   (gitlab-unix (= :version))
   (cohttp-lwt-unix (>= 4.0))
   (otoml (>= 0.9.0))
@@ -70,5 +71,3 @@ This library installs the JavaScript version, which uses [js_of_ocaml](http://oc
   (mdx (and (>= 2.1) :with-test)))
  (synopsis "GitLab cli")
  (description "Experimental GitLab cli in the style of GitHub's gh and hub commands."))
-
-(using menhir 2.1)
