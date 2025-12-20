@@ -804,8 +804,10 @@ module type Gitlab = sig
     val all_projects :
       token:Token.t ->
       ?owned:bool ->
+      ?membership:bool ->
       ?search:string ->
       ?with_programming_language:string ->
+      ?min_access_level:int ->
       unit ->
       Gitlab_t.project_short Stream.t
     (** [all_projects ~token ()] Get a list of all visible projects across
@@ -1100,6 +1102,16 @@ module type Gitlab = sig
       (** Create a project access token for [~project_id]. See
           {{:https://docs.gitlab.com/ee/api/resource_access_tokens.html#create-a-project-access-token}Create
            a project access token}. *)
+
+      val self_rotate :
+        token:Token.t ->
+        project_id:int ->
+        unit ->
+        Gitlab_t.project_access_token Response.t Monad.t
+      (** [self_rotate ~token ~project_id ()] Self-rotate a project access
+          token. See
+          {{:https://docs.gitlab.com/api/project_access_tokens/#self-rotate}Self-rotate
+           a project access token}. *)
     end
 
     module Issue : sig
@@ -1157,6 +1169,16 @@ module type Gitlab = sig
         Gitlab_t.project_hook Response.t Monad.t
       (** Creates a new webhook. See
           {{:https://docs.gitlab.com/ee/api/projects.html#add-project-hook}Add
+           project hook}. *)
+
+      val delete :
+        ?token:Token.t ->
+        project_id:int ->
+        hook_id:int ->
+        unit ->
+        unit Response.t Monad.t
+      (** [delete ?token ~project_id ~hook_id] Delete a project hook. See
+          {{:https://docs.gitlab.com/ee/api/projects.html#get-project-hook}Delete
            project hook}. *)
     end
 

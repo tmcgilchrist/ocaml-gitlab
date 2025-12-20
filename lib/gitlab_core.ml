@@ -161,6 +161,11 @@ struct
       Uri.of_string
         (Printf.sprintf "%s/projects/%i/access_tokens/%i" api project_id id)
 
+    let project_access_token_self_rotate project_id =
+      Uri.of_string
+        (Printf.sprintf "%s/projects/%i/access_tokens/self/rotate" api
+           project_id)
+
     let project_commits project_id =
       Uri.of_string
         (Printf.sprintf "%s/projects/%i/repository/commits" api project_id)
@@ -1206,6 +1211,19 @@ struct
     | None -> uri
     | Some owned -> Uri.add_query_param' uri ("owned", Bool.to_string owned)
 
+  let membership_param membership uri =
+    match membership with
+    | None -> uri
+    | Some membership ->
+        Uri.add_query_param' uri ("membership", Bool.to_string membership)
+
+  let min_access_level_param min_access_level uri =
+    match min_access_level with
+    | None -> uri
+    | Some min_access_level ->
+        Uri.add_query_param' uri
+          ("min_access_level", Int.to_string min_access_level)
+
   let search_param search uri =
     match search with
     | None -> uri
@@ -1577,10 +1595,13 @@ struct
       in
       API.get ~token ~uri (fun body -> return (Gitlab_j.events_of_string body))
 
-    let all_projects ~token ?owned ?search ?with_programming_language () =
+    let all_projects ~token ?owned ?membership ?search
+        ?with_programming_language ?min_access_level () =
       let uri =
         URI.projects |> owned_param owned |> search_param search
         |> with_programming_language_param with_programming_language
+        |> membership_param membership
+        |> min_access_level_param min_access_level
       in
       API.get_stream ~token ~uri (fun body ->
           return (Gitlab_j.project_shorts_of_string body))
@@ -1760,9 +1781,14 @@ struct
         API.delete ~token ~uri ~expected_code:`No_content (fun _ -> return ())
 
       let create ~token ~project_id new_token () =
-        let uri = URI.personal_access_token project_id in
+        let uri = URI.project_access_tokens project_id in
         let body = Gitlab_j.string_of_new_token new_token in
         API.post ~token ~uri ~body ~expected_code:`Created (fun s ->
+            Lwt.return (Gitlab_j.project_access_token_of_string s))
+
+      let self_rotate ~token ~project_id () =
+        let uri = URI.project_access_token_self_rotate project_id in
+        API.post ~token ~uri ~expected_code:`OK (fun s ->
             Lwt.return (Gitlab_j.project_access_token_of_string s))
     end
 
@@ -1799,6 +1825,10 @@ struct
         let body = Gitlab_j.string_of_create_project_hook create_project_hook in
         API.post ~token ~uri ~body ~expected_code:`Created (fun s ->
             Lwt.return (Gitlab_j.project_hook_of_string s))
+
+      let delete ?token ~project_id ~hook_id () =
+        let uri = URI.project_hook_id ~project_id ~hook_id in
+        API.delete ?token ~uri (fun _ -> return ())
     end
 
     module Notes = struct

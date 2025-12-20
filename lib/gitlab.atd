@@ -1275,6 +1275,7 @@ type personal_access_tokens = personal_access_token list
 
 type project_access_token = {
   id: int;
+  token: string;
   name: string;
   revoked: bool;
   created_at: date_time;
@@ -1291,6 +1292,7 @@ type project_access_tokens = project_access_token list
     This reuses the enum serialisation code.
   *)
 type new_token = {
+  id : int nullable;
   name : string;
   expires_at : string;
   scopes : scope list;
